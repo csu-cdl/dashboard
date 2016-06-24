@@ -140,6 +140,11 @@ Peer institutions are selected based on the methodology developed by College Res
 </div>
 <script>
 (function (doc) {
+var forEach = function (array, callback, scope) {
+	for (var i = 0, ilen = array.length; i < ilen; i++) {
+		callback.call(scope, array[i], i, array);
+	}
+};
 // cheap ajax for wireframe - TODO: replace with jquery or ?
 var ajax_get = function (endpoint, callback) {
 	var xhttp = new XMLHttpRequest();
@@ -173,7 +178,7 @@ pubsub.raise = function (t,args) {
 // register for tab event
 pubsub.sub('tab','switch_tabs',function (t,s,args) {
 	// should probably do this by adding / removing 'class="tab_selected"'
-	args[2].forEach(function (el,i,a) {
+	forEach(args[2],function (el,i,a) {
 		doc.querySelector('#tab_' + i).style.zIndex = 0; // bury unselected tabs
 		el.style.backgroundColor = '#999'; // uncolor unselected tabs
 	});
@@ -183,8 +188,7 @@ pubsub.sub('tab','switch_tabs',function (t,s,args) {
 
 // listen for click on each tab
 var tabs = doc.querySelectorAll('.tabtab');
-tabs.forEach(function (el,i,a) {
-	//var panelid = '#tab_' + i;
+forEach(tabs, function (el,i,a) {
 	el.addEventListener('click',function (e) {
 		pubsub.raise('tab',[el,i,tabs]);
 	},false);
