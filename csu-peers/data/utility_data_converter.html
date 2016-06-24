@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Utility: Data Converter</title>
+<style>
+#ta {
+	width: 95%;
+	height:500px;
+}
+</style>
+</head><body>
+<button id="btn">Go</button>
+<textarea id="ta"></textarea>
+<script>
+(function (doc) {
+	var ta = doc.querySelector('#ta');
+	var btn = doc.querySelector('#btn');
+	var pattern = /\"/g;
+	btn.addEventListener('click',function () {
+		//console.log(ta.value);
+		var fields,lines,row,out = {"headers":[],"rows":[]};
+		lines = ta.value.split('\n');
+		lines.forEach(function (line,j,aa) {
+			fields = line.split('\t');
+			if (j === 0) {
+				row = [];
+				fields.forEach(function (item,i,a) {
+					row.push(item.replace(pattern,''));
+				});
+				out.headers.push(row);
+			} else {
+				row = [];
+				fields.forEach(function (item,i,a) {
+					row.push(item.replace(pattern,''));
+				});
+				if (row[0].length) {
+					out.rows.push(row);
+				}
+			}
+		});
+		console.log(JSON.stringify(out));
+		
+	});
+	
+})(document);
+</script>
+</body></html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>CSU Peer Comparisons</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="assets/peercomp.css">
+<style type="text/css">
+${demo.css}
+</style>
+<script type="text/javascript">
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Historical 6 Year Graduation Rate'
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            type: 'category',
+            labels: {
+                rotation: -45,
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+               text:  '% Graduated'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: '6-yr Grad rate:{point.y:.1f}<br/>Comparison Type:Pell Status<br/>Cohort:2008<br/>Peer:{point.name}<br/>Group:Peer<br/>'
+        },
+        series: [{
+            data: [
+		["Fresno",58],
+		["Stanislaus",55],
+		["San Bernardino",52],
+		["Northridge",50],
+		["Sacramento",46],
+		["Los Angeles",45],
+		{name:'Bakersfield',y:39,color:'#663355'},
+		["Dominguez Hills",35],
+	]
+,
+           /* dataLabels: {
+                enabled: true,
+                rotation: -90,
+                color: '#FFFFFF',
+                align: 'right',
+                format: '{point.y:.1f}', // one decimal
+                y: 10, // 10 pixels down from the top
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }*/
+        }]
+    });
+});
+</script></head><body>
+<h1>CSU Peer Comparisons</h1>
+
+<fieldset class="controls">
+<label>Grad Year <select>
+<option value="4th Year">4th Year</option>
+<option value="6th Year" selected>6th Year</option>
+</select></label>
+<label>Comparison Type <select>
+<option value="Region">Achievement Gap</option>
+<option value="Pell Status" selected>Grad Rate</option>
+</select></label>
+<!-- <label>CSU Peer Institutions Comparison Reports for <select> -->
+<label>CSU Campus <select id="campus_selector">
+<option value="Bakersfield">Bakersfield</option>
+<option value="Channel Islands">Channel Islands</option>
+<option value="Dominguez Hills">Dominguez Hills</option>
+<option value="East Bay">East Bay</option>
+<option value="Fresno">Fresno</option>
+<option value="Fullerton">Fullerton</option>
+<option value="Humboldt">Humboldt</option>
+<option value="Long Beach">Long Beach</option>
+<option value="Los Angeles">Los Angeles</option>
+<option value="Maritime Academy">Maritime Academy</option>
+<option value="Monterey Bay">Monterey Bay</option>
+<option value="Northridge">Northridge</option>
+<option value="Pomona">Pomona</option>
+<option value="Sacramento">Sacramento</option>
+<option value="San Bernardino">San Bernardino</option>
+<option value="San Diego">San Diego</option>
+<option value="San Francisco">San Francisco</option>
+<option value="San Jose">San Jose</option>
+<option value="San Marcos">San Marcos</option>
+<option value="Sonoma">Sonoma</option>
+<option value="Stanislaus">Stanislaus</option>
+</select></label>
+<label>Cohort <select>
+<option value="2008">2008</option>
+<option value="2007">2007</option>
+<option value="2006">2006</option>
+<option value="2005">2005</option>
+<option value="2004">2004</option>
+<option value="2003">2003</option>
+<option value="2002">2002</option>
+<option value="2001">2001</option>
+<option value="2000">2000</option>
+</select></label>
+</fieldset>
+
+<div id="tab_controls">
+<div class="tabtab">Chart</div>
+<div class="tabtab">Table</div>
+</div>
+<script src="assets/highcharts.js"></script>
+<div id="tab_0">
+<div id="container" style="min-width: 300px; height: 400px; margin: 0 auto"></div>
+<p class="footnote">
+Peer institutions are selected based on the methodology developed by College Results Online 
+(for details <a href="//collegeresults.org/aboutthedata.aspx#section-5 " target="_blank">click here</a>).
+</p>
+</div>
+<div id="tab_1">
+<div class="descriptive">
+<table class="desctable" id="desctable"></table>
+</div>
+<div class="descriptive overlay">
+<table class="desctable" id="desctable2"></table>
+</div>
+<p class="footnote">*Data are suppressed where student counts (N) is less than 30.</p>
+</div>
+<script>
+(function (doc) {
+// cheap ajax for wireframe - TODO: replace with jquery or ?
+var ajax_get = function (endpoint, callback) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function () {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			callback(xhttp.responseText);
+		}
+	};
+
+	xhttp.open('GET',endpoint,true);
+	xhttp.send();
+};
+
+// pubsub event routing
+var pubsub = function () {};
+pubsub.events = {}; // {'tab0_selected':{sub1:fn1,sub2:fn2}}
+pubsub.sub = function (t,s,fn) { // t:type,s:subscriber
+	if (!pubsub.events.hasOwnProperty(t)) {
+		pubsub.events[t] = {};
+	}
+	pubsub.events[t][s] = fn;
+};
+pubsub.raise = function (t,args) {
+	for (s in pubsub.events[t]) {
+		if (pubsub.events[t].hasOwnProperty(s)) {
+			pubsub.events[t][s](t,s,args);
+		}
+	}
+};
+
+// register for tab event
+pubsub.sub('tab','switch_tabs',function (t,s,args) {
+	// should probably do this by adding / removing 'class="tab_selected"'
+	args[2].forEach(function (el,i,a) {
+		doc.querySelector('#tab_' + i).style.zIndex = 0; // bury unselected tabs
+		el.style.backgroundColor = '#999'; // uncolor unselected tabs
+	});
+	doc.querySelector('#tab_' + args[1]).style.zIndex = 10; // show selected tab body on top
+	args[0].style.backgroundColor = '#79a'; // color selected tab
+});
+
+// listen for click on each tab
+var tabs = doc.querySelectorAll('.tabtab');
+tabs.forEach(function (el,i,a) {
+	//var panelid = '#tab_' + i;
+	el.addEventListener('click',function (e) {
+		pubsub.raise('tab',[el,i,tabs]);
+	},false);
+});
+
+// js handles for some page elements
+var container = doc.querySelector('#desctable');
+var container2 = doc.querySelector('#desctable2'); // shadow container
+// create table from json data
+var create_table = function (text) {
+	//console.log(campus_selector.value);
+	var out, json = JSON.parse(text);
+	out = '<thead><tr>';
+	json.headers[0].forEach(function (item,i) {
+		out += '<td>' + item + '</td>'; 
+	});
+	out += '</tr></thead><tbody>';
+	json.rows.forEach(function (row,j) {
+		out += '<tr>';
+		row.forEach(function (item,i) {
+			if (item === '-') {
+				item = 'ds*';
+			}
+			if (i === 0 && (item === 'California State University-' + campus_selector.value || 
+					item === 'California ' + campus_selector.value || 
+					item === 'California State Polytechnic University-' + campus_selector.value || 
+					item === campus_selector.value + ' State University')) {
+				out += '<td style="font-weight:600">' + item + '</td>'; 
+			} else {
+				out += '<td>' + item + '</td>'; 
+			}
+		});
+		out += '</tr>';
+	});
+	out += '</tbody>'
+	container.innerHTML = out;
+	container2.innerHTML = out; // shadow-overlay hack to get fixed heading TODO: replace with better solution
+};
+
+// if we assume the typical user is interested in only her campus
+// then loading only that campus makes sense
+// otherwise if typical user checks all campuses, then maybe one
+// load of all campus data at once would be more better...
+
+//per selection, use ajax to load appropriate json data to populate the table
+var campus_selector = doc.querySelector('#campus_selector');
+var format_campus_table_endpoint = function (campus_name) {
+	return 'data/CamPeer/CamPeer_' + campus_name.replace(/ /g,'_') + '.json';
+};
+campus_selector.addEventListener('change',function (e) {
+	ajax_get(format_campus_table_endpoint(e.target.value), create_table) ;
+},false);
+// load default campus via ajax 
+ajax_get(format_campus_table_endpoint('Bakersfield'), create_table) ;
+
+})(document);
+</script>
+</body></html>
