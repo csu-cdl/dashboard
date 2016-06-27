@@ -67,7 +67,7 @@ $(function () {
 	var load_chart_data = function (config, callback) {
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=3';
 		if (chart_data_src !== config.current_src) {
-			$.ajax({url:chart_data_src,success:function (result) {
+			$.ajax({url:chart_data_src,datatype:"json",success:function (result) {
 				console.log(result);
 				callback(result,config.campus,config.grad_year.slice(0,1),config.cohort);
 			},failure:function (error) {console.log(error);}});
