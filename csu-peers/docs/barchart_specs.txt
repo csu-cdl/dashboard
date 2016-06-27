@@ -20,15 +20,11 @@ Many thanks,
 
 
 
-
-
-
-
 Also, please add the statement/link below as a foot note under the bar chart:
 
 Peer institutions are selected based on the methodology developed by College Results Online (for details click here).
 
-And the URL that would go into the hyperlink should be: http://collegeresults.org/aboutthedata.aspx#section-5 
+And the URL that would go into the hyperlink should be: //collegeresults.org/aboutthedata.aspx#section-5 
 
 Thanks,
 
@@ -40,12 +36,6 @@ Roy
 Roy Stripling, Ph.D.
 Director, Student Success Dashboard Research Initiatives
  
-401 Golden Shore
-Long Beach, CA 90802-4210
-Phone: 562-951-4353
-Fax: 562-951-4939
-rstripling@calstate.edu
-
 Also, please add the statement/link below as a foot note under the bar chart:
 
 Peer institutions are selected based on the methodology developed by College Results Online (for details click here).
@@ -63,27 +53,8 @@ Thanks,
 
 Roy
 
-From: Numera, Lealoa 
-Sent: Wednesday, June 22, 2016 3:55 PM
-To: Stripling, Roy <rstripling@calstate.edu>
-Subject: RE: 4-Year Grad Rate & 4/6-Year Achievement Gaps
-
-Here ya go Roy.
-
-No problem!
-
-Lealoa Numera
-Student Assistant
-Academic Technology Services
  
-401 Golden Shore, 6th Floor, Long Beach CA 90802
-
-From: Stripling, Roy 
-Sent: Wednesday, June 22, 2016 3:28 PM
-To: Numera, Lealoa <lnumera@calstate.edu>
-Subject: RE: 4-Year Grad Rate & 4/6-Year Achievement Gaps
-
-Hi Lealoa,
+Hi L,
 
 You are doing such a great job. I have another, related job I could use your help on. From the same website, we’d like to collect their main page from the downloaded spreadsheets. I’ve done the first two campuses in the attached (Bakersfield and Channel Islands), but I’d really appreciate your help doing the others. 
 
@@ -101,44 +72,18 @@ Here are some handy instructions…
 Thank you so much!
 
 Roy
-
-From: Stripling, Roy 
-Sent: Wednesday, June 22, 2016 2:36 PM
-To: Numera, Lealoa <lnumera@calstate.edu>
-Subject: RE: 4-Year Grad Rate & 4/6-Year Achievement Gaps
-
 Thank you for the quick fix!
 
-From: Numera, Lealoa 
-Sent: Wednesday, June 22, 2016 2:32 PM
-To: Stripling, Roy <rstripling@calstate.edu>
-Subject: RE: 4-Year Grad Rate & 4/6-Year Achievement Gaps
 
 I’ve updated the worksheet and attached it. I apologize, I’m not sure why they were zeroes initially.
 
 Let me know if you need anything.
-
-Lealoa Numera
-Student Assistant
-Academic Technology Services
- 
-401 Golden Shore, 6th Floor, Long Beach CA 90802
-
-From: Stripling, Roy 
-Sent: Wednesday, June 22, 2016 2:12 PM
-To: Numera, Lealoa <lnumera@calstate.edu>
-Subject: RE: 4-Year Grad Rate & 4/6-Year Achievement Gaps
 
 About those zeroes… When I go back to the website and download the data, I’m not getting zeroes. I’ve gone ahead and filled the correct numbers in for the 4-year achievement gap. Would you please go back and redo the missing 6-year gap campuses?
 
 Thank you!
 
 Roy
-
-From: Numera, Lealoa 
-Sent: Wednesday, June 22, 2016 1:21 PM
-To: Stripling, Roy <rstripling@calstate.edu>
-Subject: 4-Year Grad Rate & 4/6-Year Achievement Gaps
 
 Hi Roy,
 
@@ -160,9 +105,4 @@ Let me know if you need anything else.
 
 Thanks,
 
-Lealoa Numera
-Student Assistant
-Academic Technology Services
- 
-401 Golden Shore, 6th Floor, Long Beach CA 90802
-
+L

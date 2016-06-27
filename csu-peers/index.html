@@ -10,76 +10,125 @@ ${demo.css}
 </style>
 <script type="text/javascript">
 $(function () {
-    $('#container').highcharts({
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Historical 6 Year Graduation Rate'
-        },
-        subtitle: {
-            text: ''
-        },
-        xAxis: {
-            type: 'category',
-            labels: {
-                rotation: -45,
-                style: {
-                    fontSize: '13px',
-                    fontFamily: 'Verdana, sans-serif'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-               text:  '% Graduated'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        tooltip: {
-            pointFormat: '6-yr Grad rate:{point.y:.1f}<br/>Comparison Type:Pell Status<br/>Cohort:2008<br/>Peer:{point.name}<br/>Group:Peer<br/>'
-        },
-        series: [{
-            data: [
-		["Fresno",58],
-		["Stanislaus",55],
-		["San Bernardino",52],
-		["Northridge",50],
-		["Sacramento",46],
-		["Los Angeles",45],
-		{name:'Bakersfield',y:39,color:'#663355'},
-		["Dominguez Hills",35],
-	]
-,
-           /* dataLabels: {
-                enabled: true,
-                rotation: -90,
-                color: '#FFFFFF',
-                align: 'right',
-                format: '{point.y:.1f}', // one decimal
-                y: 10, // 10 pixels down from the top
-                style: {
-                    fontSize: '13px',
-                    fontFamily: 'Verdana, sans-serif'
-                }
-            }*/
-        }]
-    });
+	var update_chart = function (data) { 
+		$('#container').highcharts({
+		chart: {
+		    type: 'column'
+		},
+		title: {
+		    text: data.title //'Historical 6 Year Graduation Rate'
+		},
+		subtitle: {
+		    text: data.subtitle //'2008 Cohort'
+		},
+		xAxis: {
+		    type: 'category',
+		    labels: {
+			rotation: -45,
+			style: {
+			    fontSize: '13px',
+			    fontFamily: 'Verdana, sans-serif'
+			}
+		    }
+		},
+		yAxis: {
+		    title: {
+		       text:  data.ylabel //'% Graduated'
+		    }
+		},
+		legend: {
+		    enabled: false
+		},
+		tooltip: {
+		    pointFormat: 'Rate:{point.y:.1f}<br/>Comparison Type:6yr Grad Rate<br/>Cohort:2008<br/>Campus:{point.name}<br/>'
+		},
+		series: [{
+		    data: data.series
+		,
+		   /* dataLabels: {
+			enabled: true,
+			rotation: -90,
+			color: '#FFFFFF',
+			align: 'right',
+			format: '{point.y:.1f}', // one decimal
+			y: 10, // 10 pixels down from the top
+			style: {
+			    fontSize: '13px',
+			    fontFamily: 'Verdana, sans-serif'
+			}
+		    }*/
+		}]
+		});
+	};
+	var campus = 'Bakersfield'; // 'San Luis Obispo'
+	var grad_year = '6yr'; // '4yr'
+	var type = 'GR'; // 'Gap'
+	var cohort = '2008'; // '2000'
+	var load_chart_data = function (config, callback) {
+		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=3';
+		if (chart_data_src !== config.current_src) {
+			$.ajax({url:chart_data_src,success:function (result) {
+				callback(result,config.campus,config.grad_year.slice(0,1),config.cohort);
+			},failure:function (error) {console.log(error);}});
+		}
+	};
+	var chart_grade_rate = function (json,campus,grad_year,cohort) {
+		var cohort2col = {'2000':1,'2001':2,'2002':3,'2003':4,'2004':5,'2005':6,'2006':7,'2007':8,'2008':9}
+		var row,col,key,value,data = {'title':'','ylabel':'','series':[],'tooltip':[]};
+		col = cohort2col[cohort];
+		data.title = 'Historical ' + grad_year + ' Year Graduation Rate';
+		data.subtitle = cohort + ' Cohort'
+		data.ylabel = '% Graduated';
+		for (var i = 0, ilen = json.rows.length; i < ilen; i++) {
+			row = json.rows[i];
+			key = row[0].replace('California State University','CSU');
+			value = parseFloat(row[col]);
+			data.series[i] = {'name':key,'y':value};
+			if (key.indexOf(campus) !== -1) {
+				data.series[i] = {'name':key,'y':value,'color':'#663355'};
+			}
+			// Exception, should just check against a white-list of CSU campus names
+			if (campus === 'Maritime Academy' && key.indexOf('California') === -1) {
+				data.series[i] = {'name':key,'y':value};
+			}
+			data.tooltip[i] = '';
+		}
+		data.series = data.series.sort(function (b,a) {return a.y - b.y;});
+		update_chart(data);
+	};
+	// initially display chart with default data
+	load_chart_data({'campus':campus,'grad_year':grad_year,'type':type,'cohort':cohort,'current_src':''},chart_grade_rate);
+
+	var campus_selector = document.querySelector('#campus_selector');
+		campus_selector.addEventListener('change',function (e) {
+		campus = e.target.value;
+		load_chart_data({'campus':campus,'grad_year':grad_year,'type':type,'cohort':cohort,'current_src':''},chart_grade_rate);
+		console.log(e.target.value);
+	},false);
+
+	var cohort_selector = document.querySelector('#cohort_selector');
+	cohort_selector.addEventListener('change',function (e) {
+		cohort = e.target.value;
+		load_chart_data({'campus':campus,'grad_year':grad_year,'type':type,'cohort':cohort,'current_src':''},chart_grade_rate);
+	},false);
+
+	var year_selector = document.querySelector('#year_selector');
+	year_selector.addEventListener('change',function (e) {
+		grad_year = e.target.value;
+		load_chart_data({'campus':campus,'grad_year':grad_year,'type':type,'cohort':cohort,'current_src':''},chart_grade_rate);
+		console.log(e.target.value);
+	},false);
+
 });
 </script></head><body>
 <h1>CSU Peer Comparisons</h1>
 
 <fieldset class="controls">
-<label>Grad Year <select>
-<option value="4th Year">4th Year</option>
-<option value="6th Year" selected>6th Year</option>
+<label>Grad Year <select id="year_selector">
+<option value="4yr">4th Year</option>
+<option value="6yr" selected>6th Year</option>
 </select></label>
-<label>Comparison Type <select>
-<option value="Region">Achievement Gap</option>
-<option value="Pell Status" selected>Grad Rate</option>
-</select></label>
+
 <!-- <label>CSU Peer Institutions Comparison Reports for <select> -->
 <label>CSU Campus <select id="campus_selector">
 <option value="Bakersfield">Bakersfield</option>
@@ -104,7 +153,8 @@ $(function () {
 <option value="Sonoma">Sonoma</option>
 <option value="Stanislaus">Stanislaus</option>
 </select></label>
-<label>Cohort <select>
+
+<label>Cohort <select id="cohort_selector">
 <option value="2008">2008</option>
 <option value="2007">2007</option>
 <option value="2006">2006</option>
