@@ -68,6 +68,7 @@ $(function () {
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=3';
 		if (chart_data_src !== config.current_src) {
 			$.ajax({url:chart_data_src,success:function (result) {
+				console.log(result);
 				callback(result,config.campus,config.grad_year.slice(0,1),config.cohort);
 			},failure:function (error) {console.log(error);}});
 		}
@@ -79,6 +80,7 @@ $(function () {
 		data.title = 'Historical ' + grad_year + ' Year Graduation Rate';
 		data.subtitle = cohort + ' Cohort'
 		data.ylabel = '% Graduated';
+		console.log(json);
 		for (var i = 0, ilen = json.rows.length; i < ilen; i++) {
 			row = json.rows[i];
 			key = row[0].replace('California State University','CSU');
