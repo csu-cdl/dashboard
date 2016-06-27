@@ -68,8 +68,13 @@ $(function () {
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=3';
 		if (chart_data_src !== config.current_src) {
 			$.ajax({url:chart_data_src,datatype:"json",success:function (result) {
-				console.log(JSON.parse(result));
-				var json = JSON.parse(result);
+				//console.log(JSON.parse(result));
+				var json;
+				if (typeof result === 'string') {
+					json = JSON.parse(result);
+				} else { // probably due to different way server handles .json files
+					json = result;
+				}
 				callback(json,config.campus,config.grad_year.slice(0,1),config.cohort);
 			},failure:function (error) {console.log(error);}});
 		}
@@ -123,7 +128,105 @@ $(function () {
 	},false);
 
 });
-</script></head><body>
+</script>
+<script type="text/javascript">
+$(function () {
+	var update_chart2 = function (data) {
+		$('#container2').highcharts({
+		title: {
+		    text: data.title, //'Grad Rate Trend',
+		    x: -20 //center
+		},
+		subtitle: {
+		    text: data.campus,
+		    x: -20
+		},
+		xAxis: {
+		    categories: data.categories //['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010','2011']
+		},
+		yAxis: {
+		    title: {
+			text: data.ylabel //' % Grad Rate'
+		    },
+		    plotLines: [{
+			value: 0,
+			width: 1,
+			color: '#808080'
+		    }]
+		},
+		tooltip: {
+		    valueSuffix: '%'
+		},
+		legend: {
+		    layout: 'vertical',
+		    align: 'right',
+		    verticalAlign: 'middle',
+		    borderWidth: 0
+		},
+		series: [{
+		    name: '4th Year',
+		    data: data.series_4yr //[15, 15, 16, 15, 16, 17, 16, 18, 19, 18, 20,19]
+		}, {
+		    name: '6th Year',
+		    data: data.series_6yr //[62, 63.1, 62.9, 63, 62, 61, 62, 64, 66, 62]
+		}]
+		});
+	};
+
+	//var test_json = {"Campus":"Bakersfield","yr4rate_2000":14.128440367,"yr4rate_2001":14.1215106732,"yr4rate_2002":14.5802650957,"yr4rate_2003":12.8851540616,"yr4rate_2004":17.1812080537,"yr4rate_2005":14.8825065274,"yr4rate_2006":14.0515222482,"yr4rate_2007":15.0174621653,"yr4rate_2008":15.9822419534,"yr4rate_2009":13.1008482564,"yr4rate_2010":14.6100691017,"yr4rate_2011":14.0612076096,"yr6rate_2000":41.6513761468,"yr6rate_2001":39.73727422,"yr6rate_2002":44.4771723122,"yr6rate_2003":38.3753501401,"yr6rate_2004":42.9530201342,"yr6rate_2005":41.3838120104,"yr6rate_2006":38.6416861827,"yr6rate_2007":39.4644935972,"yr6rate_2008":41.1764705882,"yr6rate_2009":38.8312912347};
+
+	var campus = 'Bakersfield';
+	var categories = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010','2011'];
+	var years_4yr = ['2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011'];
+	var years_6yr = ['2000','2001','2002','2003','2004','2005','2006','2007','2008','2009'];
+	var json_data = {};
+
+
+	var load_chart_data = function (callback) {
+		var json, chart_data_src = 'data/csu_gradrate_data.json';
+		$.ajax({url:chart_data_src,datatype:"json",success:function (result) {
+			//console.log(JSON.parse(result));
+			if (typeof result === 'string') {
+				json = JSON.parse(result);
+			} else { // probably due to different way server handles .json files
+				json = result;
+			}
+			console.log(json);
+			console.log(json.length);
+			for (var i = 0, ilen = json.length; i < ilen; i++) {
+				json_data[json[i].Campus] = json[i];
+				console.log(json[i].Campus);
+			}
+			callback(campus);
+		},failure:function (error) {console.log(error);}});
+	};
+	var update_chart_campus = function (campus) {
+		var campus_data = json_data[campus];
+		console.log(campus);
+		console.log(campus_data);
+		var series_4yr = [];
+		for (var i = 0, ilen = years_4yr.length; i < ilen; i++) {
+			series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]*10.0)/10.0;
+		}
+		var series_6yr = [];
+		for (var i = 0, ilen = years_6yr.length; i < ilen; i++) {
+			series_6yr[i] = Math.round(campus_data['yr6rate_' + years_6yr[i]]*10.0)/10.0;
+		}
+		update_chart2({'campus':campus,'series_4yr':series_4yr,'series_6yr':series_6yr,'ylabel':' % Grad Rate','categories':categories,'title':'Grad Rate Trend'});		
+	};
+	load_chart_data(update_chart_campus);
+	var campus_selector = document.querySelector('#campus_selector');
+	campus_selector.addEventListener('change',function (e) {
+		campus = e.target.value;
+		update_chart_campus(campus);
+		console.log(e.target.value);
+	},false);
+
+});
+
+</script>
+
+</head><body>
 <h1>CSU Peer Comparisons</h1>
 
 <fieldset class="controls">
@@ -152,6 +255,7 @@ $(function () {
 <option value="San Diego">San Diego</option>
 <option value="San Francisco">San Francisco</option>
 <option value="San Jose">San Jose</option>
+<option value="San Luis Obispo">San Luis Obispo</option>
 <option value="San Marcos">San Marcos</option>
 <option value="Sonoma">Sonoma</option>
 <option value="Stanislaus">Stanislaus</option>
@@ -171,8 +275,10 @@ $(function () {
 </fieldset>
 
 <div id="tab_controls">
-<div class="tabtab">Chart</div>
-<div class="tabtab">Table</div>
+<div class="tabtab">Grad Rate Chart</div>
+<div class="tabtab">Data Table</div>
+<div class="tabtab">Methodology</div>
+<div class="tabtab">Historic Trends</div>
 </div>
 <script src="assets/highcharts.js"></script>
 <div id="tab_0">
@@ -182,6 +288,7 @@ Peer institutions are selected based on the methodology developed by College Res
 (for details <a href="//collegeresults.org/aboutthedata.aspx#section-5 " target="_blank">click here</a>).
 </p>
 </div>
+
 <div id="tab_1">
 <div class="descriptive">
 <table class="desctable" id="desctable"></table>
@@ -190,6 +297,34 @@ Peer institutions are selected based on the methodology developed by College Res
 <table class="desctable" id="desctable2"></table>
 </div>
 <p class="footnote">*Data are suppressed where student counts (N) is less than 30.</p>
+</div>
+
+<div id="tab_3">
+<div id="container2" style="min-width: 300px; height: 400px; margin: 0 auto"></div>
+
+
+</div>
+
+<div id="tab_2">
+<p class="narrative">
+"The national peer institutions selected for this dashboard come from College Results Online (CRO). CRO applies an algorithm comparing the chosen school to all other public and private not-for-profit institutions in the CRO database. Each comparison receives a ""similarity score"", ranging from 0 (least similar) to 1000 (identical), based on how similar the two schools are in terms of 12 institutional and student characteristics. The 12 selected characteristics are statistically correlated with overall six-year graduation rates for institutions in the public and private not-for-profit sectors (see Table 1). Once the baseline similarity score is calculated, CRO applies additional "filters" to exclude an institution from possible comparison if it greatly deviates from the chosen institution on any one of a number of factors (<a href="http://collegeresults.org/aboutthedata.aspx#section-5" target="_blank">see CRO Website</a> for list of filters. ). This prevents, for example, an institution with 2,500 undergraduates from being compared to an institution with 25,000 undergraduates, even if they are otherwise very similar."</p>
+	
+<p>Table 1: Public and Private not-for-profit Sector Weights</p>
+
+<table><tbody>
+<tr><td>Estimated median SAT or ACT equivalent of freshman class</td><td>211 points</td></tr>
+<tr><td>Percent of full-time, first-time degree/certificate-seeking undergraduate students who received federal Pell Grants</td><td>171 points</td></tr>
+<tr><td>Number of full-time equivalent undergraduates</td><td>110 points</td></tr>
+<tr><td>Sector (Public vs. Private)</td><td>84 points</td></tr>
+<tr><td>Student-related expenditures per full-time equivalent undergraduate</td><td>68 points</td></tr>
+<tr><td>Status as a commuter campus</td><td>67 points</td></tr>
+<tr><td>Average high school GPA among college freshmen</td><td>64 points</td></tr>
+<tr><td>Percent of undergraduate students age 25 and over</td><td>62 points</td></tr>
+<tr><td>Admissions selectivity, per Barron's Profiles of American Colleges</td><td>54 points</td></tr>
+<tr><td>Percent of undergraduates who are enrolled part-time</td><td>51 points</td></tr>
+<tr><td>"Percent of degrees awarded in Science, Technology, Engineering, and Mathematics"</td><td>30 points</td></tr>
+<tr><td>Historically Black College or University</td><td>27 points</td></tr>
+</tbody></table>
 </div>
 <script>
 (function (doc) {
