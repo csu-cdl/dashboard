@@ -69,7 +69,8 @@ $(function () {
 		if (chart_data_src !== config.current_src) {
 			$.ajax({url:chart_data_src,datatype:"json",success:function (result) {
 				console.log(JSON.parse(result));
-				callback(result,config.campus,config.grad_year.slice(0,1),config.cohort);
+				var json = JSON.parse(result);
+				callback(json,config.campus,config.grad_year.slice(0,1),config.cohort);
 			},failure:function (error) {console.log(error);}});
 		}
 	};
