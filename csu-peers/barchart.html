@@ -74,9 +74,12 @@ $(function () {
 
 	// update chart
 	var update_grade_rate_chart = function (json_data, config) { //,campus,grad_year,cohort) {
-		var cohort2col = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
+		var cohort2col = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9, '2009':10, '2010':11};
 		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[]};
 		col = cohort2col[config.cohort];
+		//console.log(config.grad_year);
+		//console.log(config.cohort);
+		//console.log(col);
 		chart_data.title = 'Historical ' + config.grad_year.slice(0,1) + ' Year Graduation Rate';
 		chart_data.subtitle = config.cohort + ' Cohort'
 		chart_data.ylabel = '% Graduated';
@@ -109,15 +112,38 @@ $(function () {
 		load_chart_data(config, update_grade_rate_chart);
 	}, false);
 
+	var max_6yr = 2008; // hack to deal with different cohort years available depending on grad_year
 	var cohort_selector = document.querySelector('#cohort_selector');
 	cohort_selector.addEventListener('change', function (e) {
 		config.cohort = e.target.value;
+		if (config.grad_year === '6yr') {
+			if (parseInt(config.cohort,10) > max_6yr) {
+				config.cohort = max_6yr; // need to indicate year change on control also
+				cohort_selector.value = '' + max_6yr;
+				//console.log(config.cohort);
+			}
+		}
 		load_chart_data(config, update_grade_rate_chart);
 	}, false);
 
 	var year_selector = document.querySelector('#year_selector');
 	year_selector.addEventListener('change', function (e) {
 		config.grad_year = e.target.value;
+		//add/remove 2 cohort years to 4yr grads
+		var extra_options = $('.4yr_only');
+		//console.log(extra_options);
+		if (config.grad_year === '4yr') {
+			//console.log(config.grad_year);
+			extra_options.css("display","inherit");
+		} else { // 6yr
+			//console.log(config.grad_year);
+			extra_options.css("display","none");
+			if (parseInt(config.cohort,10) > max_6yr) {
+				config.cohort = max_6yr; // need to indicate year change on control also
+				cohort_selector.value = '' + max_6yr;
+				//console.log(config.cohort);
+			}
+		}
 		load_chart_data(config, update_grade_rate_chart);
 	}, false);
 });
@@ -261,7 +287,9 @@ $(function () {
 </select></label>
 
 <label>Cohort <select id="cohort_selector">
-<option value="2008">2008</option>
+<option value="2010" class="4yr_only" style="display:none;">2010</option>
+<option value="2009" class="4yr_only" style="display:none;">2009</option>
+<option value="2008" selected>2008</option>
 <option value="2007">2007</option>
 <option value="2006">2006</option>
 <option value="2005">2005</option>
