@@ -10,218 +10,217 @@ ${demo.css}
 </style>
 <script type="text/javascript">
 $(function () {
-	var update_chart = function (data) { 
+	// create the highchart
+	var create_chart = function (data) { 
 		$('#container').highcharts({
-		chart: {
-		    type: 'column'
-		},
-		title: {
-		    text: data.title //'Historical 6 Year Graduation Rate'
-		},
-		subtitle: {
-		    text: data.subtitle //'2008 Cohort'
-		},
-		xAxis: {
-		    type: 'category',
-		    labels: {
-			rotation: -45,
-			style: {
-			    fontSize: '13px',
-			    fontFamily: 'Verdana, sans-serif'
-			}
-		    }
-		},
-		yAxis: {
-		    title: {
-		       text:  data.ylabel //'% Graduated'
-		    }
-		},
-		legend: {
-		    enabled: false
-		},
-		tooltip: {
-		    pointFormat: 'Rate:{point.y:.1f}<br/>Comparison Type:6yr Grad Rate<br/>Cohort:2008<br/>Campus:{point.name}<br/>'
-		},
-		series: [{
-		    data: data.series
-		,
-		   /* dataLabels: {
-			enabled: true,
-			rotation: -90,
-			color: '#FFFFFF',
-			align: 'right',
-			format: '{point.y:.1f}', // one decimal
-			y: 10, // 10 pixels down from the top
-			style: {
-			    fontSize: '13px',
-			    fontFamily: 'Verdana, sans-serif'
-			}
-		    }*/
-		}]
+			chart: {
+			    type: 'column'
+			},
+			title: {
+			    text: data.title //'Historical 6 Year Graduation Rate'
+			},
+			subtitle: {
+			    text: data.subtitle //'2008 Cohort'
+			},
+			xAxis: {
+			    type: 'category',
+			    labels: {
+				rotation: -45,
+				style: {
+				    fontSize: '13px',
+				    fontFamily: 'Verdana, sans-serif'
+				}
+			    }
+			},
+			yAxis: {
+			    title: {
+			       text:  data.ylabel //'% Graduated'
+			    }
+			},
+			legend: {
+			    enabled: false
+			},
+			tooltip: {
+			    pointFormat: 'Rate:{point.y:.1f}<br/>Comparison Type:6yr Grad Rate<br/>Cohort:2008<br/>Campus:{point.name}<br/>'
+			},
+			series: [{
+			    data: data.series
+			}]
 		});
 	};
-	var campus = 'Bakersfield'; // 'San Luis Obispo'
-	var grad_year = '6yr'; // '4yr'
-	var type = 'GR'; // 'Gap'
-	var cohort = '2008'; // '2000'
+	
+	// default configuration
+	var config = {'campus':'Bakersfield', 'grad_year':'6yr', 'type':'GR', 'cohort':'2008'};
+
+	// fetch appropriate data set
 	var load_chart_data = function (config, callback) {
-		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=3';
-		if (chart_data_src !== config.current_src) {
-			$.ajax({url:chart_data_src,datatype:"json",success:function (result) {
-				//console.log(JSON.parse(result));
-				var json;
-				if (typeof result === 'string') {
-					json = JSON.parse(result);
-				} else { // probably due to different way server handles .json files
-					json = result;
-				}
-				callback(json,config.campus,config.grad_year.slice(0,1),config.cohort);
-			},failure:function (error) {console.log(error);}});
-		}
+		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
+		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
+			config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json';
+
+		// fetch json data via xhr, then invoke callback
+		$.ajax({
+			url: chart_data_src,
+			datatype: "json",
+			success: function (result) {
+				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
+				callback(json_object, config);
+			},
+			error: function (xhr, msg, e) {
+				console.log(msg);
+			}
+		});
 	};
-	var chart_grade_rate = function (json,campus,grad_year,cohort) {
-		var cohort2col = {'2000':1,'2001':2,'2002':3,'2003':4,'2004':5,'2005':6,'2006':7,'2007':8,'2008':9}
-		var row,col,key,value,data = {'title':'','ylabel':'','series':[],'tooltip':[]};
-		col = cohort2col[cohort];
-		data.title = 'Historical ' + grad_year + ' Year Graduation Rate';
-		data.subtitle = cohort + ' Cohort'
-		data.ylabel = '% Graduated';
-		console.log(json);
-		for (var i = 0, ilen = json.rows.length; i < ilen; i++) {
-			row = json.rows[i];
+
+	// update chart
+	var update_grade_rate_chart = function (json_data, config) { //,campus,grad_year,cohort) {
+		var cohort2col = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
+		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[]};
+		col = cohort2col[config.cohort];
+		chart_data.title = 'Historical ' + config.grad_year.slice(0,1) + ' Year Graduation Rate';
+		chart_data.subtitle = config.cohort + ' Cohort'
+		chart_data.ylabel = '% Graduated';
+		for (var i = 0, ilen = json_data.rows.length; i < ilen; i++) {
+			row = json_data.rows[i];
 			key = row[0].replace('California State University','CSU');
 			value = parseFloat(row[col]);
-			data.series[i] = {'name':key,'y':value};
-			if (key.indexOf(campus) !== -1) {
-				data.series[i] = {'name':key,'y':value,'color':'#663355'};
+			chart_data.series[i] = {'name':key,'y':value};
+			if (key.indexOf(config.campus) !== -1) {
+				chart_data.series[i] = {'name':key,'y':value,'color':'#663355'};
 			}
-			// Exception, should just check against a white-list of CSU campus names
-			if (campus === 'Maritime Academy' && key.indexOf('California') === -1) {
-				data.series[i] = {'name':key,'y':value};
+			// Exception, might be better to just check against a white-list of CSU campus names
+			if (config.campus === 'Maritime Academy' && key.indexOf('California') === -1) {
+				chart_data.series[i] = {'name':key,'y':value};
 			}
-			data.tooltip[i] = '';
 		}
-		data.series = data.series.sort(function (b,a) {return a.y - b.y;});
-		update_chart(data);
+		// descending sort by y-axis value
+		chart_data.series = chart_data.series.sort(function (b,a) {return a.y - b.y;}); 
+		// redisplay the chart
+		create_chart(chart_data);
 	};
-	// initially display chart with default data
-	load_chart_data({'campus':campus,'grad_year':grad_year,'type':type,'cohort':cohort,'current_src':''},chart_grade_rate);
 
+	// initially display chart with default data
+	load_chart_data(config, update_grade_rate_chart);
+
+	// redisplay chart whenever user changes selection of parameters
 	var campus_selector = document.querySelector('#campus_selector');
-		campus_selector.addEventListener('change',function (e) {
-		campus = e.target.value;
-		load_chart_data({'campus':campus,'grad_year':grad_year,'type':type,'cohort':cohort,'current_src':''},chart_grade_rate);
-		console.log(e.target.value);
-	},false);
+		campus_selector.addEventListener('change', function (e) {
+		config.campus = e.target.value;
+		load_chart_data(config, update_grade_rate_chart);
+	}, false);
 
 	var cohort_selector = document.querySelector('#cohort_selector');
-	cohort_selector.addEventListener('change',function (e) {
-		cohort = e.target.value;
-		load_chart_data({'campus':campus,'grad_year':grad_year,'type':type,'cohort':cohort,'current_src':''},chart_grade_rate);
-	},false);
+	cohort_selector.addEventListener('change', function (e) {
+		config.cohort = e.target.value;
+		load_chart_data(config, update_grade_rate_chart);
+	}, false);
 
 	var year_selector = document.querySelector('#year_selector');
-	year_selector.addEventListener('change',function (e) {
-		grad_year = e.target.value;
-		load_chart_data({'campus':campus,'grad_year':grad_year,'type':type,'cohort':cohort,'current_src':''},chart_grade_rate);
-		console.log(e.target.value);
-	},false);
-
+	year_selector.addEventListener('change', function (e) {
+		config.grad_year = e.target.value;
+		load_chart_data(config, update_grade_rate_chart);
+	}, false);
 });
 </script>
 <script type="text/javascript">
 $(function () {
-	var update_chart2 = function (data) {
+	var create_chart = function (data) {
 		$('#container2').highcharts({
-		title: {
-		    text: data.title, //'Grad Rate Trend',
-		    x: -20 //center
-		},
-		subtitle: {
-		    text: data.campus,
-		    x: -20
-		},
-		xAxis: {
-		    categories: data.categories //['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010','2011']
-		},
-		yAxis: {
-		    title: {
-			text: data.ylabel //' % Grad Rate'
-		    },
-		    plotLines: [{
-			value: 0,
-			width: 1,
-			color: '#808080'
-		    }]
-		},
-		tooltip: {
-		    valueSuffix: '%'
-		},
-		legend: {
-		    layout: 'vertical',
-		    align: 'right',
-		    verticalAlign: 'middle',
-		    borderWidth: 0
-		},
-		series: [{
-		    name: '4th Year',
-		    data: data.series_4yr //[15, 15, 16, 15, 16, 17, 16, 18, 19, 18, 20,19]
-		}, {
-		    name: '6th Year',
-		    data: data.series_6yr //[62, 63.1, 62.9, 63, 62, 61, 62, 64, 66, 62]
-		}]
+			title: {
+			    text: data.title, //'Grad Rate Trend',
+			    x: -20 //center
+			},
+			subtitle: {
+			    text: data.campus,
+			    x: -20
+			},
+			xAxis: {
+			    categories: data.categories //['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010','2011']
+			},
+			yAxis: {
+			    title: {
+				text: data.ylabel //' % Grad Rate'
+			    },
+			    plotLines: [{
+				value: 0,
+				width: 1,
+				color: '#808080'
+			    }]
+			},
+			tooltip: {
+			    valueSuffix: '%'
+			},
+			legend: {
+			    layout: 'vertical',
+			    align: 'right',
+			    verticalAlign: 'middle',
+			    borderWidth: 0
+			},
+			series: [{
+			    name: '4th Year',
+			    data: data.series_4yr //[15, 15, 16, 15, 16, 17, 16, 18, 19, 18, 20,19]
+			}, {
+			    name: '6th Year',
+			    data: data.series_6yr //[62, 63.1, 62.9, 63, 62, 61, 62, 64, 66, 62]
+			}]
 		});
 	};
 
-	//var test_json = {"Campus":"Bakersfield","yr4rate_2000":14.128440367,"yr4rate_2001":14.1215106732,"yr4rate_2002":14.5802650957,"yr4rate_2003":12.8851540616,"yr4rate_2004":17.1812080537,"yr4rate_2005":14.8825065274,"yr4rate_2006":14.0515222482,"yr4rate_2007":15.0174621653,"yr4rate_2008":15.9822419534,"yr4rate_2009":13.1008482564,"yr4rate_2010":14.6100691017,"yr4rate_2011":14.0612076096,"yr6rate_2000":41.6513761468,"yr6rate_2001":39.73727422,"yr6rate_2002":44.4771723122,"yr6rate_2003":38.3753501401,"yr6rate_2004":42.9530201342,"yr6rate_2005":41.3838120104,"yr6rate_2006":38.6416861827,"yr6rate_2007":39.4644935972,"yr6rate_2008":41.1764705882,"yr6rate_2009":38.8312912347};
+	var retained_json_data = {};
+	var config = {'campus':'Bakersfield'};
 
-	var campus = 'Bakersfield';
-	var categories = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010','2011'];
-	var years_4yr = ['2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011'];
-	var years_6yr = ['2000','2001','2002','2003','2004','2005','2006','2007','2008','2009'];
-	var json_data = {};
+	var load_chart_data = function (config, callback) {
+		var chart_data_src = 'data/csu_gradrate_data.json';
 
-
-	var load_chart_data = function (callback) {
-		var json, chart_data_src = 'data/csu_gradrate_data.json';
-		$.ajax({url:chart_data_src,datatype:"json",success:function (result) {
-			//console.log(JSON.parse(result));
-			if (typeof result === 'string') {
-				json = JSON.parse(result);
-			} else { // probably due to different way server handles .json files
-				json = result;
+		// fetch json data via xhr, then invoke callback
+		$.ajax({
+			url: chart_data_src,
+			datatype: "json",
+			success: function (result) {
+				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
+				callback(json_object, config);
+			},
+			error: function (xhr, msg, e) {
+				console.log(msg);
 			}
-			console.log(json);
-			console.log(json.length);
-			for (var i = 0, ilen = json.length; i < ilen; i++) {
-				json_data[json[i].Campus] = json[i];
-				console.log(json[i].Campus);
-			}
-			callback(campus);
-		},failure:function (error) {console.log(error);}});
+		});
 	};
-	var update_chart_campus = function (campus) {
-		var campus_data = json_data[campus];
-		console.log(campus);
-		console.log(campus_data);
-		var series_4yr = [];
+
+	// update chart
+	var update_historic_trends_chart = function (json_data, config) {
+		var campus_data = json_data[config.campus];
+		var categories = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011'];
+		var years_4yr = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011'];
+		var years_6yr = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009'];
+		var chart_data = {'campus':config.campus, 'series_4yr':[], 'series_6yr':[], 
+						'ylabel':' % Grad Rate', 'categories':categories, 'title':'Grad Rate Trend'};	
 		for (var i = 0, ilen = years_4yr.length; i < ilen; i++) {
-			series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]*10.0)/10.0;
+			chart_data.series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]*10.0)/10.0;
 		}
-		var series_6yr = [];
 		for (var i = 0, ilen = years_6yr.length; i < ilen; i++) {
-			series_6yr[i] = Math.round(campus_data['yr6rate_' + years_6yr[i]]*10.0)/10.0;
+			chart_data.series_6yr[i] = Math.round(campus_data['yr6rate_' + years_6yr[i]]*10.0)/10.0;
 		}
-		update_chart2({'campus':campus,'series_4yr':series_4yr,'series_6yr':series_6yr,'ylabel':' % Grad Rate','categories':categories,'title':'Grad Rate Trend'});		
+		// redisplay the chart
+		create_chart(chart_data);		
 	};
-	load_chart_data(update_chart_campus);
-	var campus_selector = document.querySelector('#campus_selector');
-	campus_selector.addEventListener('change',function (e) {
-		campus = e.target.value;
-		update_chart_campus(campus);
-		console.log(e.target.value);
-	},false);
 
+	// initially display chart with default data
+	load_chart_data(config, function (json_data, config) {
+		retained_json_data = {};
+		for (var i = 0, ilen = json_data.length, campus; i < ilen; i++) {
+			campus = json_data[i].Campus; // Beware capitalization here
+			retained_json_data[campus] = json_data[i]; // convert list to dictionary
+		}
+		// keep and use a reference, thus needing to load data only once
+		update_historic_trends_chart(retained_json_data, config);
+	});
+
+	// redisplay chart whenever user changes selection of parameters
+	var campus_selector = document.querySelector('#campus_selector');
+	campus_selector.addEventListener('change', function (e) {
+		config.campus = e.target.value;
+		update_historic_trends_chart(retained_json_data, config); // no need to reload data, just update using altered config
+	}, false);
 });
 
 </script>
@@ -328,109 +327,109 @@ Peer institutions are selected based on the methodology developed by College Res
 </div>
 <script>
 (function (doc) {
-var forEach = function (array, callback, scope) {
-	for (var i = 0, ilen = array.length; i < ilen; i++) {
-		callback.call(scope, array[i], i, array);
-	}
-};
-// cheap ajax for wireframe - TODO: replace with jquery or ?
-var ajax_get = function (endpoint, callback) {
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function () {
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			callback(xhttp.responseText);
+	var forEach = function (array, callback, scope) {
+		for (var i = 0, ilen = array.length; i < ilen; i++) {
+			callback.call(scope, array[i], i, array);
 		}
 	};
 
-	xhttp.open('GET',endpoint,true);
-	xhttp.send();
-};
-
-// pubsub event routing
-var pubsub = function () {};
-pubsub.events = {}; // {'tab0_selected':{sub1:fn1,sub2:fn2}}
-pubsub.sub = function (t,s,fn) { // t:type,s:subscriber
-	if (!pubsub.events.hasOwnProperty(t)) {
-		pubsub.events[t] = {};
-	}
-	pubsub.events[t][s] = fn;
-};
-pubsub.raise = function (t,args) {
-	for (s in pubsub.events[t]) {
-		if (pubsub.events[t].hasOwnProperty(s)) {
-			pubsub.events[t][s](t,s,args);
+	// pubsub event routing
+	var pubsub = function () {};
+	pubsub.events = {}; // {'tab0_selected':{sub1:fn1,sub2:fn2}}
+	pubsub.sub = function (t,s,fn) { // t:type,s:subscriber
+		if (!pubsub.events.hasOwnProperty(t)) {
+			pubsub.events[t] = {};
 		}
-	}
-};
-
-// register for tab event
-pubsub.sub('tab','switch_tabs',function (t,s,args) {
-	// should probably do this by adding / removing 'class="tab_selected"'
-	forEach(args[2],function (el,i,a) {
-		doc.querySelector('#tab_' + i).style.zIndex = 0; // bury unselected tabs
-		el.style.backgroundColor = '#999'; // uncolor unselected tabs
-	});
-	doc.querySelector('#tab_' + args[1]).style.zIndex = 10; // show selected tab body on top
-	args[0].style.backgroundColor = '#79a'; // color selected tab
-});
-
-// listen for click on each tab
-var tabs = doc.querySelectorAll('.tabtab');
-forEach(tabs, function (el,i,a) {
-	el.addEventListener('click',function (e) {
-		pubsub.raise('tab',[el,i,tabs]);
-	},false);
-});
-
-// js handles for some page elements
-var container = doc.querySelector('#desctable');
-var container2 = doc.querySelector('#desctable2'); // shadow container
-// create table from json data
-var create_table = function (text) {
-	//console.log(campus_selector.value);
-	var out, json = JSON.parse(text);
-	out = '<thead><tr>';
-	json.headers[0].forEach(function (item,i) {
-		out += '<td>' + item + '</td>'; 
-	});
-	out += '</tr></thead><tbody>';
-	json.rows.forEach(function (row,j) {
-		out += '<tr>';
-		row.forEach(function (item,i) {
-			if (item === '-') {
-				item = 'ds*';
+		pubsub.events[t][s] = fn;
+	};
+	pubsub.raise = function (t,args) {
+		for (s in pubsub.events[t]) {
+			if (pubsub.events[t].hasOwnProperty(s)) {
+				pubsub.events[t][s](t,s,args);
 			}
-			if (i === 0 && (item === 'California State University-' + campus_selector.value || 
-					item === 'California ' + campus_selector.value || 
-					item === 'California State Polytechnic University-' + campus_selector.value || 
-					item === campus_selector.value + ' State University')) {
-				out += '<td style="font-weight:600">' + item + '</td>'; 
-			} else {
-				out += '<td>' + item + '</td>'; 
+		}
+	};
+
+	// register for tab event
+	pubsub.sub('tab','switch_tabs',function (t,s,args) {
+		// should probably do this by adding / removing 'class="tab_selected"'
+		forEach(args[2],function (el,i,a) {
+			doc.querySelector('#tab_' + i).style.zIndex = 0; // bury unselected tabs
+			el.style.backgroundColor = '#999'; // uncolor unselected tabs
+		});
+		doc.querySelector('#tab_' + args[1]).style.zIndex = 10; // show selected tab body on top
+		args[0].style.backgroundColor = '#79a'; // color selected tab
+	});
+
+	// listen for click on each tab
+	var tabs = doc.querySelectorAll('.tabtab');
+	forEach(tabs, function (el,i,a) {
+		el.addEventListener('click',function (e) {
+			pubsub.raise('tab',[el,i,tabs]);
+		},false);
+	});
+
+	// js handles for some page elements
+	var container = doc.querySelector('#desctable');
+	var container2 = doc.querySelector('#desctable2'); // shadow container
+
+	// create table from json data
+	var create_table = function (json) {
+		var out = '<thead><tr>';
+		json.headers[0].forEach(function (item,i) {
+			out += '<td>' + item + '</td>'; 
+		});
+		out += '</tr></thead><tbody>';
+		json.rows.forEach(function (row,j) {
+			out += '<tr>';
+			row.forEach(function (item,i) {
+				if (item === '-') {
+					item = 'ds*';
+				}
+				if (i === 0 && (item === 'California State University-' + campus_selector.value || 
+						item === 'California ' + campus_selector.value || 
+						item === 'California State Polytechnic University-' + campus_selector.value || 
+						item === campus_selector.value + ' State University')) {
+					out += '<td style="font-weight:600">' + item + '</td>'; 
+				} else {
+					out += '<td>' + item + '</td>'; 
+				}
+			});
+			out += '</tr>';
+		});
+		out += '</tbody>'
+		container.innerHTML = out;
+		container2.innerHTML = out; // shadow-overlay hack to get fixed heading TODO: replace with better solution
+	};
+
+	// load default campus via ajax 
+	var load_table_data = function (config, callback) {
+		// fetch json data via xhr, then invoke callback
+		$.ajax({
+			url: config.data_source,
+			datatype: "json",
+			success: function (result) {
+				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
+				callback(json_object, config);
+			},
+			error: function (xhr, msg, e) {
+				console.log(msg);
 			}
 		});
-		out += '</tr>';
-	});
-	out += '</tbody>'
-	container.innerHTML = out;
-	container2.innerHTML = out; // shadow-overlay hack to get fixed heading TODO: replace with better solution
-};
+	};
 
-// if we assume the typical user is interested in only her campus
-// then loading only that campus makes sense
-// otherwise if typical user checks all campuses, then maybe one
-// load of all campus data at once would be more better...
+	// convert campus name to endpoint
+	var format_campus_table_endpoint = function (campus_name) {
+		return 'data/CamPeer/CamPeer_' + campus_name.replace(/ /g,'_') + '.json';
+	};
+	// load default table
+	load_table_data({'data_source':format_campus_table_endpoint('Bakersfield')}, create_table);
 
-//per selection, use ajax to load appropriate json data to populate the table
-var campus_selector = doc.querySelector('#campus_selector');
-var format_campus_table_endpoint = function (campus_name) {
-	return 'data/CamPeer/CamPeer_' + campus_name.replace(/ /g,'_') + '.json';
-};
-campus_selector.addEventListener('change',function (e) {
-	ajax_get(format_campus_table_endpoint(e.target.value), create_table) ;
-},false);
-// load default campus via ajax 
-ajax_get(format_campus_table_endpoint('Bakersfield'), create_table) ;
+	//per selection, use ajax to load appropriate json data to populate the table
+	var campus_selector = doc.querySelector('#campus_selector');
+	campus_selector.addEventListener('change', function (e) {
+		load_table_data({'data_source':format_campus_table_endpoint(e.target.value)}, create_table);
+	}, false);
 
 })(document);
 </script>
