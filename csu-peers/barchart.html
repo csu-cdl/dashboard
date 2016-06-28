@@ -97,7 +97,10 @@ $(function () {
 			}
 		}
 		// descending sort by y-axis value
-		chart_data.series = chart_data.series.sort(function (b,a) {return a.y - b.y;}); 
+		chart_data.series = chart_data.series.sort(function (b,a) {
+			var ya = a.y || 0, yb = b.y || 0;
+			return ya - yb;
+		}); 
 		// redisplay the chart
 		create_chart(chart_data);
 	};
@@ -264,6 +267,7 @@ $(function () {
 <label>CSU Campus <select id="campus_selector">
 <option value="Bakersfield">Bakersfield</option>
 <option value="Channel Islands">Channel Islands</option>
+<option value="Chico">Chico</option>
 <option value="Dominguez Hills">Dominguez Hills</option>
 <option value="East Bay">East Bay</option>
 <option value="Fresno">Fresno</option>
