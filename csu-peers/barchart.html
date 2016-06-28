@@ -56,7 +56,7 @@ $(function () {
 	var load_chart_data = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
-			config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=12';
+			config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=15';
 
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
@@ -100,6 +100,17 @@ $(function () {
 			//return ya - yb;
 			return a.y - b.y;
 		}); 
+
+		// temp hack where chart fails to display if first x-data element has NaN
+		// rare enough in this case to simply swap 0th with 1st in series
+		// assumes 1st in series does not also have NaN value 
+		var s0 = chart_data.series[0];
+		var s1 = chart_data.series[1];
+		if (isNaN(s0['y'])) {
+			chart_data.series[0] = s1;
+			chart_data.series[1] = s0;
+		}
+
 		// redisplay the chart
 		create_chart(chart_data);
 	};
@@ -405,7 +416,7 @@ The national peer institutions selected for this dashboard come from College Res
 	var container2 = doc.querySelector('#desctable2'); // shadow container
 
 	// create table from json data
-	var create_table = function (json) {
+	var create_table = function (json, config) {
 		var out = '<thead><tr>';
 		json.headers[0].forEach(function (item,i) {
 			out += '<td>' + item + '</td>'; 
@@ -434,11 +445,16 @@ The national peer institutions selected for this dashboard come from College Res
 		container2.innerHTML = out; // shadow-overlay hack to get fixed heading TODO: replace with better solution from some table plug-in
 	};
 
+	var config = {'campus':'Bakersfield', 'cohort':'2008'}; // default config
+
 	// load selected campus via ajax 
 	var load_table_data = function (config, callback) {
+		//console.log(JSON.stringify(config));
+		var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + (6 + parseInt(config.cohort,10) ) + '.json';
+		//console.log(table_data_src);
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
-			url: config.data_source,
+			url: table_data_src,
 			datatype: "json",
 			success: function (result) {
 				// fix inconsistencies with server handling .json files
@@ -452,17 +468,25 @@ The national peer institutions selected for this dashboard come from College Res
 		});
 	};
 
-	// convert campus name to endpoint
-	var format_campus_table_endpoint = function (campus_name) {
-		return 'data/CamPeer/CamPeer_' + campus_name.replace(/ /g,'_') + '.json';
-	};
 	// load default table
-	load_table_data({'data_source':format_campus_table_endpoint('Bakersfield')}, create_table);
+	load_table_data(config, create_table);
 
 	//per selection, use ajax to load appropriate json data to populate the table
 	var campus_selector = doc.querySelector('#campus_selector');
 	campus_selector.addEventListener('change', function (e) {
-		load_table_data({'data_source':format_campus_table_endpoint(e.target.value)}, create_table);
+		config.campus = e.target.value;
+		load_table_data(config, create_table);
+	}, false);
+
+	var max_cohort = 2008;
+	var cohort_selector = doc.querySelector('#cohort_selector');
+	cohort_selector.addEventListener('change', function (e) {
+		config.cohort = e.target.value;
+		if (parseInt(config.cohort,10) > max_cohort) {
+			config.cohort = '' + max_cohort;
+			cohort_selector.value = config.cohort;
+		}
+		load_table_data(config, create_table);
 	}, false);
 
 })(document);
