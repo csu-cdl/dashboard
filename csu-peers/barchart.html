@@ -56,7 +56,7 @@ $(function () {
 	var load_chart_data = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
-			config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json';
+			config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=extended';
 
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
