@@ -75,11 +75,8 @@ $(function () {
 	// update chart
 	var update_grade_rate_chart = function (json_data, config) { //,campus,grad_year,cohort) {
 		var cohort2col = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9, '2009':10, '2010':11};
-		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[]};
+		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
 		col = cohort2col[config.cohort];
-		//console.log(config.grad_year);
-		//console.log(config.cohort);
-		//console.log(col);
 		chart_data.title = 'Historical ' + config.grad_year.slice(0,1) + ' Year Graduation Rate';
 		chart_data.subtitle = config.cohort + ' Cohort'
 		chart_data.ylabel = '% Graduated';
@@ -98,8 +95,10 @@ $(function () {
 		}
 		// descending sort by y-axis value
 		chart_data.series = chart_data.series.sort(function (b,a) {
-			var ya = a.y || 0, yb = b.y || 0;
-			return ya - yb;
+			// for now, do NOT treat NaN (missing data) as if it were zero valued
+			//var ya = a.y || 0, yb = b.y || 0;
+			//return ya - yb;
+			return a.y - b.y;
 		}); 
 		// redisplay the chart
 		create_chart(chart_data);
