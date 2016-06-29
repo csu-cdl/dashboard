@@ -216,32 +216,20 @@ $(function () {
 	var sticky = {'4th Year':'visible','6th Year':'visible'};
 	var init_legends = function () {
 		var legends = document.querySelectorAll('#container2 g.highcharts-legend-item');
-		for (var i = 0, legend; i < 2; i++) {
-			legend = legends[i];
-			legend.addEventListener('click',function (e) {
-				//console.log(e);
-				var pf,label;
-				if (e.target.nodeName === 'tspan') {
-					//console.log('tspan clicked');
-					pf = e.path[1].previousSibling.attributes.fill.value.toUpperCase();
-					label = e.target.firstChild.nodeValue;
-					//console.log(label);
-				} else if (e.target.nodeName === 'path') {
-					//console.log('path clicked');
-					pf = e.path[0].attributes.fill.value.toUpperCase();
-					label = e.target.nextSibling.firstChild.firstChild.nodeValue;
-					//console.log(label);
-				}
-				if (pf === '#CCC') {
-					sticky[label] = 'hidden';
-					//console.log(label + ' hidden');
-				} else {
-					sticky[label] = 'visible';
-					//console.log(label + ' visible');
-				}
-				//console.log(JSON.stringify(sticky));
-			},false);
-		}
+		legends[0].addEventListener('click', function (e) {
+			if (sticky['4th Year'] === 'visible') {
+				sticky['4th Year'] = 'hidden';
+			} else {
+				sticky['4th Year'] = 'visible';
+			}
+		}, false);
+		legends[1].addEventListener('click', function (e) {
+			if (sticky['6th Year'] === 'visible') {
+				sticky['6th Year'] = 'hidden';
+			} else {
+				sticky['6th Year'] = 'visible';
+			}
+		}, false);
 	};
 
 	var load_chart_data = function (config, callback) {
