@@ -234,10 +234,12 @@ $(function () {
 		var chart_data = {'campus':config.campus, 'series_4yr':[], 'series_6yr':[], 
 						'ylabel':' % Grad Rate', 'categories':categories, 'title':'Grad Rate Trend'};	
 		for (var i = 0, ilen = years_4yr.length; i < ilen; i++) {
-			chart_data.series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]*10.0)/10.0;
+			//chart_data.series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]*10.0)/10.0;
+			chart_data.series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]);
 		}
 		for (var i = 0, ilen = years_6yr.length; i < ilen; i++) {
-			chart_data.series_6yr[i] = Math.round(campus_data['yr6rate_' + years_6yr[i]]*10.0)/10.0;
+			//chart_data.series_6yr[i] = Math.round(campus_data['yr6rate_' + years_6yr[i]]*10.0)/10.0;
+			chart_data.series_6yr[i] = Math.round(campus_data['yr6rate_' + years_6yr[i]]);
 		}
 		// redisplay the chart
 		create_chart(chart_data);		
@@ -450,7 +452,8 @@ The national peer institutions selected for this dashboard come from College Res
 	// load selected campus via ajax 
 	var load_table_data = function (config, callback) {
 		//console.log(JSON.stringify(config));
-		var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + (6 + parseInt(config.cohort,10) ) + '.json';
+		//var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + (6 + parseInt(config.cohort,10) ) + '.json';
+		var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + config.cohort + '.json';
 		//console.log(table_data_src);
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
