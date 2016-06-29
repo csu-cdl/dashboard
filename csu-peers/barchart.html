@@ -133,7 +133,6 @@ $(function () {
 			if (parseInt(config.cohort,10) > max_6yr) {
 				config.cohort = max_6yr; // need to indicate year change on control also
 				cohort_selector.value = '' + max_6yr;
-				//console.log(config.cohort);
 			}
 		}
 		load_chart_data(config, update_grade_rate_chart);
@@ -144,17 +143,13 @@ $(function () {
 		config.grad_year = e.target.value;
 		//add/remove 2 cohort years to 4yr grads
 		var extra_options = $('.4yr_only');
-		//console.log(extra_options);
 		if (config.grad_year === '4yr') {
-			//console.log(config.grad_year);
 			extra_options.css("display","inherit");
 		} else { // 6yr
-			//console.log(config.grad_year);
 			extra_options.css("display","none");
 			if (parseInt(config.cohort,10) > max_6yr) {
 				config.cohort = max_6yr; // need to indicate year change on control also
 				cohort_selector.value = '' + max_6yr;
-				//console.log(config.cohort);
 			}
 		}
 		load_chart_data(config, update_grade_rate_chart);
@@ -190,23 +185,64 @@ $(function () {
 			    valueSuffix: '%'
 			},
 			legend: {
+			    title: {'text':'(Click to select)','style':{'font-weight':'300','color':'#777'}},
 			    layout: 'vertical',
 			    align: 'right',
 			    verticalAlign: 'middle',
-			    borderWidth: 0
+			    borderWidth: 1
 			},
 			series: [{
+			    visible: (data.sticky['4th Year'] === 'visible'),
 			    name: '4th Year',
 			    data: data.series_4yr //[15, 15, 16, 15, 16, 17, 16, 18, 19, 18, 20,19]
 			}, {
+			    visible: (data.sticky['6th Year'] === 'visible'),
 			    name: '6th Year',
 			    data: data.series_6yr //[62, 63.1, 62.9, 63, 62, 61, 62, 64, 66, 62]
 			}]
 		});
+		//console.log('---------');
+		//console.log(data.sticky['4th Year']);
+		//console.log(data.sticky['6th Year']);
+		//console.log(JSON.stringify(sticky));
+		data.fn();
+		//console.log(JSON.stringify(sticky));
+		//console.log('---------');
 	};
 
 	var retained_json_data = {};
 	var config = {'campus':'Bakersfield'};
+
+	var sticky = {'4th Year':'visible','6th Year':'visible'};
+	var init_legends = function () {
+		var legends = document.querySelectorAll('#container2 g.highcharts-legend-item');
+		for (var i = 0, legend; i < 2; i++) {
+			legend = legends[i];
+			legend.addEventListener('click',function (e) {
+				//console.log(e);
+				var pf,label;
+				if (e.target.nodeName === 'tspan') {
+					//console.log('tspan clicked');
+					pf = e.path[1].previousSibling.attributes.fill.value.toUpperCase();
+					label = e.target.firstChild.nodeValue;
+					//console.log(label);
+				} else if (e.target.nodeName === 'path') {
+					//console.log('path clicked');
+					pf = e.path[0].attributes.fill.value.toUpperCase();
+					label = e.target.nextSibling.firstChild.firstChild.nodeValue;
+					//console.log(label);
+				}
+				if (pf === '#CCC') {
+					sticky[label] = 'hidden';
+					//console.log(label + ' hidden');
+				} else {
+					sticky[label] = 'visible';
+					//console.log(label + ' visible');
+				}
+				//console.log(JSON.stringify(sticky));
+			},false);
+		}
+	};
 
 	var load_chart_data = function (config, callback) {
 		var chart_data_src = 'data/csu_gradrate_data.json';
@@ -231,8 +267,8 @@ $(function () {
 		var categories = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011'];
 		var years_4yr = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011'];
 		var years_6yr = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009'];
-		var chart_data = {'campus':config.campus, 'series_4yr':[], 'series_6yr':[], 
-						'ylabel':' % Grad Rate', 'categories':categories, 'title':'Grad Rate Trend'};	
+		var chart_data = {'campus':config.campus, 'series_4yr':[], 'series_6yr':[], 'fn':init_legends,
+						'ylabel':' % Grad Rate', 'categories':categories, 'title':'Grad Rate Trend',  'sticky':sticky};
 		for (var i = 0, ilen = years_4yr.length; i < ilen; i++) {
 			//chart_data.series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]*10.0)/10.0;
 			chart_data.series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]);
@@ -242,7 +278,7 @@ $(function () {
 			chart_data.series_6yr[i] = Math.round(campus_data['yr6rate_' + years_6yr[i]]);
 		}
 		// redisplay the chart
-		create_chart(chart_data);		
+		create_chart(chart_data);
 	};
 
 	// initially display chart with default data
@@ -451,10 +487,7 @@ The national peer institutions selected for this dashboard come from College Res
 
 	// load selected campus via ajax 
 	var load_table_data = function (config, callback) {
-		//console.log(JSON.stringify(config));
-		//var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + (6 + parseInt(config.cohort,10) ) + '.json';
 		var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + config.cohort + '.json?v=16';
-		//console.log(table_data_src);
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
 			url: table_data_src,
