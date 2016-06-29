@@ -453,7 +453,7 @@ The national peer institutions selected for this dashboard come from College Res
 	var load_table_data = function (config, callback) {
 		//console.log(JSON.stringify(config));
 		//var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + (6 + parseInt(config.cohort,10) ) + '.json';
-		var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + config.cohort + '.json';
+		var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + config.cohort + '.json?v=15';
 		//console.log(table_data_src);
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
