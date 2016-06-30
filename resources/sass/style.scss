@@ -16,6 +16,7 @@ body {
 
 .banner {
     border-top: 10px solid #c03;
+	border-bottom: 2px solid #ccc;
 }
 
 .tab-content .tab-pane {
@@ -93,7 +94,7 @@ select {
 	/*height: 156px;*/
 	height: 80px;
 	max-width: 1170px;
-	margin: -40px 0 0 0;
+	margin: -20px 0 0 0;
 	padding: 0;
 	h1 {
 		color: #fff;

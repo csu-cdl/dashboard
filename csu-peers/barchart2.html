@@ -300,10 +300,11 @@ $(function () {
 </head><body>
 
 <!--template-->	
+
 <header id="top" class="banner" role="banner">
  <img src="../global/img/branding.png" alt="CSU Student Success Dashboard"/></header>
  
- <nav class="navbar navbar-default navbar-static-top">
+ <!--nav class="navbar navbar-default navbar-static-top">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -320,8 +321,8 @@ $(function () {
           </ul>
 
         </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+      <!--/div>
+    </nav-->
 
 <div class="container">
 <!--template-->
@@ -500,7 +501,7 @@ The national peer institutions selected for this dashboard come from College Res
 						item === 'California ' + campus_selector.value || 
 						item === 'California State Polytechnic University-' + campus_selector.value || 
 						item === campus_selector.value + ' State University')) {
-					out += '<td style="font-weight:600">' + item + '</td>'; 
+					out += '<td style="font-weight:600; color: #cc0033">' + item + '</td>'; 
 				} else {
 					out += '<td>' + item + '</td>'; 
 				}
