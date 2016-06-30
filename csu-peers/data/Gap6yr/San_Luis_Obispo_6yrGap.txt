@@ -1,0 +1,17 @@
+6-Year Achievement Gaps	6-Year Gap 2004	6-Year Gap 2005	6-Year Gap 2006	6-Year Gap 2007	6-Year Gap 2008
+Baylor University	12.6%	11.2%	8.4%	13.1%	12.2%
+California Polytechnic State University-San Luis Obispo	11.1%	9.1%	12.3%	12.4%	12.2%
+Clemson University	12.7%	19.6%	4.7%	13.5%	14.9%
+James Madison University	5.4%	9.2%	4.1%	6.7%	5.3%
+North Carolina State University at Raleigh	10.5%	13.3%	8.6%	7.5%	8.1%
+Stony Brook University	-0.6%	-0.8%	3.7%	4.2%	0.5%
+SUNY at Binghamton	8.8%	5.7%	2.4%	10.8%	2.8%
+University of California-Davis	10.5%	12.3%	13.0%	12.5%	9.0%
+University of California-Santa Barbara	10.1%	9.1%	9.4%	7.0%	5.6%
+University of Connecticut	16.2%	15.7%	9.3%	8.1%	9.3%
+University of Delaware	15.8%	10.8%	10.9%	13.0%	8.5%
+University of Maryland-College Park	12.5%	11.0%	8.6%	8.5%	8.3%
+University of Massachusetts-Amherst	16.7%	12.2%	10.5%	14.2%	6.2%
+University of Pittsburgh-Pittsburgh Campus	21.0%	15.9%	14.6%	12.8%	8.7%
+University of South Carolina-Columbia	2.6%	5.3%	3.9%	6.4%	2.2%
+University of Virginia-Main Campus	9.4%	6.1%	7.1%	7.4%	6.0%

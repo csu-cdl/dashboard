@@ -2,9 +2,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>CSU Peer Comparisons</title>
+<title>CSU Peer Benchmarking</title>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<link rel="stylesheet" type="text/css" href="assets/peercomp.css">
+<link rel="stylesheet" type="text/css" href="assets/peercomp.css?v=9">
 <style type="text/css">
 ${demo.css}
 </style>
@@ -54,9 +54,9 @@ $(function () {
 
 	// fetch appropriate data set
 	var load_chart_data = function (config, callback) {
-		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
+		var match_pattern = / /g;
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
-			config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=15';
+			config.campus.replace(match_pattern,'_') + '_' + config.grad_year + config.type + '.json?v=17';
 
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
@@ -77,7 +77,7 @@ $(function () {
 		var cohort2col = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9, '2009':10, '2010':11};
 		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
 		col = cohort2col[config.cohort];
-		chart_data.title = 'Historical ' + config.grad_year.slice(0,1) + ' Year Graduation Rate';
+		chart_data.title = config.grad_year.slice(0,1) + '-Year Graduation Rate for First-time, Full-time Freshmen';
 		chart_data.subtitle = config.cohort + ' Cohort'
 		chart_data.ylabel = '% Graduated';
 		for (var i = 0, ilen = json_data.rows.length; i < ilen; i++) {
@@ -102,8 +102,6 @@ $(function () {
 		}); 
 
 		// temp hack where chart fails to display if first x-data element has NaN
-		// rare enough in this case to simply swap 0th with 1st in series
-		// assumes 1st in series does not also have NaN value 
 		var s0 = chart_data.series[0];
 		var s1 = chart_data.series[1];
 		if (isNaN(s0['y'])) {
@@ -117,6 +115,10 @@ $(function () {
 
 	// initially display chart with default data
 	load_chart_data(config, update_grade_rate_chart);
+	var cohort_selector_4yr = document.querySelector('#cohort_selector_4yr');
+	var cohort_selector_6yr = document.querySelector('#cohort_selector_6yr');
+	var label_cohort_selector_4yr = document.querySelector('#label_cohort_selector_4yr');
+	var label_cohort_selector_6yr = document.querySelector('#label_cohort_selector_6yr');
 
 	// redisplay chart whenever user changes selection of parameters
 	var campus_selector = document.querySelector('#campus_selector');
@@ -126,31 +128,43 @@ $(function () {
 	}, false);
 
 	var max_6yr = 2008; // hack to deal with different cohort years available depending on grad_year
-	var cohort_selector = document.querySelector('#cohort_selector');
-	cohort_selector.addEventListener('change', function (e) {
+	var cohort_selector_6yr = document.querySelector('#cohort_selector_6yr');
+	cohort_selector_6yr.addEventListener('change', function (e) {
 		config.cohort = e.target.value;
-		if (config.grad_year === '6yr') {
-			if (parseInt(config.cohort,10) > max_6yr) {
-				config.cohort = max_6yr; // need to indicate year change on control also
-				cohort_selector.value = '' + max_6yr;
-			}
+		if (parseInt(config.cohort,10) > max_6yr) {
+			config.cohort = '' + max_6yr; // need to indicate year change on control also
+			cohort_selector_6yr.value = config.cohort;
 		}
+		cohort_selector_4yr.value = config.cohort;
 		load_chart_data(config, update_grade_rate_chart);
 	}, false);
+
+	var cohort_selector_4yr = document.querySelector('#cohort_selector_4yr');
+	cohort_selector_4yr.addEventListener('change', function (e) {
+		config.cohort = e.target.value;
+		cohort_selector_6yr.value = parseInt(config.cohort,10) > max_6yr? '' + max_6yr: config.cohort;
+		cohort_selector_4yr.value = config.cohort;
+		load_chart_data(config, update_grade_rate_chart);
+	}, false);
+
+	//default
+	var cohort_selector = cohort_selector_6yr;
 
 	var year_selector = document.querySelector('#year_selector');
 	year_selector.addEventListener('change', function (e) {
 		config.grad_year = e.target.value;
-		//add/remove 2 cohort years to 4yr grads
-		var extra_options = $('.4yr_only');
-		if (config.grad_year === '4yr') {
-			extra_options.css("display","inherit");
+		if (config.grad_year === '4yr') { // 4yr
+			label_cohort_selector_4yr.style = "display:inline-block";
+			label_cohort_selector_6yr.style = "display:none";
+			cohort_selector = document.querySelector('#cohort_selector_4yr');
 		} else { // 6yr
-			extra_options.css("display","none");
 			if (parseInt(config.cohort,10) > max_6yr) {
 				config.cohort = max_6yr; // need to indicate year change on control also
 				cohort_selector.value = '' + max_6yr;
 			}
+			label_cohort_selector_6yr.style = "display:inline-block";
+			label_cohort_selector_4yr.style = "display:none";
+			cohort_selector = document.querySelector('#cohort_selector_6yr');
 		}
 		load_chart_data(config, update_grade_rate_chart);
 	}, false);
@@ -193,21 +207,15 @@ $(function () {
 			},
 			series: [{
 			    visible: (data.sticky['4th Year'] === 'visible'),
-			    name: '4th Year',
+			    name: '4 Year',
 			    data: data.series_4yr //[15, 15, 16, 15, 16, 17, 16, 18, 19, 18, 20,19]
 			}, {
 			    visible: (data.sticky['6th Year'] === 'visible'),
-			    name: '6th Year',
+			    name: '6 Year',
 			    data: data.series_6yr //[62, 63.1, 62.9, 63, 62, 61, 62, 64, 66, 62]
 			}]
 		});
-		//console.log('---------');
-		//console.log(data.sticky['4th Year']);
-		//console.log(data.sticky['6th Year']);
-		//console.log(JSON.stringify(sticky));
 		data.fn();
-		//console.log(JSON.stringify(sticky));
-		//console.log('---------');
 	};
 
 	var retained_json_data = {};
@@ -256,7 +264,8 @@ $(function () {
 		var years_4yr = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011'];
 		var years_6yr = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009'];
 		var chart_data = {'campus':config.campus, 'series_4yr':[], 'series_6yr':[], 'fn':init_legends,
-						'ylabel':' % Grad Rate', 'categories':categories, 'title':'Grad Rate Trend',  'sticky':sticky};
+						'ylabel':' % Grad Rate', 'categories':categories, 
+						'title':'Graduation Rate Trends for First-time, Full-time Freshmen',  'sticky':sticky};
 		for (var i = 0, ilen = years_4yr.length; i < ilen; i++) {
 			//chart_data.series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]*10.0)/10.0;
 			chart_data.series_4yr[i] = Math.round(campus_data['yr4rate_' + years_4yr[i]]);
@@ -291,16 +300,20 @@ $(function () {
 </script>
 
 </head><body>
-<h1>CSU Peer Comparisons</h1>
-
+<header>
+<img src="assets/header_screen_shot.png">
+</header>
+<!-- <h1>CSU Peer Benchmarking</h1> -->
+<div id="tab_frame">
 <fieldset class="controls">
-<label>Grad Year <select id="year_selector">
-<option value="4yr">4th Year</option>
-<option value="6yr" selected>6th Year</option>
+<label>&nbsp;</label>
+<label id="label_year_selector"><select id="year_selector">
+<option value="4yr">4-Year Graduation Rate</option>
+<option value="6yr" selected>6-Year Graduation Rate</option>
 </select></label>
 
 <!-- <label>CSU Peer Institutions Comparison Reports for <select> -->
-<label>CSU Campus <select id="campus_selector">
+<label id="label_campus_selector"> for <select id="campus_selector">
 <option value="Bakersfield">Bakersfield</option>
 <option value="Channel Islands">Channel Islands</option>
 <option value="Chico">Chico</option>
@@ -326,9 +339,9 @@ $(function () {
 <option value="Stanislaus">Stanislaus</option>
 </select></label>
 
-<label>Cohort <select id="cohort_selector">
-<option value="2010" class="4yr_only" style="display:none;">2010</option>
-<option value="2009" class="4yr_only" style="display:none;">2009</option>
+<label id="label_cohort_selector_4yr"><select id="cohort_selector_4yr">
+<option value="2010">2010</option>
+<option value="2009">2009</option>
 <option value="2008" selected>2008</option>
 <option value="2007">2007</option>
 <option value="2006">2006</option>
@@ -338,14 +351,26 @@ $(function () {
 <option value="2002">2002</option>
 <option value="2001">2001</option>
 <option value="2000">2000</option>
-</select></label>
+</select> cohort.</label>
+
+<label id="label_cohort_selector_6yr"><select id="cohort_selector_6yr">
+<option value="2008" selected>2008</option>
+<option value="2007">2007</option>
+<option value="2006">2006</option>
+<option value="2005">2005</option>
+<option value="2004">2004</option>
+<option value="2003">2003</option>
+<option value="2002">2002</option>
+<option value="2001">2001</option>
+<option value="2000">2000</option>
+</select> cohort.</label>
 </fieldset>
 
 <div id="tab_controls">
-<div class="tabtab">Grad Rate Chart</div>
-<div class="tabtab">Data Table</div>
+<div class="tabtab">CSU Peer Comparisons</div>
+<div class="tabtab">Data Tables</div>
 <div class="tabtab">Methodology</div>
-<div class="tabtab">Historic Trends</div>
+<div class="tabtab">CSU Trends</div>
 </div>
 <script src="assets/highcharts.js"></script>
 <div id="tab_0">
@@ -393,6 +418,7 @@ The national peer institutions selected for this dashboard come from College Res
 <tr><td>Historically Black College or University</td><td>27 points</td></tr>
 </tbody></table>
 </div>
+</div> <!-- end tab_frame  -->
 <script>
 (function (doc) {
 	var forEach = function (array, callback, scope) {
@@ -427,6 +453,7 @@ The national peer institutions selected for this dashboard come from College Res
 		});
 		doc.querySelector('#tab_' + args[1]).style.zIndex = 10; // show selected tab body on top
 		args[0].style.backgroundColor = '#79a'; // color selected tab
+		controls_manager(args[1],6);
 	});
 
 	// listen for click on each tab
@@ -437,6 +464,45 @@ The national peer institutions selected for this dashboard come from College Res
 		},false);
 	});
 
+	var controls_manager = function (tab,year) {
+		//console.log(JSON.stringify([tab,year]));
+		var year_selector = document.querySelector('#year_selector');
+		var campus_selector = document.querySelector('#campus_selector');
+		var label_year_selector = document.querySelector('#label_year_selector');
+		var label_campus_selector = document.querySelector('#label_campus_selector');
+
+		var cohort_selector_4yr = document.querySelector('#cohort_selector_4yr');
+		var cohort_selector_6yr = document.querySelector('#cohort_selector_6yr');
+		var label_cohort_selector_4yr = document.querySelector('#label_cohort_selector_4yr');
+		var label_cohort_selector_6yr = document.querySelector('#label_cohort_selector_6yr');
+		if (tab === 0) {
+			label_year_selector.style = 'display:inline-block;'
+			label_campus_selector.style = 'display:inline-block;'
+			if (year === 4) {
+				label_cohort_selector_4yr.style = 'display:inline-block;'
+				label_cohort_selector_6yr.style = 'display:none;'
+			} else {
+				label_cohort_selector_4yr.style = 'display:none;'
+				label_cohort_selector_6yr.style = 'display:inline-block;'
+			}
+		} else if (tab === 1) {
+			label_year_selector.style = 'display:none;'
+			label_campus_selector.style = 'display:inline-block;'
+			label_cohort_selector_6yr.style = 'display:inline-block;'
+			label_cohort_selector_4yr.style = 'display:none;'
+		} else if (tab === 2) {
+			label_year_selector.style = 'display:none;'
+			label_campus_selector.style = 'display:none;'
+			label_cohort_selector_4yr.style = 'display:none;'
+			label_cohort_selector_6yr.style = 'display:none;'
+		} else if (tab === 3) {
+			label_year_selector.style = 'display:none;'
+			label_campus_selector.style = 'display:inline-block;'
+			label_cohort_selector_4yr.style = 'display:none;'
+			label_cohort_selector_6yr.style = 'display:none;'
+		}
+	};
+	controls_manager(0,6);
 	// js handles for some page elements
 	var container = doc.querySelector('#desctable');
 	var container2 = doc.querySelector('#desctable2'); // shadow container
@@ -444,12 +510,16 @@ The national peer institutions selected for this dashboard come from College Res
 	// create table from json data
 	var create_table = function (json, config) {
 		var out = '<thead><tr>';
+		var out2 = '<thead><tr>';
 		json.headers[0].forEach(function (item,i) {
 			out += '<td>' + item + '</td>'; 
+			out2 += '<td id="col_' + i + '">' + item + '</td>'; 
 		});
-		out += '</tr></thead><tbody>';
+		out += '</tr></thead><tbody id="tb1">';
+		out2 += '</tr></thead><tbody>';
+		var out3 = '';
 		json.rows.forEach(function (row,j) {
-			out += '<tr>';
+			out3 += '<tr>';
 			row.forEach(function (item,i) {
 				if (item === '-') {
 					item = 'ds*'; // per spec, replace dash in source with 'ds*' indicating data suppressed
@@ -459,23 +529,82 @@ The national peer institutions selected for this dashboard come from College Res
 						item === 'California ' + campus_selector.value || 
 						item === 'California State Polytechnic University-' + campus_selector.value || 
 						item === campus_selector.value + ' State University')) {
-					out += '<td style="font-weight:600">' + item + '</td>'; 
+					out3 += '<td style="font-weight:600">' + item + '</td>'; 
 				} else {
-					out += '<td>' + item + '</td>'; 
+					out3 += '<td>' + item + '</td>'; 
 				}
 			});
-			out += '</tr>';
+			out3 += '</tr>';
 		});
-		out += '</tbody>'
-		container.innerHTML = out;
-		container2.innerHTML = out; // shadow-overlay hack to get fixed heading TODO: replace with better solution from some table plug-in
+		out3 += '</tbody>'
+		container.innerHTML = out + out3;
+		// shadow-overlay hack to get fixed heading 
+		container2.innerHTML = out2 + out3; 
+		// TODO: replace with better solution from some table plug-in
+
+		var cols = [];
+		json.headers[0].forEach(function (item,i) {
+			var ord = 'ord' + i;
+			cols.push(document.querySelector('#col_' + i));
+			cols[i].addEventListener('click',function (e) {
+				var tbody = document.querySelector('#tb1');
+				if (!state[ord] || state[ord] !== 'ascending') { // toggle
+					state[ord] = 'ascending';
+				} else {
+					state[ord] = 'descending';
+				}
+				sortcol(tbody, i, state[ord]);
+			},false);
+		});
+	};
+
+	var state = {};
+	var sortcol = function (tbody, col, direction) {
+		var values = [], trs = [], tr, td, row, frag, match_pattern1 = /[$%,]/g;
+		for (var i = 0, ilen = tbody.children.length; i < ilen; i++) {
+			tr = tbody.children[i];
+			td = tr.children[col].innerText;
+			trs[i] = [td,i,tr.innerHTML];
+		}
+		var frag = document.createDocumentFragment();
+		if (direction === 'ascending') {
+			trs.sort(function (a,b) {
+				var aa = a[0], bb = b[0];
+				aa = aa.indexOf('ds*') !== -1?'$0':aa;
+				bb = bb.indexOf('ds*') !== -1?'$0':bb;
+				aa = aa.replace(match_pattern1,'');
+				bb = bb.replace(match_pattern1,'');
+				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
+				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
+				return aa>bb?1:aa===bb?0:-1;
+			});
+		} else {
+			trs.sort(function (b,a) {
+				var aa = a[0], bb = b[0];
+				aa = aa.indexOf('ds*') !== -1?'$0':aa;
+				bb = bb.indexOf('ds*') !== -1?'$0':bb;
+				aa = aa.replace(match_pattern1,'');
+				bb = bb.replace(match_pattern1,'');
+				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
+				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
+				return aa>bb?1:aa===bb?0:-1;
+			});
+		}
+		for (var i = 0, ilen = trs.length; i < ilen; i++) {
+			row = document.createElement('tr');
+			row.innerHTML = trs[i][2];
+			frag.appendChild(row);
+		}
+		tbody.innerHTML = '';
+		tbody.appendChild(frag,tbody);
 	};
 
 	var config = {'campus':'Bakersfield', 'cohort':'2008'}; // default config
 
 	// load selected campus via ajax 
 	var load_table_data = function (config, callback) {
-		var table_data_src = 'data/GRtable/' + config.campus.replace(/ /g,'_') + '_' + config.cohort + '.json?v=16';
+		var match_pattern = / /g;
+		var table_data_src = 'data/GRtable/' + config.campus.replace(match_pattern,'_') + '_' + config.cohort + '.json?v=17';
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
 			url: table_data_src,
@@ -502,17 +631,23 @@ The national peer institutions selected for this dashboard come from College Res
 		load_table_data(config, create_table);
 	}, false);
 
-	var max_cohort = 2008;
-	var cohort_selector = doc.querySelector('#cohort_selector');
+	//var max_cohort = 2008;
+	var cohort_selector = doc.querySelector('#cohort_selector_6yr');
 	cohort_selector.addEventListener('change', function (e) {
 		config.cohort = e.target.value;
-		if (parseInt(config.cohort,10) > max_cohort) {
-			config.cohort = '' + max_cohort;
-			cohort_selector.value = config.cohort;
-		}
+		cohort_selector.value = config.cohort;
 		load_table_data(config, create_table);
 	}, false);
 
+	/*
+	var exclude_list = ['Total Price for',
+		'Average Net Price',
+		'Median Earnings',
+		'Federal loan',
+		'Endowment Assets',
+		'In-State Tuition',
+		'Student Related Expenditures'];
+	*/
 })(document);
 </script>
 </body></html>

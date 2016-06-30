@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Sort Table Test</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<style>
+* {
+	padding:0;margin:0;border:none;list-style;none;
+}
+#t1 thead tr {
+	position:fixed;
+	left:10px;
+	margin-top:-30px;
+	margin-bottom:30px;
+}
+#t1 thead tr td {
+	background:#ddd;
+	height:30px;
+	padding: 0 5px;}
+#t1 tr {
+	height: 24px;
+}
+#t1  tr td {
+	min-widty: 60px;
+	width: 80px;
+	padding: 0 5px;
+}
+#t1 tr td:nth-child(2) {
+	width:60px;
+}
+#t1 tr td:nth-child(3) {
+	width:160px;
+}
+#t1  tr:nth-child(even) {
+	background:#def;
+}
+
+#t1 tr {
+	width:440px;
+}
+#t1 {
+	margin:50px 10px;
+	display:block;
+	backgound:#fff;
+	max-height:100px;
+	width:450px;
+	overflow:auto;
+}
+</style>
+</head><body>
+<div id="one">
+<table id="t1">
+<thead>
+<tr><td id="col_1">One</td><td id="col_2">Two</td><td id="col_3">Three</td><td id="col_4">Four</td></tr>
+</thead>
+<tbody id="tb1">
+<tr><td>alpha</td><td>1</td><td><a href="">click here</a></td><td>ok</td></tr>
+<tr><td>beta</td><td>2</td><td><a href="">no, click here</a></td><td>really</td></tr>
+<tr><td>gamma</td><td>3</td><td><a href="">click me, too</a></td><td>sorry</td></tr>
+<tr><td>alpha</td><td>4</td><td><a href="">click here</a></td><td>ok</td></tr>
+<tr><td>beta</td><td>5</td><td><a href="">no, click here</a></td><td>really</td></tr>
+<tr><td>gamma</td><td>6</td><td><a href="">click me, too</a></td><td>sorry</td></tr>
+<tr><td>alpha</td><td>7</td><td><a href="">click here</a></td><td>ok</td></tr>
+<tr><td>beta</td><td>8</td><td><a href="">no, click here</a></td><td>really</td></tr>
+<tr><td>gamma</td><td>9</td><td><a href="">click me, too</a></td><td>sorry</td></tr>
+</tbody>
+</table>
+</div>
+
+<script>
+(function (doc) {
+	var state = {};
+
+	var sortcol = function (tbody, col, direction) {
+		var values = [], trs = [], tr, td, row, frag;
+		for (var i = 0, ilen = tbody.children.length; i < ilen; i++) {
+			tr = tbody.children[i];
+			td = tr.children[col].innerText;
+			trs[i] = [td,i,tr.innerHTML];
+		}
+		var frag = document.createDocumentFragment();
+		if (direction === 'ascending') {
+			trs.sort(function (a,b) {return a[0]>b[0]?1:a[0]===b[0]?0:-1;});
+		} else {
+			trs.sort(function (a,b) {return a[0]<b[0]?1:a[0]===b[0]?0:-1;});
+		}
+		for (var i = 0, ilen = trs.length; i < ilen; i++) {
+			row = document.createElement('tr');
+			row.innerHTML = trs[i][2];
+			frag.appendChild(row);
+		}
+		tbody.innerHTML = '';
+		tbody.appendChild(frag,tbody);
+	};
+
+	var col1 = doc.querySelector('#col_1');
+	col1.addEventListener('click',function (e) {
+		var tbody = doc.querySelector('#tb1');
+		if (!state.ord1 || state.ord1 !== 'ascending') {
+			state.ord1 = 'ascending';
+		} else {
+			state.ord1 = 'descending';
+		}
+		sortcol(tbody, 0, state.ord1);
+	},false);
+
+	var col2 = doc.querySelector('#col_2');
+	col2.addEventListener('click',function (e) {
+		var tbody = doc.querySelector('#tb1');
+		if (!state.ord2 || state.ord2 !== 'ascending') { // toggle
+			state.ord2 = 'ascending';
+		} else {
+			state.ord2 = 'descending';
+		}
+		sortcol(tbody, 1, state.ord2);
+	},false);
+
+})(document);
+</script>
+</body></html>

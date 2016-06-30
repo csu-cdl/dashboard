@@ -1,0 +1,17 @@
+6-Year Achievement Gaps	6-Year Gap 2004	6-Year Gap 2005	6-Year Gap 2006	6-Year Gap 2007	6-Year Gap 2008
+Bloomsburg University of Pennsylvania	25.8%	20.0%	19.1%	25.8%	17.7%
+Bridgewater State University	18.1%	13.0%	4.8%	10.9%	6.5%
+East Stroudsburg University of Pennsylvania	11.4%	16.9%	13.9%	18.0%	14.2%
+Eastern Connecticut State University	6.2%	9.6%	-0.5%	5.1%	10.8%
+Florida Gulf Coast University	6.0%	3.5%	2.9%	4.3%	-0.3%
+Framingham State University	10.6%	7.5%	15.0%	20.5%	10.5%
+Millersville University of Pennsylvania	26.5%	34.9%	28.4%	30.0%	19.8%
+Radford University	-2.2%	2.2%	3.3%	6.9%	9.8%
+Slippery Rock University of Pennsylvania	20.5%	12.3%	16.0%	13.5%	15.4%
+Sonoma State University	10.2%	7.9%	7.2%	15.7%	13.2%
+University of Northern Colorado	11.1%	9.4%	10.7%	11.8%	8.9%
+University of Southern Indiana	18.8%	23.0%	23.0%	20.8%	21.4%
+University of Wisconsin-Stout	15.5%	8.7%	29.4%	24.5%	16.6%
+University of Wisconsin-Whitewater	22.4%	24.2%	14.2%	27.2%	18.7%
+Westfield State University	9.3%	11.8%	11.1%	14.7%	17.8%
+Winona State University	28.6%	22.1%	21.8%	10.3%	3.6%

@@ -1,0 +1,17 @@
+4-Year Achievement Gaps	4-Year Gap 2004	4-Year Gap 2005	4-Year Gap 2006	4-Year Gap 2007	4-Year Gap 2008
+California State Polytechnic University-Pomona	6.8%	8.6%	6.1%	6.1%	7.4%
+California State University-Chico	7.7%	8.9%	9.8%	8.4%	6.6%
+East Carolina University	6.3%	6.6%	9.5%	6.4%	3.7%
+Florida Atlantic University	2.5%	5.0%	4.0%	1.7%	0.9%
+Georgia Southern University	-1.6%	3.3%	0.9%	3.8%	2.3%
+Kennesaw State University	1.6%	-3.7%	-0.2%	0.1%	-2.9%
+Middle Tennessee State University	7.4%	2.3%	5.6%	7.8%	3.9%
+Northern Arizona University	10.4%	12.7%	17.4%	11.3%	11.7%
+San Francisco State University	2.2%	3.7%	2.3%	1.9%	5.8%
+San Jose State University	3.7%	3.5%	4.0%	4.4%	3.3%
+The University of Texas at Arlington	4.8%	-0.2%	2.9%	3.0%	5.8%
+The University of Texas at San Antonio	1.6%	-0.1%	-2.4%	-0.3%	-0.4%
+University of Nevada-Las Vegas	2.8%	2.7%	5.1%	7.0%	4.1%
+University of New Mexico-Main Campus	6.9%	5.5%	4.1%	6.7%	3.6%
+University of North Carolina at Charlotte	1.4%	2.0%	0.0%	7.1%	3.8%
+Western Michigan University	7.9%	8.2%	11.9%	11.3%	6.7%
