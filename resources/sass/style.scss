@@ -1,0 +1,107 @@
+// Add custom font
+//@import url(http://fonts.googleapis.com/css?family=Raleway:400,700,300);
+//$font-family-base: 'Raleway', sans-serif;
+
+// Import bootstrap and fontawesome
+@import "/Users/kristin/Sites/dashboard/bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap";
+@import "font-awesome";
+
+body {
+	padding-bottom: 20px;
+}
+
+.container {
+	width: 1170px;
+}
+
+.banner {
+    border-top: 10px solid #c03;
+	border-bottom: 2px solid #ccc;
+}
+
+.tab-content .tab-pane {
+    border: 1px solid #CFD8DC;
+    border-top: 2px solid #00BCD4;
+    box-shadow: 3px 3px 3px #888888;
+   
+	padding: 20px;
+}
+
+.nav-tabs li {
+	margin-right: 10px;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+    border: 2px solid #00BCD4;
+    border-bottom-color: transparent;
+    background-color: #00BCD4;
+    color: #FFF;
+    outline: none;
+	
+}
+
+.nav-tabs li a {
+    border: 2px solid #CFD8DC;
+    background-color: #CFD8DC;
+    color: #8EA2AC;
+}
+
+
+
+.nav-tabs li a:hover {
+	background: #b2ebf2; 
+	color: #00bcd4;
+	border: 2px solid #b2ebf2;}
+	
+.controls {
+	text-align: center;
+	background: #ebebeb;
+	border: #666;
+	margin: 20px 0;
+	width: 100%;
+	display: block;
+	padding: 5px;
+	 border-radius: 4px;
+	
+}
+
+select {
+	
+    display: inline-block;
+    
+    height: 34px;
+    padding: 6px 20px;
+	margin-right: 20px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+
+}
+
+.title-bar {
+	text-align: center;
+	background: url(../../global/img/banner-plain.png);
+	background-size:cover;
+	/*height: 156px;*/
+	height: 80px;
+	max-width: 1170px;
+	margin: -20px 0 0 0;
+	padding: 0;
+	h1 {
+		color: #fff;
+		line-height: 80px;
+		font-weight: normal;
+		font-size: 30px;
+		
+	}
+	
+}
