@@ -570,7 +570,7 @@ The national peer institutions selected for this dashboard come from College Res
 		for (var i = 0, ilen = tbody.children.length; i < ilen; i++) {
 			tr = tbody.children[i];
 			td = tr.children[col].innerText;
-			trs[i] = [td,i,tr.innerHTML];
+			trs[i] = [td,i,tr.innerHTML,tr.className || ''];
 		}
 		var frag = document.createDocumentFragment();
 		if (direction === 'ascending') {
@@ -598,6 +598,9 @@ The national peer institutions selected for this dashboard come from College Res
 		}
 		for (var i = 0, ilen = trs.length; i < ilen; i++) {
 			row = document.createElement('tr');
+			if (trs[i][3].indexOf('highlight') !== -1) {
+				row.className = "highlight";
+			}
 			row.innerHTML = trs[i][2];
 			frag.appendChild(row);
 		}
