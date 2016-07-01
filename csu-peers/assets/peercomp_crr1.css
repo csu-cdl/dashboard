@@ -74,8 +74,9 @@ p.footnote {
 .desctable thead tr {
 	padding:10px;
 	background-color:#eee;
-	min-height:40px;
-	height:40px;
+	min-height:62px;
+	height:62px;
+	max-height:62px;
 }
 
 .desctable thead tr td {
@@ -97,7 +98,9 @@ p.footnote {
 	top:358px;
 	width:883.5px;
 	margin:0 auto;
-	max-height:68px;
+	min-height:70px;
+	height:70px;
+	max-height:70px;
 	overflow:hidden;
 	background-color:#fff;
 }

@@ -613,7 +613,7 @@ The national peer institutions selected for this dashboard come from College Res
 	// load selected campus via ajax 
 	var load_table_data = function (config, callback) {
 		var match_pattern = / /g;
-		var table_data_src = 'data/GRtable/' + config.campus.replace(match_pattern,'_') + '_' + config.cohort + '_brief.json?v=17';
+		var table_data_src = 'data/GRtable/' + config.campus.replace(match_pattern,'_') + '_' + config.cohort + '_brief.json?v=18';
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
 			url: table_data_src,
