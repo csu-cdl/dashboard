@@ -184,6 +184,7 @@ var json_data = [{
 			series = row.slice(1);
 			series.forEach(function (item, j, a) {
 				a[j] = parseFloat(item);
+				a[j] = isNaN(a[j])?null:a[j];
 			});
 			if ((name === 'California State University-' + config.campus || 
 					name === 'California ' + config.campus || 
