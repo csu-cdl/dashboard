@@ -78,7 +78,7 @@ $(function () {
 	var create_chart = function (config, data) {
     $('#multiline_chart_container').highcharts({
         title: {
-            text: 'Grad Rate Trend',
+            text: 'CSU Peer Trends',
             x: -20 //center
         },
         subtitle: {
@@ -189,9 +189,9 @@ var json_data = [{
 					name === 'California ' + config.campus || 
 					name === 'California State Polytechnic University-' + config.campus || 
 					name === config.campus + ' State University')) {
-				selected_campus_data = {'name':name,'data':series};
+				selected_campus_data = {'name':name.replace('California State University-','CSU '),'data':series};
 			} else {
-				out_data.push({'name':name,'data':series});
+				out_data.push({'name':name.replace('California State University-','CSU ') ,'data':series});
 			}
 		}
 		out_data.sort(function (a,b) {
