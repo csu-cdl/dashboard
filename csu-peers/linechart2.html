@@ -131,7 +131,7 @@ var json_data = [{
 	var map_years = {'5':-5,'3':-3,'0':0}; // modify to match returned values from control 
 	var retained_json_data; // saves having to reload data each time only year_span changes
 	// default configuration
-	var config = {'campus':'Bakersfield', 'years':years['6yr'].slice(map_years[3]), 'peer_count':5, 'type':'GR', 'grad_year':'6yr','option':'3'};
+	var config = {'campus':'Bakersfield', 'years':years['6yr'].slice(map_years[0]), 'peer_count':5, 'type':'GR', 'grad_year':'6yr','option':'0'};
 
 	// only show year_span of series (series array is sliced at position)
 	var truncate_data = function (data, position) {
@@ -205,12 +205,13 @@ var json_data = [{
 		return out_data_subset;
 	};
 
-	var generate_summary_text = function (peer_subset) {
-		//console.log(JSON.stringify(peer_subset));
+	var generate_summary_text = function (config, peer_subset) {
+		//console.log(JSON.stringify(config));
 		var year_start, year_end, n;
-		year_start = 2006;
-		year_end = 2008;
-		n = 6;
+		year_start = config.years[0];
+		year_end = config.years.slice(-1)[0];
+		n = config.grad_year[0];
+		//console.log(JSON.stringify([year_start,year_end,n]));
 		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Graduation Rates';
 		var detail = '<table><tbody>';
 		for (var i = 0, ilen = peer_subset.length, line, avg; i < ilen; i++) {
@@ -229,22 +230,14 @@ var json_data = [{
 		detail += '</tbody></table>';
 		return '<h3>' + heading + '</h3>' + detail;
 	};
-/*
-2006-2008 Average Annual Improvement in 6-Year Graduation Rates
-•	CSU Stanislaus = 1.2 percentage points
-•	Kean University  = 1.1 percentage points
-•	University Texas = 0.9 percentage points
-•	University Delaware = 0.6 percentage points
-*/
 
 	var text_panel_0 = document.querySelector('#text_panel_0');
 	// update the chart
 	var update_multiline_chart = function (config, json_data) {
 		var peer_subset = filter_peers(config, json_data);
 		//console.log(JSON.stringify(config));
-		//console.log(JSON.stringify(peer_subset));
 		create_chart(config, truncate_data(peer_subset, config.years.length));
-		text_panel_0.innerHTML = generate_summary_text( truncate_data(peer_subset, config.years.length));
+		text_panel_0.innerHTML = generate_summary_text(config, truncate_data(peer_subset, config.years.length));
 	};
 
 	// respond to user changes of year_span
