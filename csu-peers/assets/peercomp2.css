@@ -167,3 +167,23 @@ p.footnote {
 	line-height:1.5em;
 }
 
+#text_panel_0 {
+	font-size: 12px;
+}
+
+#text_panel_0 td{
+	padding: 5px 10px;
+}
+
+#text_panel_0 h3{
+	font-size: 18px;
+	background: #00bcd4;
+	color: #fff;
+	padding: 5px;
+	font-weight: normal;
+	text-align: center;
+}
+
+select {
+	margin: 0 10px;
+}
