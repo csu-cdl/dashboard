@@ -110,18 +110,19 @@ z-index:0;
 		$(e.target).addClass('tab_selected'); // highlight selected
 		$('#tab_bodies div').removeClass('tab_body_selected'); // move all to back
 		$('#' + e.target.id + '_body').addClass('tab_body_selected'); // move selected to front
-		$('.control').each(function (i,el) {$(el).trigger('config',[state])}); // notify all controls of tab change
+		//$('.control').each(function (i,el) {$(el).trigger('config',[state])}); // notify all controls of tab change
+		$('.control').trigger('config',[state]);
 	};
 	
 	var change_one = function (e) {
 		state.year = e.target.value;
 		console.log(JSON.stringify(state));
-		//$('.control').trigger('config',[state]);
-		$('.control').each(function (i,el) {
-			console.log(i);
-			console.log(el);
-			$(el).trigger('config',[state]);
-		}); // notify all controls of tab change
+		$('.control').trigger('config',[state]);
+		//$('.control').each(function (i,el) {
+		//	console.log(i);
+		//	console.log(el);
+		//	$(el).trigger('config',[state]);
+		//}); // notify all controls of tab change
 	};
 
 	var change_two = function (e) {
