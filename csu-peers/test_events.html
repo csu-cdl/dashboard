@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Line Chart</title>
+<title>Test Events</title>
 <style>
 .tab {
 	background:#aaa;
@@ -101,7 +101,7 @@ z-index:0;
 <script>
 (function () {
 	// state records selected values of tabs and controls
-	var state = {'tabid':'tab_one', 'year':'6yr', 'color':'green', 'campus':'CSUB'}; // defaults
+	var state = {'tabid':'tab_one', 'year':'6yr', 'cohort':'2008', 'campus':'Bakersfield'}; // defaults
 
 	var select_tab = function (e) {
 		state.tabid = e.target.id;
@@ -110,19 +110,13 @@ z-index:0;
 		$(e.target).addClass('tab_selected'); // highlight selected
 		$('#tab_bodies div').removeClass('tab_body_selected'); // move all to back
 		$('#' + e.target.id + '_body').addClass('tab_body_selected'); // move selected to front
-		//$('.control').each(function (i,el) {$(el).trigger('config',[state])}); // notify all controls of tab change
-		$('.control').trigger('config',[state]);
+		$('.control').trigger('config',[state]); // notify all controls of tab change
 	};
 	
 	var change_one = function (e) {
 		state.year = e.target.value;
-		console.log(JSON.stringify(state));
-		$('.control').trigger('config',[state]);
-		//$('.control').each(function (i,el) {
-		//	console.log(i);
-		//	console.log(el);
-		//	$(el).trigger('config',[state]);
-		//}); // notify all controls of tab change
+		//console.log(JSON.stringify(state));
+		$('.control').trigger('config',[state]); // notify all controls of tab change
 	};
 
 	var change_two = function (e) {
@@ -193,8 +187,12 @@ z-index:0;
 	$('#tab_one').on('click', select_tab);
 	$('#tab_two').on('click', select_tab);
 
-	// establish default condition
-	$('#tab_one').trigger('click');
+	// establish default conditions
+	$('#selector_one').value = state.year; // initial selection
+	$('#selector_two').value = state.campus; // initial selection
+	$('#selector_three_4yr').value = state.cohort; // initial selection
+	$('#selector_three_6yr').value = state.cohort; // initial selection
+	$('#tab_one').trigger('click'); // tab, tab_body, and show/hide appropriate controls
 })();
 </script>
 
