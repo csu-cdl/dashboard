@@ -588,32 +588,106 @@ $(function () {
 
 	// create table from json data
 	var create_table = function (json, config) {
-		var out = '<thead><tr>';
+		//var out = '<thead><tr>';
+		var out2 = '<thead><tr>';
 		json.headers[0].forEach(function (item,i) {
-			out += '<td>' + item + '</td>'; 
+			out2 += '<td>' + item + '</td>'; 
+			//out += '<td id="col_' + i + '">' + item + '</td>'; 
 		});
-		out += '</tr></thead><tbody>';
+		//out += '</tr></thead><tbody id="tb1">';
+		out2 += '</tr></thead><tbody>';
+		var out3 = '';
 		json.rows.forEach(function (row,j) {
-			out += '<tr>';
+			var highlight = false;
 			row.forEach(function (item,i) {
 				if (item === '-') {
 					item = 'ds*'; // per spec, replace dash in source with 'ds*' indicating data suppressed
 				}
 				// Exception handling for campus name matching (enables highlighting of selected campus)
-				if (i === 0 && (item === 'California State University-' + campus_selector.value || 
+				if (i === 0) {
+					out3 += '<tr';
+					if ((item === 'California State University-' + campus_selector.value || 
 						item === 'California ' + campus_selector.value || 
 						item === 'California State Polytechnic University-' + campus_selector.value || 
 						item === 'California Polytechnic State University-' + campus_selector.value || 
 						item === campus_selector.value + ' State University')) {
-					out += '<td style="font-weight:600; color: #cc0033">' + item + '</td>'; 
+						out3 += ' class="highlight" >'
+						out3 += '<td style="font-weight:600">' + item + '</td>'; 
+					} else {
+						out3 += '><td>' + item + '</td>';
+					}
 				} else {
-					out += '<td>' + item + '</td>'; 
+					out3 += '<td>' + item + '</td>'; 
 				}
 			});
-			out += '</tr>';
+			out3 += '</tr>';
 		});
-		out += '</tbody>'
-		$('#desctable').html(out);
+		out3 += '</tbody>'
+		$('#desctable').html(out + out3);
+		//console.log($('#desctable').html());
+		var cols = [];
+		json.headers[0].forEach(function (item,i) {
+			console.log(item);
+			var ord = 'ord' + i;
+			cols.push('#col_' + i);
+			//console.log(JSON.stringify(cols));
+			$(cols[i]).on('click', function (e) {
+				console.log(e);
+				//*
+				var tbody = document.querySelector('#tb1');
+				if (!state[ord] || state[ord] !== 'ascending') { // toggle
+					state[ord] = 'ascending';
+				} else {
+					state[ord] = 'descending';
+				}
+				sortcol(tbody, i, state[ord]);
+				//*/
+			});
+		});
+	};
+
+	var state = {};
+	var sortcol = function (tbody, col, direction) {
+		var values = [], trs = [], tr, td, row, frag, match_pattern1 = /[$%,]/g;
+		for (var i = 0, ilen = tbody.children.length; i < ilen; i++) {
+			tr = tbody.children[i];
+			td = tr.children[col].innerText;
+			trs[i] = [td,i,tr.innerHTML,tr.className || ''];
+		}
+		var frag = document.createDocumentFragment();
+		if (direction === 'ascending') {
+			trs.sort(function (a,b) {
+				var aa = a[0], bb = b[0];
+				aa = aa.indexOf('ds*') !== -1?'$0':aa;
+				bb = bb.indexOf('ds*') !== -1?'$0':bb;
+				aa = aa.replace(match_pattern1,'');
+				bb = bb.replace(match_pattern1,'');
+				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
+				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
+				return aa>bb?1:aa===bb?0:-1;
+			});
+		} else {
+			trs.sort(function (b,a) {
+				var aa = a[0], bb = b[0];
+				aa = aa.indexOf('ds*') !== -1?'$0':aa;
+				bb = bb.indexOf('ds*') !== -1?'$0':bb;
+				aa = aa.replace(match_pattern1,'');
+				bb = bb.replace(match_pattern1,'');
+				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
+				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
+				return aa>bb?1:aa===bb?0:-1;
+			});
+		}
+		for (var i = 0, ilen = trs.length; i < ilen; i++) {
+			row = document.createElement('tr');
+			if (trs[i][3].indexOf('highlight') !== -1) {
+				row.className = "highlight";
+			}
+			row.innerHTML = trs[i][2];
+			frag.appendChild(row);
+		}
+		tbody.innerHTML = '';
+		tbody.appendChild(frag,tbody);
 	};
 
 	// load selected campus via ajax 
