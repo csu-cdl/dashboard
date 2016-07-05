@@ -627,13 +627,12 @@ $(function () {
 		//console.log($('#desctable').html());
 		var cols = [];
 		json.headers[0].forEach(function (item,i) {
-			console.log(item);
+			//console.log(item);
 			var ord = 'ord' + i;
 			cols.push('#col_' + i);
 			//console.log(JSON.stringify(cols));
 			$(cols[i]).on('click', function (e) {
-				console.log(e);
-				//*
+				//console.log(e);
 				var tbody = document.querySelector('#tb1');
 				if (!state[ord] || state[ord] !== 'ascending') { // toggle
 					state[ord] = 'ascending';
@@ -641,7 +640,6 @@ $(function () {
 					state[ord] = 'descending';
 				}
 				sortcol(tbody, i, state[ord]);
-				//*/
 			});
 		});
 	};
