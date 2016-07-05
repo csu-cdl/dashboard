@@ -588,14 +588,14 @@ $(function () {
 
 	// create table from json data
 	var create_table = function (json, config) {
-		//var out = '<thead><tr>';
-		var out2 = '<thead><tr>';
+		var out = '<thead><tr>';
+		//var out2 = '<thead><tr>';
 		json.headers[0].forEach(function (item,i) {
-			out2 += '<td>' + item + '</td>'; 
-			//out += '<td id="col_' + i + '">' + item + '</td>'; 
+			//out2 += '<td>' + item + '</td>'; 
+			out += '<td id="col_' + i + '">' + item + '</td>'; 
 		});
-		//out += '</tr></thead><tbody id="tb1">';
-		out2 += '</tr></thead><tbody>';
+		out += '</tr></thead><tbody id="tb1">';
+		//out2 += '</tr></thead><tbody>';
 		var out3 = '';
 		json.rows.forEach(function (row,j) {
 			var highlight = false;
