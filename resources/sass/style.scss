@@ -4,7 +4,7 @@
 
 // Import bootstrap and fontawesome
 @import "/Users/kristin/Sites/dashboard/bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap";
-@import "font-awesome";
+//@import "font-awesome";
 
 body {
 	padding-bottom: 20px;
@@ -62,6 +62,7 @@ body {
 	display: block;
 	padding: 5px;
 	 border-radius: 4px;
+	 border-radius: 5px;
 	
 }
 
@@ -102,6 +103,5 @@ select {
 		font-weight: normal;
 		font-size: 30px;
 		
-	}
-	
+	}	
 }
