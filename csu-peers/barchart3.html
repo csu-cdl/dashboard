@@ -288,11 +288,10 @@ $(function () {
 
 	// fetch appropriate data set
 	var load_chart_data = function (config, callback) {
-		//console.log(JSON.stringify(config));
 		var match_pattern = / /g;
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
 			config.campus.replace(match_pattern,'_') + '_' + config.grad_year + config.type + '.json?v=17';
-		//console.log(chart_data_src);
+
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
 			url: chart_data_src,
@@ -309,6 +308,7 @@ $(function () {
 
 	// select appropriate subset of peers
 	var filter_peers = function (config, json_data) {
+		var csuname;
 		var rows = json_data.rows;
 		var out_data = [];
 		var selected_campus_data;
@@ -325,7 +325,11 @@ $(function () {
 					name === 'California State Polytechnic University-' + config.campus || 
 					name === 'California Polytechnic State University-' + config.campus || 
 					name === config.campus + ' State University')) {
-				selected_campus_data = {'name':name.replace('California State University-','CSU '),'data':series};
+				csuname = name;
+				csuname = csuname.replace('California State University-','CSU ');
+				csuname = csuname.replace('California State Polytechnic University-','CSU ');
+				csuname = csuname.replace('California Polytechnic State University-','CSU ');
+				selected_campus_data = {'name':csuname,'data':series};
 			} else {
 				out_data.push({'name':name.replace('California State University-','CSU ') ,'data':series});
 			}
@@ -387,6 +391,16 @@ $(function () {
 		chart_state.campus = e.target.value;
 		chart_state.notify();
 		//console.log(JSON.stringify(chart_state));
+		load_chart_data(chart_state,  function (json_data, chart_state) {
+			retained_json_data = json_data;
+			update_multiline_chart(chart_state, retained_json_data);
+		});
+	});
+
+	$('#year_selector').on('change', function (e) {
+		chart_state.grad_year = e.target.value;
+		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
+		chart_state.notify();
 		load_chart_data(chart_state,  function (json_data, chart_state) {
 			retained_json_data = json_data;
 			update_multiline_chart(chart_state, retained_json_data);
