@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Line Chart</title>
+<style>
+.tab {
+	background:#aaa;
+	width:100px;
+	height:30px;
+	line-height:24px;
+}
+.tab_selected {
+	background:#adf;
+}
+.control {
+	background:#eee;
+	display:inline-block;
+}
+#controls {
+width:90%;
+height:50px;
+background:#eee;
+margin:10px auto;
+}
+#tabs {
+width:90%;
+height:50px;
+background:#eee;
+margin:10px auto;
+}
+
+#tab_bodies {
+position:relative;
+width:90%;
+height:50px;
+background:#eee;
+margin:10px auto;
+}
+#tab_one_body {
+position:absolute;
+z-index:-1;
+}
+#tab_two_body {
+position:absolute;
+z-index:-1;
+}
+#tab_bodies div.tab_body_selected {
+z-index:0;
+}
+</style>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+</head><body>
+
+<div id="controls">
+
+<select id="selector_one" class="control">
+<option value="4yr">4yr</option>
+<option value="6yr" selected>6yr</option>
+</select>
+
+<select id="selector_two" class="control">
+<option value="Bakersfield" selected>Bakersfield</option>
+<option value="Channel_Islands">Channel Islands</option>
+<option value="Chico">Chico</option>
+<option value="Dominguez Hills">Dominquez Hills</option>
+</select>
+
+<select id="selector_three_4yr" class="control">
+<option value="2010">2010</option>
+<option value="2009">2009</option>
+<option value="2008" selected>2008</option>
+<option value="2007">2007</option>
+<option value="2006">2006</option>
+<option value="2005">2005</option>
+</select>
+
+<select id="selector_three_6yr" class="control">
+<option value="2008" selected>2008</option>
+<option value="2007">2007</option>
+<option value="2006">2006</option>
+<option value="2005">2005</option>
+</select>
+
+</div>
+
+<div id="tabs">
+<button id="tab_one" class="tab tab_selected">One</button>
+<button id="tab_two" class="tab">Two</button>
+</div>
+
+<div id="tab_bodies">
+<div id="tab_one_body">
+<p>Text for tab one.</p>
+</div>
+<div id="tab_two_body">
+<p>Text for tab two.</p>
+</div>
+</div>
+
+<script>
+(function () {
+	// state records selected values of tabs and controls
+	var state = {'tabid':'tab_one', 'year':'6yr', 'color':'green', 'campus':'CSUB'}; // defaults
+
+	var select_tab = function (e) {
+		state.tabid = e.target.id;
+		//console.log(JSON.stringify(state));
+		$('.tab').removeClass('tab_selected'); // unhighlight all
+		$(e.target).addClass('tab_selected'); // highlight selected
+		$('#tab_bodies div').removeClass('tab_body_selected'); // move all to back
+		$('#' + e.target.id + '_body').addClass('tab_body_selected'); // move selected to front
+		$('.control').each(function (i,el) {$(el).trigger('config',[state])}); // notify all controls of tab change
+	};
+	
+	var change_one = function (e) {
+		state.year = e.target.value;
+		console.log(JSON.stringify(state));
+		//$('.control').trigger('config',[state]);
+		$('.control').each(function (i,el) {
+			console.log(i);
+			console.log(el);
+			$(el).trigger('config',[state]);
+		}); // notify all controls of tab change
+	};
+
+	var change_two = function (e) {
+		// stub
+	};
+
+	var change_three_4yr = function (e) {
+		state.campus = e.target.value;
+		//console.log(JSON.stringify(state));
+	};
+
+	var change_three_6yr = function (e) {
+		state.campus = e.target.value;
+		//console.log(JSON.stringify(state));
+	};
+
+	var reconfig_three_4yr = function (e, args) {
+		//console.log(JSON.stringify(args));
+		//console.log(e);
+		if (args[0].year === '4yr' && args[0].tabid === 'tab_one') {
+			$(e.target).show();
+		} else {
+			$(e.target).hide();
+		}
+	};
+
+	var reconfig_three_6yr = function (e, args) {
+		//console.log(JSON.stringify(args));
+		//console.log(e);
+		if (args[0].year === '6yr' && args[0].tabid === 'tab_one') {
+			$(e.target).show();
+		} else {
+			$(e.target).hide();
+		}
+	};
+
+	var reconfig_one = function (e, args) {
+		//console.log(JSON.stringify(args));
+		//console.log(e);
+		if (args[0].tabid === 'tab_one' || args[0].tabid === 'tab_two') {
+			$(e.target).show();
+		} else {
+			$(e.target).hide();
+		}
+	};
+
+	var reconfig_two = function (e, args) {
+		//console.log(JSON.stringify(args));
+		//console.log(e);
+		if (args[0].tabid === 'tab_two') {
+			$(e.target).show();
+		} else {
+			$(e.target).hide();
+		}
+	};
+
+	$('#selector_one').on('change', change_one);
+	$('#selector_two').on('change', change_two);
+	$('#selector_three_4yr').on('change', change_three_4yr);
+	$('#selector_three_6yr').on('change', change_three_6yr);
+
+	// on any change of state each element knows how to reconfigure itself
+	$('#selector_one').on('config', function (e, state) {reconfig_one(e,[state])});
+	$('#selector_two').on('config', function (e, state) {reconfig_two(e,[state])});
+	$('#selector_three_4yr').on('config', function (e, state) {reconfig_three_4yr(e,[state])});
+	$('#selector_three_6yr').on('config', function (e, state) {reconfig_three_6yr(e,[state])});
+
+	$('#tab_one').on('click', select_tab);
+	$('#tab_two').on('click', select_tab);
+
+	// establish default condition
+	$('#tab_one').trigger('click');
+})();
+</script>
+
+</body></html>

@@ -175,6 +175,7 @@ var json_data = [{
 
 	// select appropriate subset of peers
 	var filter_peers = function (config, json_data) {
+		var csuname;
 		var rows = json_data.rows;
 		var out_data = [];
 		var selected_campus_data;
@@ -191,7 +192,11 @@ var json_data = [{
 					name === 'California State Polytechnic University-' + config.campus || 
 					name === 'California Polytechnic State University-' + config.campus || 
 					name === config.campus + ' State University')) {
-				selected_campus_data = {'name':name.replace('California State University-','CSU '),'data':series};
+				csuname = name;
+				csuname = csuname.replace('California State University-','CSU ');
+				csuname = csuname.replace('California State Polytechnic University-','CSU ');
+				csuname = csuname.replace('California Polytechnic State University-','CSU ');
+				selected_campus_data = {'name':csuname,'data':series};
 			} else {
 				out_data.push({'name':name.replace('California State University-','CSU ') ,'data':series});
 			}
