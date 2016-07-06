@@ -1,0 +1,7 @@
+Main	2011 6-Year Grad Rate	Underrepresented Minority 6-Year Grad Rate	% Pell Recipients Among Freshmen	% Underrepresented Minority	Average High School GPA Among College Freshmen	Estimated Median SAT / ACT	"Total Price for In-State, On-Campus Students"	Average Net Price After Grants	State	Size (Undergrad FTE)	Sector	Carnegie Class
+California State University-Fresno	49.4%	44.0%	54.0%	41.9%	3.28	945	"$20,799"	"$5,805"	CA	"16,352"	Public	Masters Large
+Kean University	48.9%	42.0%	46.0%	41.4%	3.00	920	"$26,647"	"$16,431"	NJ	"11,136"	Public	Masters Large
+California State University-San Bernardino	44.6%	40.7%	63.0%	57.1%	3.24	900	"$19,683"	"$6,231"	CA	"12,578"	Public	Masters Large
+Stephen F Austin State University	44.0%	34.0%	46.0%	35.3%	-	970	"$20,457"	"$11,506"	TX	"10,191"	Public	Masters Large
+CUNY John Jay College of Criminal Justice	39.4%	41.5%	65.0%	63.1%	2.55	935	-	"$4,237"	NY	"11,116"	Public	Masters Large
+California State University-Los Angeles	36.5%	31.2%	67.0%	58.9%	3.13	865	"$19,611"	"$3,230"	CA	"14,199"	Public	Masters Large

@@ -1,0 +1,13 @@
+Main	2009 6-Year Grad Rate	% Pell Recipients Among Freshmen	% Underrepresented Minority	Estimated Median SAT / ACT	In-State Tuition and Fees	State	Size (Undergrad FTE)	Sector	Carnegie Class	Student Related Expenditures / Total FTE
+Temple University	67.0%	26.0%	20.1%	"1,110"	"$11,448"	PA	"24,078"	Public	Research High	"$14,403"
+San Diego State University	66.3%	23.0%	26.6%	"1,050"	"$3,754"	CA	"25,924"	Public	Research High	"$9,672"
+Texas Tech University	60.2%	19.0%	18.7%	"1,110"	"$5,594"	TX	"21,853"	Public	Research High	"$9,050"
+East Carolina University	56.8%	20.0%	17.4%	"1,010"	"$4,186"	NC	"19,159"	Public	Doctoral/Research	"$11,878"
+California State University-Long Beach	54.4%	36.0%	33.9%	"1,010"	"$3,392"	CA	"27,550"	Public	Masters Large	"$8,493"
+California State University-Fullerton	51.6%	30.0%	34.6%	980	"$3,650"	CA	"25,886"	Public	Masters Large	"$7,538"
+Georgia State University	49.8%	37.0%	35.5%	"1,080"	"$5,844"	GA	"17,270"	Public	Research High	"$9,008"
+San Francisco State University	47.5%	28.0%	22.3%	"1,000"	"$3,762"	CA	"21,827"	Public	Masters Large	"$8,832"
+University of North Texas	47.3%	23.0%	26.3%	"1,100"	"$6,467"	TX	"23,640"	Public	Research High	"$9,485"
+San Jose State University	46.4%	26.0%	24.1%	995	"$3,992"	CA	"21,672"	Public	Masters Large	"$9,102"
+California State University-Northridge	43.7%	45.0%	40.4%	940	"$3,696"	CA	"25,733"	Public	Masters Large	"$8,107"
+University of Houston	40.8%	35.0%	37.9%	"1,055"	"$6,658"	TX	"23,354"	Public	Research High	"$9,993"

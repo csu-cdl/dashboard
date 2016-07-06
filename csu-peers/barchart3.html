@@ -355,9 +355,12 @@ $(function () {
 		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Grad Rates';
 		var detail = '<table class="table table-striped"><tbody>';
 		for (var i = 0, ilen = peer_subset.length, line, avg; i < ilen; i++) {
-			avg = 0; // avoid divide by zero
-			if (peer_subset[i].data.length) {
-				avg = Math.round(10.0 * (peer_subset[i].data.slice(-1)[0] - peer_subset[i].data[0]) / peer_subset[i].data.length)/10.0;
+			avg = '0.0'; // avoid divide by zero
+			if (peer_subset[i].data && peer_subset[i].data.length) {
+				avg = '' + Math.round(10.0 * (peer_subset[i].data.slice(-1)[0] - peer_subset[i].data[0]) / peer_subset[i].data.length)/10.0;
+			}
+			if (avg.split('.').length === 1) {
+				avg += '.0';
 			}
 			line = '<tr><td>' + peer_subset[i].name + '</td><td>' + avg + ' % points</td></tr>';
 			detail += line;
@@ -709,7 +712,7 @@ $(function () {
 	var load_table_data = function (config, callback) {
 		//console.log(JSON.stringify(config));
 		var match_pattern = / /g;
-		var table_data_src = 'data/GRtable/' + config.campus.replace(match_pattern,'_') + '_' + config.cohort + '_brief.json?v=18';
+		var table_data_src = 'data/GRtables/' + config.campus.replace(match_pattern,'_') + '_' + config.cohort + '_brief.json?v=18';
 		// fetch json data via xhr, then invoke callback
 		//console.log(table_data_src);
 		$.ajax({
