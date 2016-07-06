@@ -5896,3 +5896,6 @@ select {
     line-height: 80px;
     font-weight: normal;
     font-size: 30px; }
+
+.nowrap {
+  white-space: nowrap; }

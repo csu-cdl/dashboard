@@ -362,7 +362,7 @@ $(function () {
 			if (avg.split('.').length === 1) {
 				avg += '.0';
 			}
-			line = '<tr><td>' + peer_subset[i].name + '</td><td>' + avg + ' % points</td></tr>';
+			line = '<tr><td>' + peer_subset[i].name + '</td><td class="nowrap">' + avg + ' % points</td></tr>';
 			detail += line;
 		}
 		detail += '</tbody></table>';
@@ -543,9 +543,9 @@ Peer institutions are selected based on the methodology developed by College Res
         
 	<div id="table" class="tab-pane fade">
 
-<div class="descriptive">		
-<table class="desctable" id="desctable"></table>
-</div>
+	
+<table class="table table-striped" id="desctable"></table>
+
 
 <p class="footnote">*Data are suppressed where student counts (N) is less than 30.</p>
     </div><!--./table-->
@@ -622,7 +622,7 @@ $(function () {
 			item = (item === 'Average High School GPA Among College Freshmen') ? 'Average High School GPA': item;
 			item = (item === 'Estimated/Mean SAT') ? 'Average SAT Score': item;
 			//item = (item === '') ? '': item;
-			out += '<td id="col_' + i + '">' + item + '</td>'; 
+			out += '<th id="col_' + i + '">' + item + '</th>'; 
 		});
 		out += '</tr></thead><tbody id="tb1">';
 		//out2 += '</tr></thead><tbody>';
@@ -641,9 +641,9 @@ $(function () {
 						item === 'California State Polytechnic University-' + campus_selector.value || 
 						item === 'California Polytechnic State University-' + campus_selector.value || 
 						item === campus_selector.value + ' State University')) {
-						out3 += ' class="highlight"  style="font-weight:600; color: #cc0033">' // Should just use '.highlight' to style
+						out3 += ' class="highlight">' // Should just use '.highlight' to style
 						//out3 += '<td style="font-weight:600">' + item + '</td>'; 
-						out3 += '<td class="col_campus" style="width:24%;">' + item + '</td>'; 
+						out3 += '<td class="col_campus">' + item + '</td>'; 
 
 					} else {
 						out3 += '><td>' + item + '</td>';
