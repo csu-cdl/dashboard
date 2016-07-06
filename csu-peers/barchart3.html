@@ -642,6 +642,7 @@ $(function () {
 			item = (item === 'Average High School GPA Among College Freshmen') ? 'Average High School GPA': item;
 			item = (item === 'Estimated Median SAT / ACT') ? 'Average SAT&nbsp;Score': item;
 			item = (item === 'Size (Undergrad FTE)') ? '(Undergrad FTE)&nbsp;Size': item;
+			item = item.replace('Grad Rate','Grad&nbsp;Rate');
 			//item = (item === '') ? '': item; // pattern
 			if (i === 0) {
 				out += '<th id="col_' + i + '" class="col_campus">' + item + '</th>'; 
@@ -742,7 +743,7 @@ $(function () {
 	// load selected campus via ajax 
 	var load_table_data = function (config, callback) {
 		var match_pattern = / /g;
-		var table_data_src = 'data/GRtables/' + config.campus.replace(match_pattern,'_') + '_' + config.cohort + '_brief.json?v=18';
+		var table_data_src = 'data/GRtables/' + config.campus.replace(match_pattern,'_') + '_' + config.cohort + '_briefplus.json?v=18';
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
 			url: table_data_src,
