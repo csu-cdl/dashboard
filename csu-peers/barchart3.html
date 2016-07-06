@@ -621,15 +621,19 @@ $(function () {
 		//var out2 = '<thead><tr>';
 		json.headers[0].forEach(function (item,i) {
 			//out2 += '<td>' + item + '</td>'; 
-			if (item === 'Main') item
 			item = (item === 'Main') ? 'Campus': item;
 			item = (item === 'Underrepresented Minority 6-Year Grad Rate') ? 'URM 6-Year Grad Rate': item;
 			item = (item === '% Pell Recipients Among Freshmen') ? '% Pell Eligible': item;
-			item = (item === '% Underrepresented Minorities') ? '% URM': item;
+			item = (item === '% Underrepresented Minority') ? '% URM': item;
 			item = (item === 'Average High School GPA Among College Freshmen') ? 'Average High School GPA': item;
-			item = (item === 'Estimated/Mean SAT') ? 'Average SAT Score': item;
-			//item = (item === '') ? '': item;
-			out += '<th id="col_' + i + '">' + item + '</th>'; 
+			item = (item === 'Estimated Median SAT / ACT') ? 'Average SAT&nbsp;Score': item;
+			item = (item === 'Size (Undergrad FTE)') ? '(Undergrad FTE)&nbsp;Size': item;
+			//item = (item === '') ? '': item; // pattern
+			if (i === 0) {
+				out += '<th id="col_' + i + '">' + item + '</th>'; 
+			} else {
+				out += '<th id="col_' + i + '"  style="text-align:right;padding-right:5px;">' + item + '</th>'; 
+			}
 		});
 		out += '</tr></thead><tbody id="tb1">';
 		//out2 += '</tr></thead><tbody>';
@@ -650,13 +654,13 @@ $(function () {
 						item === campus_selector.value + ' State University')) {
 						out3 += ' class="highlight">' // Should just use '.highlight' to style
 						//out3 += '<td style="font-weight:600">' + item + '</td>'; 
-						out3 += '<td class="col_campus">' + item + '</td>'; 
+						out3 += '<td class="col_campus" style="min-width:31%; width:31%">' + item + '</td>'; 
 
 					} else {
 						out3 += '><td>' + item + '</td>';
 					}
 				} else {
-					out3 += '<td>' + item + '</td>'; 
+					out3 += '<td style="text-align:right;padding-right:5px;">' + item + '</td>'; 
 				}
 			});
 			out3 += '</tr>';
