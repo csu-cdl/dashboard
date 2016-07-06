@@ -143,7 +143,6 @@ $(function () {
 	// fetch appropriate data set
 	var load_chart_data = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
-		//console.log(config);
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
 			config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=15';
 
@@ -163,12 +162,9 @@ $(function () {
 
 	// update chart
 	var update_grade_rate_chart = function (json_data, config) { //,campus,grad_year,cohort) {
-		//console.log(config);
-		//var cohort2col = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9, '2009':10, '2010':11};
 		var cohort2col_6yr = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
 		var cohort2col_4yr = {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11};
 		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
-		//col = cohort2col[config.cohort];
 		if (config.grad_year === '6yr') {
 			col = cohort2col_6yr[config.cohort];
 		} else {
@@ -180,10 +176,6 @@ $(function () {
 		for (var i = 0, ilen = json_data.rows.length; i < ilen; i++) {
 			row = json_data.rows[i];
 			key = convert_csu_campus_name(row[0]);
-			//key = row[0].replace('California State University-','CSU ');
-			//key = key.replace('California State University-','CSU ');
-			//key = key.replace('California State Polytechnic University-','CSU ');
-			//key = key.replace('California Polytechnic State University-','CSU ');
 
 			value = parseFloat(row[col]);
 			chart_data.series[i] = {'name':key,'y':value};
@@ -195,7 +187,6 @@ $(function () {
 			// Exception, might be better to just check against a white-list of CSU campus names
 			if (config.campus === 'Maritime Academy' && key.indexOf('California') === -1) {
 				chart_data.series[i] = {'name':key,'y':value,'color':'#159'};
-				//chart_data.series[i] = {'name':key,'y':value};
 			}
 		}
 		// descending sort by y-axis value
@@ -244,7 +235,6 @@ $(function () {
 	});
 });
 </script>
-
 
 
 <script type="text/javascript">
@@ -361,16 +351,8 @@ $(function () {
 					name === 'California State Polytechnic University-' + config.campus || 
 					name === 'California Polytechnic State University-' + config.campus || 
 					name === config.campus + ' State University')) {
-					csuname = convert_csu_campus_name(config.campus);
-				//csuname = name;
-				//csuname = csuname.replace('California State University-','CSU ');
-				//csuname = csuname.replace('California State Polytechnic University-','CSU ');
-				//csuname = csuname.replace('California Polytechnic State University-','CSU ');
-				selected_campus_data = {'name':csuname, 'data':series, 'lineWidth': 4};
+				selected_campus_data = {'name': convert_csu_campus_name(name), 'data':series, 'lineWidth': 4};
 			} else {
-				//name = name.replace('California State University-','CSU ');
-				//name = name.replace('California State Polytechnic University-','CSU ');
-				//name = name.replace('California Polytechnic State University-','CSU ');
 				out_data.push({'name':convert_csu_campus_name(name), 'data':series});
 			}
 		}
@@ -386,12 +368,10 @@ $(function () {
 	};
 
 	var generate_summary_text = function (config, peer_subset) {
-		//console.log(JSON.stringify(config));
 		var year_start, year_end, n;
 		year_start = config.years[0];
 		year_end = config.years.slice(-1)[0];
 		n = config.grad_year[0];
-		//console.log(JSON.stringify([year_start,year_end,n]));
 		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Grad Rates';
 		var detail = '<table class="table table-striped"><tbody>';
 		for (var i = 0, ilen = peer_subset.length, line, avg; i < ilen; i++) {
@@ -409,11 +389,10 @@ $(function () {
 		return '<h3>' + heading + '</h3>' + detail;
 	};
 
-	var text_panel_0 = document.querySelector('#text_panel_0');
+	//var text_panel_0 = document.querySelector('#text_panel_0');
 	// update the chart
 	var update_multiline_chart = function (config, json_data) {
 		var peer_subset = filter_peers(config, json_data);
-		//console.log(JSON.stringify(config));
 		create_chart(config, truncate_data(peer_subset, config.years.length));
 		$('#text_panel_0').html(generate_summary_text(config, truncate_data(peer_subset, config.years.length)));
 	};
@@ -422,7 +401,6 @@ $(function () {
 	$('#year_span_selector').on('change', function (e) {
 		chart_state.trends_since = e.target.value;
 		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
-		//console.log(JSON.stringify(chart_state));
 		load_chart_data(chart_state,  function (json_data, chart_state) {
 			retained_json_data = json_data;
 			update_multiline_chart(chart_state, retained_json_data);
@@ -433,7 +411,6 @@ $(function () {
 	$('#campus_selector').on('change', function (e) {
 		chart_state.campus = e.target.value;
 		chart_state.notify();
-		//console.log(JSON.stringify(chart_state));
 		load_chart_data(chart_state,  function (json_data, chart_state) {
 			retained_json_data = json_data;
 			update_multiline_chart(chart_state, retained_json_data);
@@ -660,9 +637,7 @@ $(function () {
 	// create table from json data
 	var create_table = function (json, config) {
 		var out = '<thead><tr>';
-		//var out2 = '<thead><tr>';
 		json.headers[0].forEach(function (item,i) {
-			//out2 += '<td>' + item + '</td>'; 
 			item = (item === 'Main') ? 'Campus': item;
 			item = (item === 'Underrepresented Minority 6-Year Grad Rate') ? 'URM 6-Year Grad Rate': item;
 			item = (item === '% Pell Recipients Among Freshmen') ? '% Pell Eligible': item;
@@ -678,7 +653,6 @@ $(function () {
 			}
 		});
 		out += '</tr></thead><tbody id="tb1">';
-		//out2 += '</tr></thead><tbody>';
 		var out3 = '';
 		json.rows.forEach(function (row,j) {
 			var highlight = false;
@@ -695,7 +669,6 @@ $(function () {
 						item === 'California Polytechnic State University-' + config.campus || 
 						item === config.campus + ' State University')) {
 						out3 += ' class="highlight">' // Should just use '.highlight' to style
-						//out3 += '<td style="font-weight:600">' + item + '</td>'; 
 						out3 += '<td class="col_campus" style="min-width:27%; width:27%">' + convert_csu_campus_name(item) + '</td>'; 
 
 					} else {
@@ -709,15 +682,11 @@ $(function () {
 		});
 		out3 += '</tbody>'
 		$('#desctable').html(out + out3);
-		//console.log($('#desctable').html());
 		var cols = [];
 		json.headers[0].forEach(function (item,i) {
-			//console.log(item);
 			var ord = 'ord' + i;
 			cols.push('#col_' + i);
-			//console.log(JSON.stringify(cols));
 			$(cols[i]).on('click', function (e) {
-				//console.log(e);
 				var tbody = document.querySelector('#tb1');
 				if (!state[ord] || state[ord] !== 'ascending') { // toggle
 					state[ord] = 'ascending';
@@ -775,11 +744,9 @@ $(function () {
 
 	// load selected campus via ajax 
 	var load_table_data = function (config, callback) {
-		//console.log(JSON.stringify(config));
 		var match_pattern = / /g;
 		var table_data_src = 'data/GRtables/' + config.campus.replace(match_pattern,'_') + '_' + config.cohort + '_brief.json?v=18';
 		// fetch json data via xhr, then invoke callback
-		//console.log(table_data_src);
 		$.ajax({
 			url: table_data_src,
 			datatype: "json",
@@ -828,7 +795,6 @@ $(document).ready(function(){
     $(".nav-tabs a").click(function(){
         $(this).tab('show');
 	chart_state.selected_tab_name = this.href.split('#')[1]; // i.e., one of ['chart','table','method','trends']
-	//console.log(JSON.stringify(chart_state));
 	chart_state.notify();
     });
 });
