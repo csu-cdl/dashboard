@@ -275,7 +275,7 @@ $(function () {
 		});
 	};
 
-	var years = {'4yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010'],
+	var years = {'4yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008'],
 			'6yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008']};
 	var map_years = {'5':-5,'3':-3,'0':0}; // modify to match returned values from control 
 	var retained_json_data; // saves having to reload data each time only year_span changes
@@ -343,6 +343,9 @@ $(function () {
 				a[j] = parseFloat(item);
 				a[j] = isNaN(a[j])?null:a[j];
 			});
+			if (config.grad_year === '4yr') { // hack to fix bad 4yr data
+				series = series.slice(2);
+			}
 			if ((name === 'California State University-' + config.campus || 
 					name === 'California ' + config.campus || 
 					name === 'California State Polytechnic University-' + config.campus || 
