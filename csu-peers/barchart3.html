@@ -163,7 +163,7 @@ $(function () {
 		chart_data.ylabel = '% Graduated';
 		for (var i = 0, ilen = json_data.rows.length; i < ilen; i++) {
 			row = json_data.rows[i];
-			key = row[0].replace('California State University','CSU');
+			key = row[0].replace('California State University-','CSU ');
 			value = parseFloat(row[col]);
 			chart_data.series[i] = {'name':key,'y':value};
 			if (key.indexOf(config.campus) !== -1) {
@@ -228,7 +228,7 @@ $(function () {
 	var create_chart = function (config, data) {
 		$('#multiline_chart_container').highcharts({
 			title: {
-				text: 'Graduation Rate Trends for First-time, Full-time Freshmen',
+				text: 'Graduation Rate Trends for First-Time, Full-Time Freshmen',
 				x: -20 //center
 			},
 			subtitle: {
@@ -352,14 +352,14 @@ $(function () {
 		year_end = config.years.slice(-1)[0];
 		n = config.grad_year[0];
 		//console.log(JSON.stringify([year_start,year_end,n]));
-		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Graduation Rates';
+		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Grad Rates';
 		var detail = '<table class="table table-striped"><tbody>';
 		for (var i = 0, ilen = peer_subset.length, line, avg; i < ilen; i++) {
 			avg = 0; // avoid divide by zero
 			if (peer_subset[i].data.length) {
-				avg = Math.round(100.0 * (peer_subset[i].data.slice(-1)[0] - peer_subset[i].data[0]) / peer_subset[i].data.length)/100.0;
+				avg = Math.round(10.0 * (peer_subset[i].data.slice(-1)[0] - peer_subset[i].data[0]) / peer_subset[i].data.length)/10.0;
 			}
-			line = '<tr><td>' + peer_subset[i].name + '</td><td>' + avg + ' percentage points</td></tr>';
+			line = '<tr><td>' + peer_subset[i].name + '</td><td>' + avg + ' % points</td></tr>';
 			detail += line;
 		}
 		detail += '</tbody></table>';
@@ -455,8 +455,8 @@ $(function () {
 <fieldset class="controls">
 <label>&nbsp;</label>
 <label id="label_year_selector"><select id="year_selector" class="control">
-<option value="4yr">4-Year Graduation Rate</option>
-<option value="6yr" selected>6-Year Graduation Rate</option>
+<option value="4yr">4-Year Graduation Rates</option>
+<option value="6yr" selected>6-Year Graduation Rates</option>
 </select></label>
 
 <!-- <label>CSU Peer Institutions Comparison Reports for <select> -->
@@ -487,9 +487,9 @@ $(function () {
 </select></label>
 
 <label id="label_cohort_selector"><select id="cohort_selector_4yr" class="control">
-<option value="2010">2010</option>
+<option value="2010" selected>2010</option>
 <option value="2009">2009</option>
-<option value="2008" selected>2008</option>
+<option value="2008">2008</option>
 <option value="2007">2007</option>
 <option value="2006">2006</option>
 <option value="2005">2005</option>
@@ -508,7 +508,7 @@ $(function () {
 <option value="2002">2002</option>
 <option value="2001">2001</option>
 <option value="2000">2000</option>
-</select><span>cohort.</span> </label>
+</select><span>entering freshman cohort</span> </label>
 
 <label id="label_year_span_selector">
 <select id="year_span_selector" class="control">
@@ -599,6 +599,14 @@ $(function () {
 		//var out2 = '<thead><tr>';
 		json.headers[0].forEach(function (item,i) {
 			//out2 += '<td>' + item + '</td>'; 
+			if (item === 'Main') item
+			item = (item === 'Main') ? 'Campus': item;
+			item = (item === 'Underrepresented Minority 6-Year Grad Rate') ? 'URM 6-Year Grad Rate': item;
+			item = (item === '% Pell Recipients Among Freshmen') ? '% Pell Eligible': item;
+			item = (item === '% Underrepresented Minorities') ? '% URM': item;
+			item = (item === 'Average High School GPA Among College Freshmen') ? 'Average High School GPA': item;
+			item = (item === 'Estimated/Mean SAT') ? 'Average SAT Score': item;
+			//item = (item === '') ? '': item;
 			out += '<td id="col_' + i + '">' + item + '</td>'; 
 		});
 		out += '</tr></thead><tbody id="tb1">';
@@ -618,9 +626,9 @@ $(function () {
 						item === 'California State Polytechnic University-' + campus_selector.value || 
 						item === 'California Polytechnic State University-' + campus_selector.value || 
 						item === campus_selector.value + ' State University')) {
-						out3 += ' class="highlight" >'
+						out3 += ' class="highlight"  style="font-weight:600; color: #cc0033">' // Should just use '.highlight' to style
 						//out3 += '<td style="font-weight:600">' + item + '</td>'; 
-						out3 += '<td style="font-weight:600; color: #cc0033">' + item + '</td>'; 
+						out3 += '<td class="col_campus" style="width:24%;">' + item + '</td>'; 
 
 					} else {
 						out3 += '><td>' + item + '</td>';
