@@ -131,6 +131,15 @@ $(function () {
 		});
 	};
 
+	// one place to consistently convert to shorter csu name
+	var convert_csu_campus_name = function (campus_name) {
+		var name = campus_name;
+		name = name.replace('California State University-','CSU ');
+		name = name.replace('California State Polytechnic University-','CSU ');
+		name = name.replace('California Polytechnic State University-','CSU ');
+		return name;
+	};
+
 	// fetch appropriate data set
 	var load_chart_data = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
@@ -170,7 +179,12 @@ $(function () {
 		chart_data.ylabel = '% Graduated';
 		for (var i = 0, ilen = json_data.rows.length; i < ilen; i++) {
 			row = json_data.rows[i];
-			key = row[0].replace('California State University-','CSU ');
+			key = convert_csu_campus_name(row[0]);
+			//key = row[0].replace('California State University-','CSU ');
+			//key = key.replace('California State University-','CSU ');
+			//key = key.replace('California State Polytechnic University-','CSU ');
+			//key = key.replace('California Polytechnic State University-','CSU ');
+
 			value = parseFloat(row[col]);
 			chart_data.series[i] = {'name':key,'y':value};
 			if (key.indexOf(config.campus) !== -1) {
@@ -273,6 +287,15 @@ $(function () {
 	var map_years = {'5':-5,'3':-3,'0':0}; // modify to match returned values from control 
 	var retained_json_data; // saves having to reload data each time only year_span changes
 
+	// one place to consistently convert to shorter csu name
+	var convert_csu_campus_name = function (campus_name) {
+		var name = campus_name;
+		name = name.replace('California State University-','CSU ');
+		name = name.replace('California State Polytechnic University-','CSU ');
+		name = name.replace('California Polytechnic State University-','CSU ');
+		return name;
+	};
+
 	// only show year_span of series (series array is sliced at position)
 	var truncate_data = function (data, position) {
 		var out = [], item, key, itemset;
@@ -332,13 +355,17 @@ $(function () {
 					name === 'California State Polytechnic University-' + config.campus || 
 					name === 'California Polytechnic State University-' + config.campus || 
 					name === config.campus + ' State University')) {
-				csuname = name;
-				csuname = csuname.replace('California State University-','CSU ');
-				csuname = csuname.replace('California State Polytechnic University-','CSU ');
-				csuname = csuname.replace('California Polytechnic State University-','CSU ');
+					csuname = convert_csu_campus_name(config.campus);
+				//csuname = name;
+				//csuname = csuname.replace('California State University-','CSU ');
+				//csuname = csuname.replace('California State Polytechnic University-','CSU ');
+				//csuname = csuname.replace('California Polytechnic State University-','CSU ');
 				selected_campus_data = {'name':csuname,'data':series};
 			} else {
-				out_data.push({'name':name.replace('California State University-','CSU ') ,'data':series});
+				//name = name.replace('California State University-','CSU ');
+				//name = name.replace('California State Polytechnic University-','CSU ');
+				//name = name.replace('California Polytechnic State University-','CSU ');
+				out_data.push({'name':convert_csu_campus_name(name) ,'data':series});
 			}
 		}
 		out_data.sort(function (a,b) {
@@ -615,6 +642,15 @@ $(function () {
 		}
 	};
 
+	// one place to consistently convert to shorter csu name
+	var convert_csu_campus_name = function (campus_name) {
+		var name = campus_name;
+		name = name.replace('California State University-','CSU ');
+		name = name.replace('California State Polytechnic University-','CSU ');
+		name = name.replace('California Polytechnic State University-','CSU ');
+		return name;
+	};
+
 	// create table from json data
 	var create_table = function (json, config) {
 		var out = '<thead><tr>';
@@ -647,17 +683,17 @@ $(function () {
 				// Exception handling for campus name matching (enables highlighting of selected campus)
 				if (i === 0) {
 					out3 += '<tr';
-					if ((item === 'California State University-' + campus_selector.value || 
-						item === 'California ' + campus_selector.value || 
-						item === 'California State Polytechnic University-' + campus_selector.value || 
-						item === 'California Polytechnic State University-' + campus_selector.value || 
-						item === campus_selector.value + ' State University')) {
+					if ((item === 'California State University-' + config.campus || 
+						item === 'California ' + config.campus || 
+						item === 'California State Polytechnic University-' + config.campus || 
+						item === 'California Polytechnic State University-' + config.campus || 
+						item === config.campus + ' State University')) {
 						out3 += ' class="highlight">' // Should just use '.highlight' to style
 						//out3 += '<td style="font-weight:600">' + item + '</td>'; 
-						out3 += '<td class="col_campus" style="min-width:31%; width:31%">' + item + '</td>'; 
+						out3 += '<td class="col_campus" style="min-width:27%; width:27%">' + convert_csu_campus_name(item) + '</td>'; 
 
 					} else {
-						out3 += '><td>' + item + '</td>';
+						out3 += '><td>' + convert_csu_campus_name(item) + '</td>';
 					}
 				} else {
 					out3 += '<td style="text-align:right;padding-right:5px;">' + item + '</td>'; 
