@@ -155,9 +155,16 @@ $(function () {
 	// update chart
 	var update_grade_rate_chart = function (json_data, config) { //,campus,grad_year,cohort) {
 		//console.log(config);
-		var cohort2col = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9, '2009':10, '2010':11};
+		//var cohort2col = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9, '2009':10, '2010':11};
+		var cohort2col_6yr = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
+		var cohort2col_4yr = {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11};
 		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
-		col = cohort2col[config.cohort];
+		//col = cohort2col[config.cohort];
+		if (config.grad_year === '6yr') {
+			col = cohort2col_6yr[config.cohort];
+		} else {
+			col = cohort2col_4yr[config.cohort];
+		}
 		chart_data.title = config.grad_year.slice(0,1) + ' Year Graduation Rate for First-Time, Full-Time Freshmen';
 		chart_data.subtitle = config.cohort + ' Cohort'
 		chart_data.ylabel = '% Graduated';
@@ -490,9 +497,9 @@ $(function () {
 </select></label>
 
 <label id="label_cohort_selector"><select id="cohort_selector_4yr" class="control">
-<option value="2010" selected>2010</option>
-<option value="2009">2009</option>
-<option value="2008">2008</option>
+<!-- <option value="2010" selected>2010</option>
+<option value="2009">2009</option> -->
+<option value="2008" selected>2008</option>
 <option value="2007">2007</option>
 <option value="2006">2006</option>
 <option value="2005">2005</option>
@@ -527,9 +534,9 @@ $(function () {
 
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="#chart">CSU Peer Comparisons</a></li>
+		<li><a href="#trends">CSU Peer Trends</a></li>
 		<li><a href="#table">Data Tables</a></li>
 		<li><a href="#method">Methodology</a></li>
-		<li><a href="#trends">CSU Peer Trends</a></li>
 	</ul>
 
 	<div class="tab-content">
