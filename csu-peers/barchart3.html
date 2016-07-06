@@ -644,7 +644,7 @@ $(function () {
 			item = (item === 'Size (Undergrad FTE)') ? '(Undergrad FTE)&nbsp;Size': item;
 			//item = (item === '') ? '': item; // pattern
 			if (i === 0) {
-				out += '<th id="col_' + i + '">' + item + '</th>'; 
+				out += '<th id="col_' + i + '" class="col_campus">' + item + '</th>'; 
 			} else {
 				out += '<th id="col_' + i + '"  style="text-align:right;padding-right:5px;">' + item + '</th>'; 
 			}
@@ -669,7 +669,7 @@ $(function () {
 						out3 += '<td class="col_campus">' + convert_csu_campus_name(item) + '</td>'; 
 
 					} else {
-						out3 += '><td>' + convert_csu_campus_name(item) + '</td>';
+						out3 += '><td class="col_campus">' + convert_csu_campus_name(item) + '</td>';
 					}
 				} else {
 					out3 += '<td style="text-align:right;padding-right:5px;">' + item + '</td>'; 
