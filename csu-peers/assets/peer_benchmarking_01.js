@@ -218,7 +218,7 @@ $(document).ready(function () {
 			},
 			yAxis: {
 				title: {
-					text: ' % Grad Rate'
+					text: '% Grad Rate'
 				},
 				plotLines: [{
 					value: 0,
@@ -238,6 +238,9 @@ $(document).ready(function () {
 			},
 			series: data
 		});
+		$('#trends_footnote').html('*Showing ' + data[0].name + 
+			' and its four top performing national peers (based on their ' + 
+			config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
 	};
 
 	// only show year_span of series (series array is sliced at position)
@@ -362,7 +365,6 @@ $(document).ready(function () {
 		}
 		detail += '</tbody></table>';
 		$('#text_panel_0').html('<h3>' + heading + '</h3>' + detail);
-		$('#trends_footnote').html('*Showing ' + config.campus + ' and its four top performing national peers (based on their 2008 cohort ' + n + ' Year graduation rates).');
 	};
 
 	/* 
