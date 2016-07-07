@@ -1,6 +1,8 @@
 $(document).ready(function () {
-	var peer_benchmarking_version = '0.1';
+	var defeat_cache = '', peer_benchmarking_version = '0.1';
 	console.log(peer_benchmarking_version);
+	// dev only
+	defeat_cache = '?v=' + (new Date()).getTime();
 
 	/* 
 	  * Page level support functions and general settings, defaults
@@ -228,6 +230,7 @@ $(document).ready(function () {
 				valueSuffix: '%'
 			},
 			legend: {
+				title: {style:{'color':'#777'}, text: '(Click to show/hide campuses)'},
 				layout: 'horizontal',
 				align: 'center',
 				width:200,
@@ -259,7 +262,7 @@ $(document).ready(function () {
 
 	var load_peer_campus_urls = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
-		var chart_data_src = 'data/peer_campus_urls.json?v=3';
+		var chart_data_src = 'data/peer_campus_urls.json' + defeat_cache;
 
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
@@ -280,7 +283,7 @@ $(document).ready(function () {
 	var load_chart_historical_trends = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
-			config.campus.replace(pattern2,'_') + '_' + config.grad_year + config.type + '.json?v=17';
+			config.campus.replace(pattern2,'_') + '_' + config.grad_year + config.type + '.json' + defeat_cache; //
 
 		// fetch json data via xhr, then invoke callback
 		$.ajax({
@@ -359,6 +362,7 @@ $(document).ready(function () {
 		}
 		detail += '</tbody></table>';
 		$('#text_panel_0').html('<h3>' + heading + '</h3>' + detail);
+		$('#trends_footnote').html('*Showing ' + config.campus + ' and its four top performing national peers (based on their 2008 cohort ' + n + ' Year graduation rates).');
 	};
 
 	/* 
@@ -377,6 +381,7 @@ $(document).ready(function () {
 		if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
 			one_or_two = (header_copy[2] === 'Underrepresented Minority 6-Year Grad Rate') ? 2 : 1;
 			header_copy.splice(1,one_or_two,header_copy.splice(-1,1)[0]); // remove 6yr column(s) and move last column to 2nd column position
+			header_copy[1] = config.cohort + '&nbsp;4yr Grad&nbsp;Rate';
 		} else { // 6yr
 			header_copy.splice(-1,1); // simply remove last col
 		}
@@ -393,7 +398,7 @@ $(document).ready(function () {
 			if (i === 0) {
 				out += '<th id="col_' + i + '" class="col_campus">' + item + '</th>'; 
 			} else {
-				out += '<th id="col_' + i + '"  style="text-align:right;padding-right:5px;">' + item + '</th>'; 
+				out += '<th id="col_' + i + '"  style="text-align:right;padding-right:5px;">' + item + '</th>';  // TODO: move style to css
 			}
 		});
 		out += '</tr></thead><tbody id="tb1">';
@@ -499,7 +504,7 @@ $(document).ready(function () {
 	};
 
 	var load_table_peers = function (config, callback) {
-		var table_data_src = 'data/GRtables/' + config.campus.replace(pattern2,'_') + '_' + config.cohort + '_briefplus.json?v=18';
+		var table_data_src = 'data/GRtables/' + config.campus.replace(pattern2,'_') + '_' + config.cohort + '_briefplus.json' + defeat_cache;
 		$.ajax({
 			url: table_data_src,
 			datatype: "json",
