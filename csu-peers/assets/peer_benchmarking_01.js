@@ -1,7 +1,9 @@
 $(document).ready(function () {
-	var defeat_cache = '?v=33', peer_benchmarking_version = '0.1';
-	console.log(peer_benchmarking_version);
+	'use strict';
+	var defeat_cache = '?v=33';
 	// dev only
+	//var peer_benchmarking_version = '0.1';
+	//console.log(peer_benchmarking_version);
 	//defeat_cache = '?v=' + (new Date()).getTime();
 
 	/* 
@@ -21,7 +23,7 @@ $(document).ready(function () {
 		}
 	};
 	
-	var pattern1 = /[$%,]/g, pattern2 = / /g;
+	var pattern1 = new RegExp('[$%,]','g'), pattern2 = new RegExp(' ','g');
 
 	var cohort2col_6yr = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
 	var cohort2col_4yr = {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11};
@@ -39,11 +41,11 @@ $(document).ready(function () {
 	};
 
 	var shorten_peer_name = function (name) {
-		name = name.replace(/CUNY John Jay College.*$/,'CUNY John Jay College'); // of Criminal Justice
-		name = name.replace(/Bowling Green State University.*$/,'Bowling Green State University');
-		name = name.replace(/University of South Florida.*$/,'University of South Florida'); // - Main Campus
-		name = name.replace(/University of New Mexico.*$/,'University of New Mexico'); // - Main Campus
-		name = name.replace(/New Mexico State University.*$/,'New Mexico State University'); // - Main Campus (? does this exist ?)
+		name = name.replace(new RegExp('CUNY John Jay College.*$'),'CUNY John Jay College'); // of Criminal Justice
+		name = name.replace(new RegExp('Bowling Green State University.*$'),'Bowling Green State University');
+		name = name.replace(new RegExp('University of South Florida.*$'),'University of South Florida'); // - Main Campus
+		name = name.replace(new RegExp('University of New Mexico.*$'),'University of New Mexico'); // - Main Campus
+		name = name.replace(new RegExp('New Mexico State University.*$'),'New Mexico State University'); // - Main Campus 
 		return name;
 	};
 	// test: console.log(shorten_peer_name('CUNY John Jay College of Criminal Justice'));
@@ -52,28 +54,28 @@ $(document).ready(function () {
 	  * Custom event listeners respond to any change of tab, campus, cohort, etc.
 	  */
 
-	$('#label_year_selector').on('state_change', function (e, state) {
+	$('#label_year_selector').on('state_change', function () {
 		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'trends' || chart_state.selected_tab_name === 'table') {
 			$('#label_year_selector').show();
 		} else {
 			$('#label_year_selector').hide();
 		}
 	});
-	$('#label_campus_selector').on('state_change', function (e, state) {
+	$('#label_campus_selector').on('state_change', function () {
 		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'trends' || chart_state.selected_tab_name === 'table') {
 			$('#label_campus_selector').show();
 		} else {
 			$('#label_campus_selector').hide();
 		}
 	});
-	$('#label_cohort_selector').on('state_change', function (e, state) {
+	$('#label_cohort_selector').on('state_change', function () {
 		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'table') {
 			$('#label_cohort_selector').show();
 		} else {
 			$('#label_cohort_selector').hide();
 		}
 	});
-	$('#label_year_span_selector').on('state_change', function (e, state) {
+	$('#label_year_span_selector').on('state_change', function () {
 		if (chart_state.selected_tab_name === 'trends') {
 			$('#label_year_span_selector').show();
 		} else {
@@ -88,7 +90,7 @@ $(document).ready(function () {
 	//$('#campus_selector').on('state_change', function (e, state) {
 	//	// not used
 	//});
-	$('#cohort_selector_6yr').on('state_change', function (e, state) {
+	$('#cohort_selector_6yr').on('state_change', function () {
 		if (chart_state.grad_year !== '6yr') {
 			$('#cohort_selector_6yr').hide();
 		} else {
@@ -101,7 +103,7 @@ $(document).ready(function () {
 			$('#cohort_selector_6yr').show();
 		}
 	});
-	$('#cohort_selector_4yr').on('state_change', function (e, state) {
+	$('#cohort_selector_4yr').on('state_change', function () {
 		if (chart_state.grad_year !== '4yr') {
 			$('#cohort_selector_4yr').hide();
 		} else {
@@ -158,15 +160,16 @@ $(document).ready(function () {
 	};
 
 	var update_chart_peer_comparisons = function (config, json_data) {
-		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
+		var i, ilen, row, col, key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
 		if (config.grad_year === '6yr') {
 			col = cohort2col_6yr[config.cohort];
 		} else {
 			col = cohort2col_4yr[config.cohort];
 		}
 		chart_data.title = config.grad_year.slice(0,1) + ' Year Graduation Rate for First-Time, Full-Time Freshmen';
-		chart_data.subtitle = config.cohort + ' Cohort'
-		for (var i = 0, ilen = json_data.rows.length; i < ilen; i++) {
+		chart_data.subtitle = config.cohort + ' Cohort';
+		ilen = json_data.rows.length;
+		for (i = 0; i < ilen; i+=1) {
 			row = json_data.rows[i];
 			key = row[0];
 			key = convert_csu_campus_name(key);
@@ -190,7 +193,7 @@ $(document).ready(function () {
 
 		var s0 = chart_data.series[0];
 		var s1 = chart_data.series[1];
-		if (isNaN(s0['y'])) {
+		if (isNaN(s0.y)) {
 			chart_data.series[0] = s1;
 			chart_data.series[1] = s0;
 		}
@@ -245,8 +248,8 @@ $(document).ready(function () {
 
 	// only show year_span of series (series array is sliced at position)
 	var truncate_data = function (data, position) {
-		var out = [], item, key, itemset;
-		for (var i = 0, ilen = data.length; i < ilen; i++) {
+		var i, ilen = data.length, out = [], item, key, itemset;
+		for (i = 0; i < ilen; i+=1) {
 			itemset = {};
 			for (key in data[i]) {
 				if (data[i].hasOwnProperty(key)) {
@@ -274,10 +277,10 @@ $(document).ready(function () {
 			success: function (result) {
 				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
 				callback(json_object, config);
-			},
+			}/*,
 			error: function (xhr, msg, e) {
 				console.log(msg);
-			}
+			}*/
 		});
 	};
 
@@ -295,36 +298,39 @@ $(document).ready(function () {
 			success: function (result) {
 				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
 				callback(json_object, config);
-			},
+			}/*,
 			error: function (xhr, msg, e) {
 				console.log(msg);
-			}
+			}*/
 		});
 	};
 
 	// select appropriate subset of peers
 	var filter_peers = function (config, json_data) {
-		var csuname;
-		var rows = json_data.rows;
-		var out_data = [];
-		var selected_campus_data;
-		for (var i = 0, ilen = rows.length, row; i < ilen; i++) {
+		var i, ilen, row, name, series, rows = json_data.rows, out_data = [], selected_campus_data;
+		ilen = rows.length;
+		var parse_item = function (item, j, a) {
+			a[j] = parseFloat(item);
+			a[j] = isNaN(a[j])?null:a[j];
+		};
+		for (i = 0; i < ilen; i+=1) {
 			row = rows[i];
 			name = row[0];
 			name = shorten_peer_name(name);
 			series = row.slice(1);
-			series.forEach(function (item, j, a) {
-				a[j] = parseFloat(item);
-				a[j] = isNaN(a[j])?null:a[j];
-			});
+			series.forEach(parse_item);
+			//function (item, j, a) {
+			//	a[j] = parseFloat(item);
+			//	a[j] = isNaN(a[j])?null:a[j];
+			//});
 			if (config.grad_year === '4yr') { // hack to fix bad 4yr data
 				series = series.slice(2); // skipping first two years (which are really 1998, 1999: not 2000, 2001)
 			}
-			if ((name === 'California State University-' + config.campus || 
+			if (name === 'California State University-' + config.campus || 
 					name === 'California ' + config.campus || 
 					name === 'California State Polytechnic University-' + config.campus || 
 					name === 'California Polytechnic State University-' + config.campus || 
-					name === config.campus + ' State University')) {
+					name === config.campus + ' State University') {
 				selected_campus_data = {'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 4};
 			} else {
 				out_data.push({'name':convert_csu_campus_name(name), 'data':series});
@@ -342,24 +348,24 @@ $(document).ready(function () {
 	};
 
 	var create_table_historical_trends = function (config, peer_subset) {
-		var year_start, year_end, n;
+		var i, ilen = peer_subset.length, line, avg, year_start, year_end, n;
 		year_start = config.years[0];
 		year_end = config.years.slice(-1)[0];
 		n = config.grad_year[0];
 		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Grad Rates';
 		var detail = '<table class="table table-striped"><tbody>';
-		for (var i = 0, ilen = peer_subset.length, line, avg; i < ilen; i++) {
+		for (i = 0; i < ilen; i+=1) {
 			if (!peer_subset[i].data || peer_subset[i].data.slice(-1)[0] === null || peer_subset[i].data[0] === null) {
-				line = '<tr><td>' + peer_subset[i].name + '</td><td class="nowrap" style="min-width:3em;text-align:right;">' + 'n/a</td></tr>'; // TODO: style to css
+				line = '<tr><td>' + peer_subset[i].name + '</td><td class="nowrap" style="min-width:3em;text-align:right;">' + 'n/a</td></tr>'; // Note: style to css
 			} else {
 				avg = '0.0'; // avoid divide by zero
 				if (peer_subset[i].data && peer_subset[i].data.length) {
-					avg = '' + Math.round(10.0 * (peer_subset[i].data.slice(-1)[0] - peer_subset[i].data[0]) / peer_subset[i].data.length)/10.0;
+					avg = '' + Math.round(10.0 * (peer_subset[i].data.slice(-1)[0] - peer_subset[i].data[0]) / (peer_subset[i].data.length - 1))/10.0;
 				}
 				if (avg.split('.').length === 1) {
 					avg += '.0';
 				}
-				line = '<tr><td>' + peer_subset[i].name + '</td><td class="nowrap" style="min-width:3em;text-align:right;">' + avg + ' % points</td></tr>'; // TODO: style to css
+				line = '<tr><td>' + peer_subset[i].name + '</td><td class="nowrap" style="min-width:3em;text-align:right;">' + avg + ' % points</td></tr>'; // Note: style to css
 			}
 			detail += line;
 		}
@@ -371,11 +377,57 @@ $(document).ready(function () {
 	  * Functions related to 'Data Tables' tab
 	  */
 
-	var forEach = function (array, callback, scope) {
-		for (var i = 0, ilen = array.length; i < ilen; i++) {
-			callback.call(scope, array[i], i, array);
+	//var forEach = function (array, callback, scope) {
+	//	var i, ilen = array.length;
+	//	for (i = 0; i < ilen; i+=1) {
+	//		callback.call(scope, array[i], i, array);
+	//	}
+	//};
+
+	var sortcol = function (tbody, col, direction) {
+		var i, ilen = tbody.children.length, trs = [], tr, td, row, frag;
+		for (i = 0; i < ilen; i+=1) {
+			tr = tbody.children[i];
+			td = tr.children[col].innerText;
+			trs[i] = [td,i,tr.innerHTML,tr.className || ''];
 		}
+		frag = document.createDocumentFragment();
+		if (direction === 'ascending') {
+			trs.sort(function (a,b) {
+				var aa = a[0].toUpperCase(), bb = b[0].toUpperCase();
+				aa = aa.indexOf('ds*') !== -1?'$0':aa;
+				bb = bb.indexOf('ds*') !== -1?'$0':bb;
+				aa = aa.replace(pattern1,'');
+				bb = bb.replace(pattern1,'');
+				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
+				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
+				return aa>bb?1:aa===bb?0:-1;
+			});
+		} else {
+			trs.sort(function (b,a) {
+				var aa = a[0].toUpperCase(), bb = b[0].toUpperCase();
+				aa = aa.indexOf('ds*') !== -1?'$0':aa;
+				bb = bb.indexOf('ds*') !== -1?'$0':bb;
+				aa = aa.replace(pattern1,'');
+				bb = bb.replace(pattern1,'');
+				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
+				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
+				return aa>bb?1:aa===bb?0:-1;
+			});
+		}
+		ilen = trs.length;
+		for (i = 0; i < ilen; i+=1) {
+			row = document.createElement('tr');
+			if (trs[i][3].indexOf('highlight') !== -1) {
+				row.className = "highlight";
+			}
+			row.innerHTML = trs[i][2];
+			frag.appendChild(row);
+		}
+		tbody.innerHTML = '';
+		tbody.appendChild(frag,tbody);
 	};
+
 	var sort_toggle_state = {}; // for toggling sort direction
 	var create_table_peers = function (json, config) {
 		var out = '<thead><tr>';
@@ -400,13 +452,14 @@ $(document).ready(function () {
 			if (i === 0) {
 				out += '<th id="col_' + i + '" class="col_campus">' + item + '</th>'; 
 			} else {
-				out += '<th id="col_' + i + '"  style="text-align:right;padding-right:5px;">' + item + '</th>';  // TODO: move style to css
+				out += '<th id="col_' + i + '"  style="text-align:right;padding-right:5px;">' + item + '</th>';  // Note: move style to css
 			}
 		});
 		out += '</tr></thead><tbody id="tb1">';
 		var out3 = '';
-		json.rows.forEach(function (row,j) {
-			var highlight = false, row_copy = row.slice();
+		json.rows.forEach(function (row) {
+			//var highlight = false, 
+			var row_copy = row.slice();
 			if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
 				row_copy.splice(1,one_or_two,row_copy.splice(-1,1)[0]); // remove 6yr column(s) and move last column to 2nd column position
 			} else { // 6yr
@@ -426,31 +479,32 @@ $(document).ready(function () {
 					}
 					out3 += '<tr';
 					name = shorten_peer_name(name);
-					if ((name === 'California State University-' + config.campus || 
+					if (name === 'California State University-' + config.campus || 
 						name === 'California ' + config.campus || 
 						name === 'California State Polytechnic University-' + config.campus || 
 						name === 'California Polytechnic State University-' + config.campus || 
-						name === config.campus + ' State University')) {
-						out3 += ' class="highlight">' // Should just use '.highlight' to style
-						out3 += '<td class="col_campus"><a href="' + link + '" target="_blank" style="color:#b33;text-decoration:underline;">'; // TODO: move style to css
+						name === config.campus + ' State University') {
+						out3 += ' class="highlight">'; // Should just use '.highlight' to style
+						out3 += '<td class="col_campus"><a href="' + link + '" target="_blank" style="color:#b33;text-decoration:underline;">'; // Note: move style to css
 						out3 += convert_csu_campus_name(name) + '</a></td>';
 					} else {
-						out3 += '><td class="col_campus"><a href="' + link + '" target="_blank" style="color:#111;text-decoration:underline;">'; // TODO: move style to css
+						out3 += '><td class="col_campus"><a href="' + link + '" target="_blank" style="color:#111;text-decoration:underline;">'; // Note: move style to css
 						out3 += convert_csu_campus_name(name) + '</a></td>';
 					}
 				} else {
-					out3 += '<td style="text-align:right;padding-right:5px;">' + item + '</td>'; // TODO: move style to css
+					out3 += '<td style="text-align:right;padding-right:5px;">' + item + '</td>'; // Note: move style to css
 				}
 			});
 			out3 += '</tr>';
 		});
-		out3 += '</tbody>'
+
+		out3 += '</tbody>';
 		$('#desctable').html(out + out3);
 		var cols = [];
 		json.headers[0].forEach(function (item,i) {
 			var ord = 'ord' + i;
 			cols.push('#col_' + i);
-			$(cols[i]).on('click', function (e) {
+			$(cols[i]).on('click', function () {
 				var tbody = document.querySelector('#tb1');
 				if (!sort_toggle_state[ord] || sort_toggle_state[ord] !== 'ascending') { // toggle
 					sort_toggle_state[ord] = 'ascending';
@@ -460,49 +514,6 @@ $(document).ready(function () {
 				sortcol(tbody, i, sort_toggle_state[ord]);
 			});
 		});
-	};
-
-	var sortcol = function (tbody, col, direction) {
-		var values = [], trs = [], tr, td, row, frag;
-		for (var i = 0, ilen = tbody.children.length; i < ilen; i++) {
-			tr = tbody.children[i];
-			td = tr.children[col].innerText;
-			trs[i] = [td,i,tr.innerHTML,tr.className || ''];
-		}
-		var frag = document.createDocumentFragment();
-		if (direction === 'ascending') {
-			trs.sort(function (a,b) {
-				var aa = a[0].toUpperCase(), bb = b[0].toUpperCase();
-				aa = aa.indexOf('ds*') !== -1?'$0':aa;
-				bb = bb.indexOf('ds*') !== -1?'$0':bb;
-				aa = aa.replace(pattern1,'');
-				bb = bb.replace(pattern1,'');
-				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
-				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
-				return aa>bb?1:aa===bb?0:-1;
-			});
-		} else {
-			trs.sort(function (b,a) {
-				var aa = a[0].toUpperCase(), bb = b[0].toUpperCase();
-				aa = aa.indexOf('ds*') !== -1?'$0':aa;
-				bb = bb.indexOf('ds*') !== -1?'$0':bb;
-				aa = aa.replace(pattern1,'');
-				bb = bb.replace(pattern1,'');
-				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
-				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
-				return aa>bb?1:aa===bb?0:-1;
-			});
-		}
-		for (var i = 0, ilen = trs.length; i < ilen; i++) {
-			row = document.createElement('tr');
-			if (trs[i][3].indexOf('highlight') !== -1) {
-				row.className = "highlight";
-			}
-			row.innerHTML = trs[i][2];
-			frag.appendChild(row);
-		}
-		tbody.innerHTML = '';
-		tbody.appendChild(frag,tbody);
 	};
 
 	var load_table_peers = function (config, callback) {
@@ -515,10 +526,10 @@ $(document).ready(function () {
 				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
 				// once data is loaded invoke callback
 				callback(json_object, config);
-			},
+			}/*,
 			error: function (xhr, msg, e) {
 				console.log(msg);
-			}
+			}*/
 		});
 	};
 
@@ -566,7 +577,7 @@ $(document).ready(function () {
 			update_chart_peer_comparisons(chart_state, retained_json_data);
 			update_chart_historical_trends(chart_state, retained_json_data);
 		});
-		load_table_peers(chart_state, create_table_peers); // TODO: eliminate unnecessary data fetch
+		load_table_peers(chart_state, create_table_peers); // Note: eliminate unnecessary data fetch
 	});
 
 	$('#year_span_selector').on('change', function (e) { // Past Three Years, Past Five Years, Since 2000
