@@ -1,8 +1,8 @@
 $(document).ready(function () {
-	var defeat_cache = '', peer_benchmarking_version = '0.1';
+	var defeat_cache = '?v=33', peer_benchmarking_version = '0.1';
 	console.log(peer_benchmarking_version);
 	// dev only
-	defeat_cache = '?v=' + (new Date()).getTime();
+	//defeat_cache = '?v=' + (new Date()).getTime();
 
 	/* 
 	  * Page level support functions and general settings, defaults
