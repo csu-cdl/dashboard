@@ -401,7 +401,10 @@ $(document).ready(function () {
 				// Exception handling for campus name matching (enables highlighting of selected campus)
 				if (i === 0) { // campus name column
 					name = item;
-					link = peer_campus_urls[name] || '#';
+					link = '#';
+					if (peer_campus_urls.hasOwnProperty(name)) {
+						link = peer_campus_urls[name];
+					}
 					out3 += '<tr';
 					name = shorten_peer_name(name);
 					if ((name === 'California State University-' + config.campus || 
@@ -560,25 +563,17 @@ $(document).ready(function () {
 	
 	//load_chart_peer_comparisons(chart_state, update_chart_peer_comparisons);
 
+	load_peer_campus_urls(chart_state, function (json_data, chart_state) {
+		peer_campus_urls = json_data;
+		load_table_peers(chart_state, create_table_peers); // order dependency
+	});
+
 	load_chart_historical_trends(chart_state, function (json_data, chart_state) {
 		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
 		retained_json_data = json_data;
 		update_chart_peer_comparisons(chart_state, retained_json_data);
 		update_chart_historical_trends(chart_state, retained_json_data);
 	});
-
-	load_peer_campus_urls(chart_state, function (json_data, chart_state) {
-		peer_campus_urls = json_data;
-		/*
-		var dict = {};
-		for (var i = 0, ilen = json_data.length; i < ilen; i++) {
-			dict[json_data[i][0]] = json_data[i][1];
-		}
-		console.log(JSON.stringify(dict));
-		peer_campus_urs = dict;
-		*/
-	});
-	load_table_peers(chart_state, create_table_peers);
 
 	/* 
 	  * Activate tab navigation
