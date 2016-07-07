@@ -1,575 +1,120 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!--meta name="viewport" content="width=device-width, initial-scale=1"-->
 <meta name="viewport" content="width=1170">
-    
-
 <title>CSU Peer Benchmarking</title>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-<script src="../global/js/bootstrap.min.js"></script>
+
 <link rel="stylesheet" type="text/css" href="../global/css/style.css">
 <link rel="stylesheet" type="text/css" href="assets/peercomp2.css">
-<style type="text/css">
-${demo.css}
-</style>
-<script type="text/javascript">
-$(function () {
-	// solitary global namespace for this app with defaults
-	window.chart_state = {
-		'selected_tab_name':'chart', 'campus':'Bakersfield', 
-		'grad_year':'6yr', 'cohort':'2008', 'years':[], 'peer_count':5,
-		'trends_since':'0', 'type':'GR', 'max_6yr':'2008', 
-		'notify':function () {
-			$('.control').trigger('state_change', [this]);
-		}
-	};
 
-	$('#label_year_selector').on('state_change', function (e, state) {
-		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'trends') {
-			$('#label_year_selector').show();
-		} else {
-			$('#label_year_selector').hide();
-		}
-	});
-	$('#label_campus_selector').on('state_change', function (e, state) {
-		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'table' || chart_state.selected_tab_name === 'trends') {
-			$('#label_campus_selector').show();
-		} else {
-			$('#label_campus_selector').hide();
-		}
-	});
-	$('#label_cohort_selector').on('state_change', function (e, state) {
-		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'table') {
-			$('#label_cohort_selector').show();
-		} else {
-			$('#label_cohort_selector').hide();
-		}
-	});
-	$('#label_year_span_selector').on('state_change', function (e, state) {
-		if (chart_state.selected_tab_name === 'trends') {
-			$('#label_year_span_selector').show();
-		} else {
-			$('#label_year_span_selector').hide();
-		}
-	});
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="assets/highcharts.js"></script>
+<script src="../global/js/bootstrap.min.js"></script>
 
-
-	//$('#year_selector').on('state_change', function (e, state) { // 4yr or 6yr
-	//	// not used
-	//});
-	//$('#campus_selector').on('state_change', function (e, state) {
-	//	// not used
-	//});
-	$('#cohort_selector_6yr').on('state_change', function (e, state) {
-		if (chart_state.grad_year !== '6yr') {
-			$('#cohort_selector_6yr').hide();
-		} else {
-			if (chart_state.cohort > chart_state.max_6yr) {
-				$('#cohort_selector_6yr').val(chart_state.max_6yr);
-				chart_state.cohort = chart_state.max_6yr;
-			} else {
-				$('#cohort_selector_6yr').val(chart_state.cohort); // sync with changes to 4yr
-			}
-			$('#cohort_selector_6yr').show();
-		}
-	});
-	$('#cohort_selector_4yr').on('state_change', function (e, state) {
-		if (chart_state.grad_year !== '4yr') {
-			$('#cohort_selector_4yr').hide();
-		} else {
-			$('#cohort_selector_4yr').val(chart_state.cohort); // sync with changes to 6yr
-			$('#cohort_selector_4yr').show();
-		}
-	});
-	//$('#year_span_selector').on('state_change', function (e, state) {
-	//	// not used
-	//});
-
-
-	// create the highchart
-	var create_chart = function (data) { 
-		$('#container').highcharts({
-			chart: {
-			    type: 'column'
-			},
-			title: {
-			    text: data.title //'Historical 6 Year Graduation Rate'
-			},
-			subtitle: {
-			    text: data.subtitle //'2008 Cohort'
-			},
-			xAxis: {
-			    type: 'category',
-			    labels: {
-				rotation: -45,
-				style: {
-				    fontSize: '13px',
-				    fontFamily: 'Verdana, sans-serif'
-				}
-			    }
-			},
-			yAxis: {
-			    title: {
-			       text:  data.ylabel //'% Graduated'
-			    }
-			},
-			legend: {
-			    enabled: false
-			},
-			tooltip: {
-			    pointFormat: 'Rate:{point.y:.0f}%' //'Rate:{point.y:.1f}%'
-			},
-			series: [{
-			    data: data.series
-			}]
-		});
-	};
-
-	// one place to consistently convert to shorter csu name
-	var convert_csu_campus_name = function (campus_name) {
-		var name = campus_name;
-		name = name.replace('California State University-','CSU ');
-		name = name.replace('California State Polytechnic University-','CSU ');
-		name = name.replace('California Polytechnic State University-','CSU ');
-		return name;
-	};
-
-	// fetch appropriate data set
-	var load_chart_data = function (config, callback) {
-		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
-		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
-			config.campus.replace(/ /g,'_') + '_' + config.grad_year + config.type + '.json?v=15';
-
-		// fetch json data via xhr, then invoke callback
-		$.ajax({
-			url: chart_data_src,
-			datatype: "json",
-			success: function (result) {
-				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
-				callback(json_object, config);
-			},
-			error: function (xhr, msg, e) {
-				console.log(msg);
-			}
-		});
-	};
-
-	// update chart
-	var update_grade_rate_chart = function (json_data, config) { //,campus,grad_year,cohort) {
-		var cohort2col_6yr = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
-		var cohort2col_4yr = {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11};
-		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
-		if (config.grad_year === '6yr') {
-			col = cohort2col_6yr[config.cohort];
-		} else {
-			col = cohort2col_4yr[config.cohort];
-		}
-		chart_data.title = config.grad_year.slice(0,1) + ' Year Graduation Rate for First-Time, Full-Time Freshmen';
-		chart_data.subtitle = config.cohort + ' Cohort'
-		chart_data.ylabel = '% Graduated';
-		for (var i = 0, ilen = json_data.rows.length; i < ilen; i++) {
-			row = json_data.rows[i];
-			key = convert_csu_campus_name(row[0]);
-
-			value = parseFloat(row[col]);
-			chart_data.series[i] = {'name':key,'y':value};
-			if (key.indexOf(config.campus) !== -1) {
-				chart_data.series[i] = {'name':key,'y':value,'color':'#635'};
-			} else {
-				chart_data.series[i] = {'name':key,'y':value,'color':'#159'};
-			}
-			// Exception, might be better to just check against a white-list of CSU campus names
-			if (config.campus === 'Maritime Academy' && key.indexOf('California') === -1) {
-				chart_data.series[i] = {'name':key,'y':value,'color':'#159'};
-			}
-		}
-		// descending sort by y-axis value
-		chart_data.series = chart_data.series.sort(function (b,a) {
-			return a.y - b.y;
-		}); 
-
-		var s0 = chart_data.series[0];
-		var s1 = chart_data.series[1];
-		if (isNaN(s0['y'])) {
-			chart_data.series[0] = s1;
-			chart_data.series[1] = s0;
-		}
-
-		// redisplay the chart
-		create_chart(chart_data);
-	};
-
-	// initially display chart with default data
-	chart_state.notify();
-	load_chart_data(chart_state, update_grade_rate_chart);
-
-	// listen for user selections
-	$('#campus_selector').on('change', function (e) {
-		chart_state.campus = e.target.value;
-		chart_state.notify();
-		load_chart_data(chart_state, update_grade_rate_chart);
-	});
-
-	$('#cohort_selector_6yr').on('change', function (e) {
-		chart_state.cohort = e.target.value;
-		chart_state.notify();
-		load_chart_data(chart_state, update_grade_rate_chart);
-	});
-
-	$('#cohort_selector_4yr').on('change', function (e) {
-		chart_state.cohort = e.target.value;
-		chart_state.notify();
-		load_chart_data(chart_state, update_grade_rate_chart);
-	});
-
-	$('#year_selector').on('change', function (e) {
-		chart_state.grad_year = e.target.value;
-		chart_state.notify();
-		load_chart_data(chart_state, update_grade_rate_chart);
-	});
-});
-</script>
-
-
-<script type="text/javascript">
-$(function () {
-	Highcharts.setOptions({
-		colors: ['#ED361B', '#058DC7', '#50B432', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
-	});
-	var create_chart = function (config, data) {
-		$('#multiline_chart_container').highcharts({
-			title: {
-				text: 'Graduation Rate Trends for First-Time, Full-Time Freshmen',
-				x: -20 //center
-			},
-			subtitle: {
-				text: '',
-				x: -20
-			},
-			xAxis: {
-				categories: config.years //['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010']
-			},
-			yAxis: {
-				title: {
-					text: ' % Grad Rate'
-				},
-				plotLines: [{
-					value: 0,
-					width: 1,
-					color: '#808080'
-				}]
-			},
-			tooltip: {
-				valueSuffix: '%'
-			},
-			legend: {
-				layout: 'horizontal',
-				align: 'center',
-				width:200,
-				borderWidth: 0
-			},
-			series: data
-		});
-	};
-
-	var years = {'4yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008'],
-			'6yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008']};
-	var map_years = {'5':-5,'3':-3,'0':0}; // modify to match returned values from control 
-	var retained_json_data; // saves having to reload data each time only year_span changes
-
-	// one place to consistently convert to shorter csu name
-	var convert_csu_campus_name = function (campus_name) {
-		var name = campus_name;
-		name = name.replace('California State University-','CSU ');
-		name = name.replace('California State Polytechnic University-','CSU ');
-		name = name.replace('California Polytechnic State University-','CSU ');
-		return name;
-	};
-
-	// only show year_span of series (series array is sliced at position)
-	var truncate_data = function (data, position) {
-		var out = [], item, key, itemset;
-		for (var i = 0, ilen = data.length; i < ilen; i++) {
-			itemset = {};
-			for (key in data[i]) {
-				if (data[i].hasOwnProperty(key)) {
-					item = data[i][key];
-					if (key === 'data') {
-						itemset[key] = item.slice(map_years[position]);
-					} else {
-						itemset[key] = item;
-					}
-				}
-			} 
-			out.push(itemset);
-		}
-		return out;
-	};
-
-	// fetch appropriate data set
-	var load_chart_data = function (config, callback) {
-		var match_pattern = / /g;
-		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
-			config.campus.replace(match_pattern,'_') + '_' + config.grad_year + config.type + '.json?v=17';
-
-		// fetch json data via xhr, then invoke callback
-		$.ajax({
-			url: chart_data_src,
-			datatype: "json",
-			success: function (result) {
-				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
-				callback(json_object, config);
-			},
-			error: function (xhr, msg, e) {
-				console.log(msg);
-			}
-		});
-	};
-
-	// select appropriate subset of peers
-	var filter_peers = function (config, json_data) {
-		var csuname;
-		var rows = json_data.rows;
-		var out_data = [];
-		var selected_campus_data;
-		for (var i = 0, ilen = rows.length, row; i < ilen; i++) {
-			row = rows[i];
-			name = row[0];
-			series = row.slice(1);
-			series.forEach(function (item, j, a) {
-				a[j] = parseFloat(item);
-				a[j] = isNaN(a[j])?null:a[j];
-			});
-			if (config.grad_year === '4yr') { // hack to fix bad 4yr data
-				series = series.slice(2); // skipping first two years (which are really 1998, 1999: not 2000, 2001)
-			}
-			if ((name === 'California State University-' + config.campus || 
-					name === 'California ' + config.campus || 
-					name === 'California State Polytechnic University-' + config.campus || 
-					name === 'California Polytechnic State University-' + config.campus || 
-					name === config.campus + ' State University')) {
-				selected_campus_data = {'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 4};
-			} else {
-				out_data.push({'name':convert_csu_campus_name(name), 'data':series});
-			}
-		}
-		out_data.sort(function (a,b) {
-			return a.data.slice(-1)-b.data.slice(-1);
-		});
-		var out_data_subset = out_data.slice(1-config.peer_count);
-		out_data_subset.sort(function (a,b) {
-			return a.name>b.name?1:a.name===b.name?0:-1;
-		});
-		out_data_subset.unshift(selected_campus_data);
-		return out_data_subset;
-	};
-
-	var generate_summary_text = function (config, peer_subset) {
-		var year_start, year_end, n;
-		year_start = config.years[0];
-		year_end = config.years.slice(-1)[0];
-		n = config.grad_year[0];
-		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Grad Rates';
-		var detail = '<table class="table table-striped"><tbody>';
-		for (var i = 0, ilen = peer_subset.length, line, avg; i < ilen; i++) {
-			avg = '0.0'; // avoid divide by zero
-			if (peer_subset[i].data && peer_subset[i].data.length) {
-				avg = '' + Math.round(10.0 * (peer_subset[i].data.slice(-1)[0] - peer_subset[i].data[0]) / peer_subset[i].data.length)/10.0;
-			}
-			if (avg.split('.').length === 1) {
-				avg += '.0';
-			}
-			line = '<tr><td>' + peer_subset[i].name + '</td><td class="nowrap">' + avg + ' % points</td></tr>';
-			detail += line;
-		}
-		detail += '</tbody></table>';
-		return '<h3>' + heading + '</h3>' + detail;
-	};
-
-	var text_panel_0 = document.querySelector('#text_panel_0');
-	// update the chart
-	var update_multiline_chart = function (config, json_data) {
-		var peer_subset = filter_peers(config, json_data);
-		create_chart(config, truncate_data(peer_subset, config.years.length));
-		$('#text_panel_0').html(generate_summary_text(config, truncate_data(peer_subset, config.years.length)));
-	};
-
-	// respond to user changes of year_span
-	$('#year_span_selector').on('change', function (e) {
-		chart_state.trends_since = e.target.value;
-		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
-		load_chart_data(chart_state,  function (json_data, chart_state) {
-			retained_json_data = json_data;
-			update_multiline_chart(chart_state, retained_json_data);
-		});
-	});
-
-	// respond to user changes of campus
-	$('#campus_selector').on('change', function (e) {
-		chart_state.campus = e.target.value;
-		chart_state.notify();
-		load_chart_data(chart_state,  function (json_data, chart_state) {
-			retained_json_data = json_data;
-			update_multiline_chart(chart_state, retained_json_data);
-		});
-	});
-
-	$('#year_selector').on('change', function (e) {
-		chart_state.grad_year = e.target.value;
-		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
-		chart_state.notify();
-		load_chart_data(chart_state,  function (json_data, chart_state) {
-			retained_json_data = json_data;
-			update_multiline_chart(chart_state, retained_json_data);
-		});
-	});
-
-	// initialize chart with default config
-	load_chart_data(chart_state, function (json_data, chart_state) {
-		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
-		retained_json_data = json_data;
-		update_multiline_chart(chart_state, json_data);
-	});
-});
-
-</script>
-
-
+<style type="text/css">${demo.css}</style> <!-- has dependencies on jquery and highcharts -->
 </head><body>
 
 <!--template-->	
-
 <header id="top" class="banner" role="banner">
- <img src="../global/img/branding.png" alt="CSU Student Success Dashboard"/></header>
- 
- <!--nav class="navbar navbar-default navbar-static-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="barchart2.html">CSU Peer Comparisons</a></li>
-          </ul>
-
-        </div><!--/.nav-collapse -->
-      <!--/div>
-    </nav-->
+	<img src="../global/img/branding.png" alt="CSU Student Success Dashboard"/>
+ </header>
 
 <div class="container">
+
 <!--template-->
 <div class="title-bar">      
 	<h1>CSU Peer Benchmarking</h1>
 </div>
 
-
 <fieldset class="controls">
 <label>&nbsp;</label>
 <label id="label_year_selector"><select id="year_selector" class="control">
-<option value="4yr">4-Year Graduation Rates</option>
-<option value="6yr" selected>6-Year Graduation Rates</option>
+	<option value="4yr">4-Year Graduation Rates</option>
+	<option value="6yr" selected>6-Year Graduation Rates</option>
 </select></label>
 
-<!-- <label>CSU Peer Institutions Comparison Reports for <select> -->
 <label id="label_campus_selector"> for <select id="campus_selector" class="control">
-<option value="Bakersfield">Bakersfield</option>
-<option value="Channel Islands">Channel Islands</option>
-<option value="Chico">Chico</option>
-<option value="Dominguez Hills">Dominguez Hills</option>
-<option value="East Bay">East Bay</option>
-<option value="Fresno">Fresno</option>
-<option value="Fullerton">Fullerton</option>
-<option value="Humboldt">Humboldt</option>
-<option value="Long Beach">Long Beach</option>
-<option value="Los Angeles">Los Angeles</option>
-<option value="Maritime Academy">Maritime Academy</option>
-<option value="Monterey Bay">Monterey Bay</option>
-<option value="Northridge">Northridge</option>
-<option value="Pomona">Pomona</option>
-<option value="Sacramento">Sacramento</option>
-<option value="San Bernardino">San Bernardino</option>
-<option value="San Diego">San Diego</option>
-<option value="San Francisco">San Francisco</option>
-<option value="San Jose">San Jose</option>
-<option value="San Luis Obispo">San Luis Obispo</option>
-<option value="San Marcos">San Marcos</option>
-<option value="Sonoma">Sonoma</option>
-<option value="Stanislaus">Stanislaus</option>
+	<option value="Bakersfield">Bakersfield</option>
+	<option value="Channel Islands">Channel Islands</option>
+	<option value="Chico">Chico</option>
+	<option value="Dominguez Hills">Dominguez Hills</option>
+	<option value="East Bay">East Bay</option>
+	<option value="Fresno">Fresno</option>
+	<option value="Fullerton">Fullerton</option>
+	<option value="Humboldt">Humboldt</option>
+	<option value="Long Beach">Long Beach</option>
+	<option value="Los Angeles">Los Angeles</option>
+	<option value="Maritime Academy">Maritime Academy</option>
+	<option value="Monterey Bay">Monterey Bay</option>
+	<option value="Northridge">Northridge</option>
+	<option value="Pomona">Pomona</option>
+	<option value="Sacramento">Sacramento</option>
+	<option value="San Bernardino">San Bernardino</option>
+	<option value="San Diego">San Diego</option>
+	<option value="San Francisco">San Francisco</option>
+	<option value="San Jose">San Jose</option>
+	<option value="San Luis Obispo">San Luis Obispo</option>
+	<option value="San Marcos">San Marcos</option>
+	<option value="Sonoma">Sonoma</option>
+	<option value="Stanislaus">Stanislaus</option>
 </select></label>
 
 <label id="label_cohort_selector"><select id="cohort_selector_4yr" class="control">
-<!-- <option value="2010" selected>2010</option>
-<option value="2009">2009</option> -->
-<option value="2008" selected>2008</option>
-<option value="2007">2007</option>
-<option value="2006">2006</option>
-<option value="2005">2005</option>
-<option value="2004">2004</option>
-<option value="2003">2003</option>
-<option value="2002">2002</option>
-<option value="2001">2001</option>
-<option value="2000">2000</option>
-</select><select id="cohort_selector_6yr" class="control">
-<option value="2008" selected>2008</option>
-<option value="2007">2007</option>
-<option value="2006">2006</option>
-<option value="2005">2005</option>
-<option value="2004">2004</option>
-<option value="2003">2003</option>
-<option value="2002">2002</option>
-<option value="2001">2001</option>
-<option value="2000">2000</option>
+	<option value="2008" selected>2008</option>
+	<option value="2007">2007</option>
+	<option value="2006">2006</option>
+	<option value="2005">2005</option>
+	<option value="2004">2004</option>
+	<option value="2003">2003</option>
+	<option value="2002">2002</option>
+	<option value="2001">2001</option>
+	<option value="2000">2000</option>
+</select>
+<select id="cohort_selector_6yr" class="control">
+	<option value="2008" selected>2008</option>
+	<option value="2007">2007</option>
+	<option value="2006">2006</option>
+	<option value="2005">2005</option>
+	<option value="2004">2004</option>
+	<option value="2003">2003</option>
+	<option value="2002">2002</option>
+	<option value="2001">2001</option>
+	<option value="2000">2000</option>
 </select><span>entering freshman cohort</span> </label>
 
 <label id="label_year_span_selector">
 <select id="year_span_selector" class="control">
-<option value="3">Past Three Years</option>
-<option value="5">Past Five Years</option>
-<option value="0" selected>Since 2000</option>
+	<option value="3">Past Three Years</option>
+	<option value="5">Past Five Years</option>
+	<option value="0" selected>Since 2000</option>
 </select></label>
-
 </fieldset>
 
+<ul class="nav nav-tabs">
+	<li class="active"><a href="#chart">CSU Peer Comparisons</a></li>
+	<li><a href="#trends">Historical Trends</a></li>
+	<li><a href="#table">Data Tables</a></li>
+	<li><a href="#method">Methodology</a></li>
+</ul>
 
-<script src="assets/highcharts.js"></script>
+<div class="tab-content">
+<div id="chart" class="tab-pane fade in active">
+	<div id="container" style="width: 1080px"></div>
+	<p class="footnote">Peer institutions are selected based on the methodology developed by College Results Online (for details <a href="//collegeresults.org/aboutthedata.aspx#section-5 " target="_blank">click here</a>).
+	</p>
+</div><!--./chart-->
 
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="#chart">CSU Peer Comparisons</a></li>
-		<li><a href="#trends">Historical Trends</a></li>
-		<li><a href="#table">Data Tables</a></li>
-		<li><a href="#method">Methodology</a></li>
-	</ul>
+<div id="table" class="tab-pane fade">
+	<table class="table table-striped" id="desctable"></table>
+	<p class="footnote">*Data are suppressed where student counts (N) is less than 30.
+	</p>
+</div><!--./table-->
 
-	<div class="tab-content">
-		<div id="chart" class="tab-pane fade in active">
-			<div id="container" style="width: 1080px"></div>
-			<p class="footnote">
-Peer institutions are selected based on the methodology developed by College Results Online 
-(for details <a href="//collegeresults.org/aboutthedata.aspx#section-5 " target="_blank">click here</a>).
-			</p>
-		</div><!--./chart-->
-        
-	<div id="table" class="tab-pane fade">
-
-	
-<table class="table table-striped" id="desctable"></table>
-
-
-<p class="footnote">*Data are suppressed where student counts (N) is less than 30.</p>
-    </div><!--./table-->
-    
 <div id="method" class="tab-pane fade">
-<img src="assets/logo_cro.jpg" style="float:right;margin:5px 10px 8px 22px;"/>
-<p>
+	<img src="assets/logo_cro.jpg" style="float:right;margin:5px 10px 8px 22px;"/>
+	<p>
 The national peer institutions selected for this dashboard come from College Results Online (CRO). 
 CRO applies an algorithm comparing the chosen school to all other public and private not-for-profit institutions in the CRO database. 
 Each comparison receives a "similarity score", ranging from 0 (least similar) to 1000 (identical), 
@@ -581,24 +126,23 @@ if it greatly deviates from the chosen institution on any one of a number of fac
 (<a href="http://collegeresults.org/aboutthedata.aspx#section-5" target="_blank">see CRO Website</a> for list of filters). 
 This prevents, for example, an institution with 2,500 undergraduates from being compared to an institution with 25,000 undergraduates, 
 even if they are otherwise very similar.
-</p>
+	</p>
+	<h3>Table 1: Public and Private not-for-profit Sector Weights</h3>
 
-<h3>Table 1: Public and Private not-for-profit Sector Weights</h3>
-
-<table class="table table-striped"><tbody>
-<tr><td>Estimated median SAT or ACT equivalent of freshman class</td><td>211 points</td></tr>
-<tr><td>Percent of full-time, first-time degree/certificate-seeking undergraduate students who received federal Pell Grants</td><td>171 points</td></tr>
-<tr><td>Number of full-time equivalent undergraduates</td><td>110 points</td></tr>
-<tr><td>Sector (Public vs. Private)</td><td>84 points</td></tr>
-<tr><td>Student-related expenditures per full-time equivalent undergraduate</td><td>68 points</td></tr>
-<tr><td>Status as a commuter campus</td><td>67 points</td></tr>
-<tr><td>Average high school GPA among college freshmen</td><td>64 points</td></tr>
-<tr><td>Percent of undergraduate students age 25 and over</td><td>62 points</td></tr>
-<tr><td>Admissions selectivity, per <em>Barron's Profiles of American Colleges</em></td><td>54 points</td></tr>
-<tr><td>Percent of undergraduates who are enrolled part-time</td><td>51 points</td></tr>
-<tr><td>Percent of degrees awarded in Science, Technology, Engineering, and Mathematics</td><td>30 points</td></tr>
-<tr><td>Historically Black College or University</td><td>27 points</td></tr>
-</tbody></table>
+	<table class="table table-striped"><tbody>
+		<tr><td>Estimated median SAT or ACT equivalent of freshman class</td><td>211 points</td></tr>
+		<tr><td>Percent of full-time, first-time degree/certificate-seeking undergraduate students who received federal Pell Grants</td><td>171 points</td></tr>
+		<tr><td>Number of full-time equivalent undergraduates</td><td>110 points</td></tr>
+		<tr><td>Sector (Public vs. Private)</td><td>84 points</td></tr>
+		<tr><td>Student-related expenditures per full-time equivalent undergraduate</td><td>68 points</td></tr>
+		<tr><td>Status as a commuter campus</td><td>67 points</td></tr>
+		<tr><td>Average high school GPA among college freshmen</td><td>64 points</td></tr>
+		<tr><td>Percent of undergraduate students age 25 and over</td><td>62 points</td></tr>
+		<tr><td>Admissions selectivity, per <em>Barron's Profiles of American Colleges</em></td><td>54 points</td></tr>
+		<tr><td>Percent of undergraduates who are enrolled part-time</td><td>51 points</td></tr>
+		<tr><td>Percent of degrees awarded in Science, Technology, Engineering, and Mathematics</td><td>30 points</td></tr>
+		<tr><td>Historically Black College or University</td><td>27 points</td></tr>
+	</tbody></table>
 </div><!--./method-->
 
 <div id="trends" class="tab-pane fade">
@@ -611,197 +155,13 @@ even if they are otherwise very similar.
 			<div id="text_panel_0"></div>
 		</div><!--/.col2-->
 	</div><!--./row-->
+	<p class="footnote" id="trends_footnote"></p>
 </div><!--./trends-->
 
-</div>
-
-    
-<script>
-$(function () {
-
-	var forEach = function (array, callback, scope) {
-		for (var i = 0, ilen = array.length; i < ilen; i++) {
-			callback.call(scope, array[i], i, array);
-		}
-	};
-
-	// one place to consistently convert to shorter csu name
-	var convert_csu_campus_name = function (campus_name) {
-		var name = campus_name;
-		name = name.replace('California State University-','CSU ');
-		name = name.replace('California State Polytechnic University-','CSU ');
-		name = name.replace('California Polytechnic State University-','CSU ');
-		return name;
-	};
-
-	// create table from json data
-	var create_table = function (json, config) {
-		var out = '<thead><tr>';
-		json.headers[0].forEach(function (item,i) {
-			item = (item === 'Main') ? 'Campus': item;
-			item = (item === 'Underrepresented Minority 6-Year Grad Rate') ? 'URM 6-Year Grad Rate': item;
-			item = (item === '% Pell Recipients Among Freshmen') ? '% Pell Eligible': item;
-			item = (item === '% Underrepresented Minority') ? '% URM': item;
-			item = (item === 'Average High School GPA Among College Freshmen') ? 'Average High School GPA': item;
-			item = (item === 'Estimated Median SAT / ACT') ? 'Average SAT&nbsp;Score': item;
-			item = (item === 'Size (Undergrad FTE)') ? '(Undergrad FTE)&nbsp;Size': item;
-			item = item.replace('Grad Rate','Grad&nbsp;Rate');
-			//item = (item === '') ? '': item; // pattern
-			if (i === 0) {
-				out += '<th id="col_' + i + '" class="col_campus">' + item + '</th>'; 
-			} else {
-				out += '<th id="col_' + i + '"  style="text-align:right;padding-right:5px;">' + item + '</th>'; 
-			}
-		});
-		out += '</tr></thead><tbody id="tb1">';
-		var out3 = '';
-		json.rows.forEach(function (row,j) {
-			var highlight = false;
-			row.forEach(function (item,i) {
-				if (item === '-') {
-					item = 'ds*'; // per spec, replace dash in source with 'ds*' indicating data suppressed
-				}
-				// Exception handling for campus name matching (enables highlighting of selected campus)
-				if (i === 0) {
-					out3 += '<tr';
-					if ((item === 'California State University-' + config.campus || 
-						item === 'California ' + config.campus || 
-						item === 'California State Polytechnic University-' + config.campus || 
-						item === 'California Polytechnic State University-' + config.campus || 
-						item === config.campus + ' State University')) {
-						out3 += ' class="highlight">' // Should just use '.highlight' to style
-						out3 += '<td class="col_campus">' + convert_csu_campus_name(item) + '</td>'; 
-
-					} else {
-						out3 += '><td class="col_campus">' + convert_csu_campus_name(item) + '</td>';
-					}
-				} else {
-					out3 += '<td style="text-align:right;padding-right:5px;">' + item + '</td>'; 
-				}
-			});
-			out3 += '</tr>';
-		});
-		out3 += '</tbody>'
-		$('#desctable').html(out + out3);
-		var cols = [];
-		json.headers[0].forEach(function (item,i) {
-			var ord = 'ord' + i;
-			cols.push('#col_' + i);
-			$(cols[i]).on('click', function (e) {
-				var tbody = document.querySelector('#tb1');
-				if (!state[ord] || state[ord] !== 'ascending') { // toggle
-					state[ord] = 'ascending';
-				} else {
-					state[ord] = 'descending';
-				}
-				sortcol(tbody, i, state[ord]);
-			});
-		});
-	};
-
-	var state = {};
-	var sortcol = function (tbody, col, direction) {
-		var values = [], trs = [], tr, td, row, frag, match_pattern1 = /[$%,]/g;
-		for (var i = 0, ilen = tbody.children.length; i < ilen; i++) {
-			tr = tbody.children[i];
-			td = tr.children[col].innerText;
-			trs[i] = [td,i,tr.innerHTML,tr.className || ''];
-		}
-		var frag = document.createDocumentFragment();
-		if (direction === 'ascending') {
-			trs.sort(function (a,b) {
-				var aa = a[0], bb = b[0];
-				aa = aa.indexOf('ds*') !== -1?'$0':aa;
-				bb = bb.indexOf('ds*') !== -1?'$0':bb;
-				aa = aa.replace(match_pattern1,'');
-				bb = bb.replace(match_pattern1,'');
-				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
-				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
-				return aa>bb?1:aa===bb?0:-1;
-			});
-		} else {
-			trs.sort(function (b,a) {
-				var aa = a[0], bb = b[0];
-				aa = aa.indexOf('ds*') !== -1?'$0':aa;
-				bb = bb.indexOf('ds*') !== -1?'$0':bb;
-				aa = aa.replace(match_pattern1,'');
-				bb = bb.replace(match_pattern1,'');
-				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
-				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
-				return aa>bb?1:aa===bb?0:-1;
-			});
-		}
-		for (var i = 0, ilen = trs.length; i < ilen; i++) {
-			row = document.createElement('tr');
-			if (trs[i][3].indexOf('highlight') !== -1) {
-				row.className = "highlight";
-			}
-			row.innerHTML = trs[i][2];
-			frag.appendChild(row);
-		}
-		tbody.innerHTML = '';
-		tbody.appendChild(frag,tbody);
-	};
-
-	// load selected campus via ajax 
-	var load_table_data = function (config, callback) {
-		var match_pattern = / /g;
-		var table_data_src = 'data/GRtables/' + config.campus.replace(match_pattern,'_') + '_' + config.cohort + '_briefplus.json?v=18';
-		// fetch json data via xhr, then invoke callback
-		$.ajax({
-			url: table_data_src,
-			datatype: "json",
-			success: function (result) {
-				// fix inconsistencies with server handling .json files
-				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
-				// once data is loaded invoke callback
-				callback(json_object, config);
-			},
-			error: function (xhr, msg, e) {
-				console.log(msg);
-			}
-		});
-	};
-
-	// initialize default table
-	load_table_data(chart_state, create_table);
-
-	//per selection, use ajax to load appropriate json data to populate the table
-	$('#campus_selector').on('change', function (e) {
-		chart_state.campus = e.target.value;
-		chart_state.notify();
-		load_table_data(chart_state, create_table);
-	});
-	/*
-	$('#cohort_selector_4yr').on('change', function (e) {
-		chart_state.cohort = e.target.value;
-		console.log(JSON.stringify(chart_state));
-		chart_state.notify();
-		load_table_data(chart_state, create_table);
-	});
-	*/
-	$('#cohort_selector_6yr').on('change', function (e) {
-		chart_state.cohort = e.target.value;
-		chart_state.notify();
-		load_table_data(chart_state, create_table);
-	});
-
-});
-</script>
-
-
-<script>
-$(document).ready(function(){
-    $(".nav-tabs a").click(function(){
-        $(this).tab('show');
-	chart_state.selected_tab_name = this.href.split('#')[1]; // i.e., one of ['chart','table','method','trends']
-	chart_state.notify();
-    });
-});
-</script>
-
+</div><!--./tab-content-->
+ 
 <!--template-->
 </div><!--./container-->
 
-
+<script type="text/javascript" src="assets/peer_benchmarking_01.js"></script>
 </body></html>
