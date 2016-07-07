@@ -21,6 +21,13 @@ $(document).ready(function () {
 	
 	var pattern1 = /[$%,]/g, pattern2 = / /g;
 
+	var cohort2col_6yr = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
+	var cohort2col_4yr = {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11};
+	var years = {'4yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008'],
+			'6yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008']};
+	var map_years = {'5':-5,'3':-3,'0':0}; // modify to match returned values from control 
+	var retained_json_data, peer_campus_urls; // saves having to reload data
+
 	// one place to consistently convert to shorter csu name
 	var convert_csu_campus_name = function (name) {
 		name = name.replace('California State University-','CSU ');
@@ -30,9 +37,11 @@ $(document).ready(function () {
 	};
 
 	var shorten_peer_name = function (name) {
-		name = name.replace(/CUNY John Jay College.*$/,'CUNY John Jay College');
+		name = name.replace(/CUNY John Jay College.*$/,'CUNY John Jay College'); // of Criminal Justice
 		name = name.replace(/Bowling Green State University.*$/,'Bowling Green State University');
-		name = name.replace(/New Mexico State University.*$/,'New Mexico State University');
+		name = name.replace(/University of South Florida.*$/,'University of South Florida'); // - Main Campus
+		name = name.replace(/University of New Mexico.*$/,'University of New Mexico'); // - Main Campus
+		name = name.replace(/New Mexico State University.*$/,'New Mexico State University'); // - Main Campus (? does this exist ?)
 		return name;
 	};
 	// test: console.log(shorten_peer_name('CUNY John Jay College of Criminal Justice'));
@@ -146,29 +155,7 @@ $(document).ready(function () {
 		});
 	};
 
-	// fetch appropriate data set
-	var load_chart_peer_comparisons = function (config, callback) {
-		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
-		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
-			config.campus.replace(pattern2,'_') + '_' + config.grad_year + config.type + '.json?v=15';
-
-		// fetch json data via xhr, then invoke callback
-		$.ajax({
-			url: chart_data_src,
-			datatype: "json",
-			success: function (result) {
-				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
-				callback(json_object, config);
-			},
-			error: function (xhr, msg, e) {
-				console.log(msg);
-			}
-		});
-	};
-
-	var update_chart_peer_comparisons = function (json_data, config) {
-		var cohort2col_6yr = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
-		var cohort2col_4yr = {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11};
+	var update_chart_peer_comparisons = function (config, json_data) {
 		var row, col,key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
 		if (config.grad_year === '6yr') {
 			col = cohort2col_6yr[config.cohort];
@@ -250,11 +237,6 @@ $(document).ready(function () {
 		});
 	};
 
-	var years = {'4yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008'],
-			'6yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008']};
-	var map_years = {'5':-5,'3':-3,'0':0}; // modify to match returned values from control 
-	var retained_json_data; // saves having to reload data each time only year_span changes
-
 	// only show year_span of series (series array is sliced at position)
 	var truncate_data = function (data, position) {
 		var out = [], item, key, itemset;
@@ -275,8 +257,28 @@ $(document).ready(function () {
 		return out;
 	};
 
+	var load_peer_campus_urls = function (config, callback) {
+		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
+		var chart_data_src = 'data/peer_campus_urls.json?v=3';
+
+		// fetch json data via xhr, then invoke callback
+		$.ajax({
+			url: chart_data_src,
+			datatype: "json",
+			success: function (result) {
+				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
+				callback(json_object, config);
+			},
+			error: function (xhr, msg, e) {
+				console.log(msg);
+			}
+		});
+	};
+
+
 	// fetch appropriate data set
 	var load_chart_historical_trends = function (config, callback) {
+		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
 			config.campus.replace(pattern2,'_') + '_' + config.grad_year + config.type + '.json?v=17';
 
@@ -392,26 +394,30 @@ $(document).ready(function () {
 		json.rows.forEach(function (row,j) {
 			var highlight = false;
 			row.forEach(function (item,i) {
+				var name,link;
 				if (item === '-') {
 					item = 'ds*'; // per spec, replace dash in source with 'ds*' indicating data suppressed
 				}
 				// Exception handling for campus name matching (enables highlighting of selected campus)
 				if (i === 0) { // campus name column
+					name = item;
+					link = peer_campus_urls[name] || '#';
 					out3 += '<tr';
-					item = shorten_peer_name(item);
-					if ((item === 'California State University-' + config.campus || 
-						item === 'California ' + config.campus || 
-						item === 'California State Polytechnic University-' + config.campus || 
-						item === 'California Polytechnic State University-' + config.campus || 
-						item === config.campus + ' State University')) {
+					name = shorten_peer_name(name);
+					if ((name === 'California State University-' + config.campus || 
+						name === 'California ' + config.campus || 
+						name === 'California State Polytechnic University-' + config.campus || 
+						name === 'California Polytechnic State University-' + config.campus || 
+						name === config.campus + ' State University')) {
 						out3 += ' class="highlight">' // Should just use '.highlight' to style
-						out3 += '<td class="col_campus">' + convert_csu_campus_name(item) + '</td>'; 
-
+						out3 += '<td class="col_campus"><a href="' + link + '" target="_blank" style="color:#b33;text-decoration:underline;">'; // TODO: move style to css
+						out3 += convert_csu_campus_name(name) + '</a></td>';
 					} else {
-						out3 += '><td class="col_campus">' + convert_csu_campus_name(item) + '</td>';
+						out3 += '><td class="col_campus"><a href="' + link + '" target="_blank" style="color:#111;text-decoration:underline;">'; // TODO: move style to css
+						out3 += convert_csu_campus_name(name) + '</a></td>';
 					}
 				} else {
-					out3 += '<td style="text-align:right;padding-right:5px;">' + item + '</td>'; 
+					out3 += '<td style="text-align:right;padding-right:5px;">' + item + '</td>'; // TODO: move style to css
 				}
 			});
 			out3 += '</tr>';
@@ -507,10 +513,10 @@ $(document).ready(function () {
 	$('#campus_selector').on('change', function (e) {
 		chart_state.campus = e.target.value;
 		chart_state.notify();
-		load_chart_peer_comparisons(chart_state, update_chart_peer_comparisons);
 		load_chart_historical_trends(chart_state,  function (json_data, chart_state) {
 			retained_json_data = json_data;
 			update_chart_historical_trends(chart_state, retained_json_data);
+			update_chart_peer_comparisons(chart_state, retained_json_data);
 		});
 		load_table_peers(chart_state, create_table_peers);
 	});
@@ -518,24 +524,24 @@ $(document).ready(function () {
 	$('#cohort_selector_6yr').on('change', function (e) {
 		chart_state.cohort = e.target.value;
 		chart_state.notify();
-		load_chart_peer_comparisons(chart_state, update_chart_peer_comparisons);
+		update_chart_peer_comparisons(chart_state, retained_json_data);
 		load_table_peers(chart_state, create_table_peers);
 	});
 
 	$('#cohort_selector_4yr').on('change', function (e) {
 		chart_state.cohort = e.target.value;
 		chart_state.notify();
+		update_chart_peer_comparisons(chart_state, retained_json_data);
 		load_table_peers(chart_state, create_table_peers);
-		load_chart_peer_comparisons(chart_state, update_chart_peer_comparisons);
 	});
 
 	$('#year_selector').on('change', function (e) {
 		chart_state.grad_year = e.target.value;
 		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
 		chart_state.notify();
-		load_chart_peer_comparisons(chart_state, update_chart_peer_comparisons);
 		load_chart_historical_trends(chart_state,  function (json_data, chart_state) {
 			retained_json_data = json_data;
+			update_chart_peer_comparisons(chart_state, retained_json_data);
 			update_chart_historical_trends(chart_state, retained_json_data);
 		});
 	});
@@ -543,10 +549,7 @@ $(document).ready(function () {
 	$('#year_span_selector').on('change', function (e) {
 		chart_state.trends_since = e.target.value;
 		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
-		load_chart_historical_trends(chart_state,  function (json_data, chart_state) {
-			retained_json_data = json_data;
-			update_chart_historical_trends(chart_state, retained_json_data);
-		});
+		update_chart_historical_trends(chart_state, retained_json_data);
 	});
 
 	/* 
@@ -555,14 +558,26 @@ $(document).ready(function () {
 
 	chart_state.notify();
 	
-	load_chart_peer_comparisons(chart_state, update_chart_peer_comparisons);
+	//load_chart_peer_comparisons(chart_state, update_chart_peer_comparisons);
 
 	load_chart_historical_trends(chart_state, function (json_data, chart_state) {
 		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
 		retained_json_data = json_data;
-		update_chart_historical_trends(chart_state, json_data);
+		update_chart_peer_comparisons(chart_state, retained_json_data);
+		update_chart_historical_trends(chart_state, retained_json_data);
 	});
 
+	load_peer_campus_urls(chart_state, function (json_data, chart_state) {
+		peer_campus_urls = json_data;
+		/*
+		var dict = {};
+		for (var i = 0, ilen = json_data.length; i < ilen; i++) {
+			dict[json_data[i][0]] = json_data[i][1];
+		}
+		console.log(JSON.stringify(dict));
+		peer_campus_urs = dict;
+		*/
+	});
 	load_table_peers(chart_state, create_table_peers);
 
 	/* 
