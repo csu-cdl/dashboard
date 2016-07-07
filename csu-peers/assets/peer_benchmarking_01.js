@@ -51,14 +51,14 @@ $(document).ready(function () {
 	  */
 
 	$('#label_year_selector').on('state_change', function (e, state) {
-		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'trends') {
+		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'trends' || chart_state.selected_tab_name === 'table') {
 			$('#label_year_selector').show();
 		} else {
 			$('#label_year_selector').hide();
 		}
 	});
 	$('#label_campus_selector').on('state_change', function (e, state) {
-		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'table' || chart_state.selected_tab_name === 'trends') {
+		if (chart_state.selected_tab_name === 'chart' || chart_state.selected_tab_name === 'trends' || chart_state.selected_tab_name === 'table') {
 			$('#label_campus_selector').show();
 		} else {
 			$('#label_campus_selector').hide();
@@ -373,7 +373,14 @@ $(document).ready(function () {
 	var sort_toggle_state = {}; // for toggling sort direction
 	var create_table_peers = function (json, config) {
 		var out = '<thead><tr>';
-		json.headers[0].forEach(function (item,i) {
+		var one_or_two, header_copy = json.headers[0];
+		if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
+			one_or_two = (header_copy[2] === 'Underrepresented Minority 6-Year Grad Rate') ? 2 : 1;
+			header_copy.splice(1,one_or_two,header_copy.splice(-1,1)[0]); // remove 6yr column(s) and move last column to 2nd column position
+		} else { // 6yr
+			header_copy.splice(-1,1); // simply remove last col
+		}
+		header_copy.forEach(function (item,i) {
 			item = (item === 'Main') ? 'Campus': item;
 			item = (item === 'Underrepresented Minority 6-Year Grad Rate') ? 'URM 6-Year Grad Rate': item;
 			item = (item === '% Pell Recipients Among Freshmen') ? '% Pell Eligible': item;
@@ -392,8 +399,13 @@ $(document).ready(function () {
 		out += '</tr></thead><tbody id="tb1">';
 		var out3 = '';
 		json.rows.forEach(function (row,j) {
-			var highlight = false;
-			row.forEach(function (item,i) {
+			var highlight = false, row_copy = row.slice();
+			if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
+				row_copy.splice(1,one_or_two,row_copy.splice(-1,1)[0]); // remove 6yr column(s) and move last column to 2nd column position
+			} else { // 6yr
+				row_copy.splice(-1,1); // simply remove last col
+			}
+			row_copy.forEach(function (item,i) {
 				var name,link;
 				if (item === '-') {
 					item = 'ds*'; // per spec, replace dash in source with 'ds*' indicating data suppressed
@@ -513,7 +525,7 @@ $(document).ready(function () {
 	  * Connect user input controls to activation functions
 	  */
 
-	$('#campus_selector').on('change', function (e) {
+	$('#campus_selector').on('change', function (e) { // Bakersfield, ..., Stanislaus
 		chart_state.campus = e.target.value;
 		chart_state.notify();
 		load_chart_historical_trends(chart_state,  function (json_data, chart_state) {
@@ -524,21 +536,21 @@ $(document).ready(function () {
 		load_table_peers(chart_state, create_table_peers);
 	});
 
-	$('#cohort_selector_6yr').on('change', function (e) {
+	$('#cohort_selector_6yr').on('change', function (e) { // 2000, ..., 2008
 		chart_state.cohort = e.target.value;
 		chart_state.notify();
 		update_chart_peer_comparisons(chart_state, retained_json_data);
 		load_table_peers(chart_state, create_table_peers);
 	});
 
-	$('#cohort_selector_4yr').on('change', function (e) {
+	$('#cohort_selector_4yr').on('change', function (e) { // 2000, ..., 2008
 		chart_state.cohort = e.target.value;
 		chart_state.notify();
 		update_chart_peer_comparisons(chart_state, retained_json_data);
 		load_table_peers(chart_state, create_table_peers);
 	});
 
-	$('#year_selector').on('change', function (e) {
+	$('#year_selector').on('change', function (e) { // 6yr or 4yr
 		chart_state.grad_year = e.target.value;
 		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
 		chart_state.notify();
@@ -547,9 +559,10 @@ $(document).ready(function () {
 			update_chart_peer_comparisons(chart_state, retained_json_data);
 			update_chart_historical_trends(chart_state, retained_json_data);
 		});
+		load_table_peers(chart_state, create_table_peers); // TODO: eliminate unnecessary data fetch
 	});
 
-	$('#year_span_selector').on('change', function (e) {
+	$('#year_span_selector').on('change', function (e) { // Past Three Years, Past Five Years, Since 2000
 		chart_state.trends_since = e.target.value;
 		chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
 		update_chart_historical_trends(chart_state, retained_json_data);
