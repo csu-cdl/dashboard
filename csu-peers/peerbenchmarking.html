@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!--meta name="viewport" content="width=device-width, initial-scale=1"-->
+<meta name="viewport" content="width=1170">
+    
+
+<title>CSU Peer Benchmarking</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="../global/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../global/css/style.css">
+<link rel="stylesheet" type="text/css" href="assets/peercomp2.css">
+<style type="text/css">
+${demo.css}
+</style>
+<script src="assets/highcharts.js"></script>
+
+</head><body>
+
+<!--template-->	
+
+<header id="top" class="banner" role="banner">
+ <img src="../global/img/branding.png" alt="CSU Student Success Dashboard"/></header>
+ 
+ <!--nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="barchart2.html">CSU Peer Comparisons</a></li>
+          </ul>
+
+        </div><!--/.nav-collapse -->
+      <!--/div>
+    </nav-->
+
+<div class="container">
+<!--template-->
+<div class="title-bar">      
+	<h1>CSU Peer Benchmarking</h1>
+</div>
+
+
+<fieldset class="controls">
+<label>&nbsp;</label>
+<label id="label_year_selector"><select id="year_selector" class="control">
+<option value="4yr">4-Year Graduation Rates</option>
+<option value="6yr" selected>6-Year Graduation Rates</option>
+</select></label>
+
+<!-- <label>CSU Peer Institutions Comparison Reports for <select> -->
+<label id="label_campus_selector"> for <select id="campus_selector" class="control">
+<option value="Bakersfield">Bakersfield</option>
+<option value="Channel Islands">Channel Islands</option>
+<option value="Chico">Chico</option>
+<option value="Dominguez Hills">Dominguez Hills</option>
+<option value="East Bay">East Bay</option>
+<option value="Fresno">Fresno</option>
+<option value="Fullerton">Fullerton</option>
+<option value="Humboldt">Humboldt</option>
+<option value="Long Beach">Long Beach</option>
+<option value="Los Angeles">Los Angeles</option>
+<option value="Maritime Academy">Maritime Academy</option>
+<option value="Monterey Bay">Monterey Bay</option>
+<option value="Northridge">Northridge</option>
+<option value="Pomona">Pomona</option>
+<option value="Sacramento">Sacramento</option>
+<option value="San Bernardino">San Bernardino</option>
+<option value="San Diego">San Diego</option>
+<option value="San Francisco">San Francisco</option>
+<option value="San Jose">San Jose</option>
+<option value="San Luis Obispo">San Luis Obispo</option>
+<option value="San Marcos">San Marcos</option>
+<option value="Sonoma">Sonoma</option>
+<option value="Stanislaus">Stanislaus</option>
+</select></label>
+
+<label id="label_cohort_selector"><select id="cohort_selector_4yr" class="control">
+<!-- <option value="2010" selected>2010</option>
+<option value="2009">2009</option> -->
+<option value="2008" selected>2008</option>
+<option value="2007">2007</option>
+<option value="2006">2006</option>
+<option value="2005">2005</option>
+<option value="2004">2004</option>
+<option value="2003">2003</option>
+<option value="2002">2002</option>
+<option value="2001">2001</option>
+<option value="2000">2000</option>
+</select><select id="cohort_selector_6yr" class="control">
+<option value="2008" selected>2008</option>
+<option value="2007">2007</option>
+<option value="2006">2006</option>
+<option value="2005">2005</option>
+<option value="2004">2004</option>
+<option value="2003">2003</option>
+<option value="2002">2002</option>
+<option value="2001">2001</option>
+<option value="2000">2000</option>
+</select><span>entering freshman cohort</span> </label>
+
+<label id="label_year_span_selector">
+<select id="year_span_selector" class="control">
+<option value="3">Past Three Years</option>
+<option value="5">Past Five Years</option>
+<option value="0" selected>Since 2000</option>
+</select></label>
+
+</fieldset>
+
+
+
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#chart">CSU Peer Comparisons</a></li>
+		<li><a href="#trends">Historical Trends</a></li>
+		<li><a href="#table">Data Tables</a></li>
+		<li><a href="#method">Methodology</a></li>
+	</ul>
+
+	<div class="tab-content">
+		<div id="chart" class="tab-pane fade in active">
+			<div id="container" style="width: 1080px"></div>
+			<p class="footnote">
+Peer institutions are selected based on the methodology developed by College Results Online 
+(for details <a href="//collegeresults.org/aboutthedata.aspx#section-5 " target="_blank">click here</a>).
+			</p>
+		</div><!--./chart-->
+        
+	<div id="table" class="tab-pane fade">
+
+	
+<table class="table table-striped" id="desctable"></table>
+
+
+<p class="footnote">*Data are suppressed where student counts (N) is less than 30.</p>
+    </div><!--./table-->
+    
+<div id="method" class="tab-pane fade">
+<img src="assets/logo_cro.jpg" style="float:right;margin:5px 10px 8px 22px;"/>
+<p>
+The national peer institutions selected for this dashboard come from College Results Online (CRO). 
+CRO applies an algorithm comparing the chosen school to all other public and private not-for-profit institutions in the CRO database. 
+Each comparison receives a "similarity score", ranging from 0 (least similar) to 1000 (identical), 
+based on how similar the two schools are in terms of 12 institutional and student characteristics. 
+The 12 selected characteristics are statistically correlated with overall six-year graduation rates 
+for institutions in the public and private not-for-profit sectors (see Table 1). 
+Once the baseline similarity score is calculated, CRO applies additional "filters" to exclude an institution from possible comparison 
+if it greatly deviates from the chosen institution on any one of a number of factors 
+(<a href="http://collegeresults.org/aboutthedata.aspx#section-5" target="_blank">see CRO Website</a> for list of filters). 
+This prevents, for example, an institution with 2,500 undergraduates from being compared to an institution with 25,000 undergraduates, 
+even if they are otherwise very similar.
+</p>
+
+<h3>Table 1: Public and Private not-for-profit Sector Weights</h3>
+
+<table class="table table-striped"><tbody>
+<tr><td>Estimated median SAT or ACT equivalent of freshman class</td><td>211 points</td></tr>
+<tr><td>Percent of full-time, first-time degree/certificate-seeking undergraduate students who received federal Pell Grants</td><td>171 points</td></tr>
+<tr><td>Number of full-time equivalent undergraduates</td><td>110 points</td></tr>
+<tr><td>Sector (Public vs. Private)</td><td>84 points</td></tr>
+<tr><td>Student-related expenditures per full-time equivalent undergraduate</td><td>68 points</td></tr>
+<tr><td>Status as a commuter campus</td><td>67 points</td></tr>
+<tr><td>Average high school GPA among college freshmen</td><td>64 points</td></tr>
+<tr><td>Percent of undergraduate students age 25 and over</td><td>62 points</td></tr>
+<tr><td>Admissions selectivity, per <em>Barron's Profiles of American Colleges</em></td><td>54 points</td></tr>
+<tr><td>Percent of undergraduates who are enrolled part-time</td><td>51 points</td></tr>
+<tr><td>Percent of degrees awarded in Science, Technology, Engineering, and Mathematics</td><td>30 points</td></tr>
+<tr><td>Historically Black College or University</td><td>27 points</td></tr>
+</tbody></table>
+</div><!--./method-->
+
+<div id="trends" class="tab-pane fade">
+	<div class="row">
+		<div class="col-md-8">
+			<div id="multiline_chart_container" style="width: 700px;"></div>
+		</div><!--/.col1-->
+	
+		<div class="col-md-4">
+			<div id="text_panel_0"></div>
+		</div><!--/.col2-->
+	</div><!--./row-->
+</div><!--./trends-->
+
+</div>
+
+ 
+<!--template-->
+</div><!--./container-->
+
+<script type="text/javascript" src="assets/peer_benchmarking_01.js"></script>
+
+</body></html>

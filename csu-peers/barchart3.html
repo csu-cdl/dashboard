@@ -344,7 +344,7 @@ $(function () {
 				a[j] = isNaN(a[j])?null:a[j];
 			});
 			if (config.grad_year === '4yr') { // hack to fix bad 4yr data
-				series = series.slice(2);
+				series = series.slice(2); // skipping first two years (which are really 1998, 1999: not 2000, 2001)
 			}
 			if ((name === 'California State University-' + config.campus || 
 					name === 'California ' + config.campus || 
