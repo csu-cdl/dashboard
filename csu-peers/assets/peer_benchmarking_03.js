@@ -1,6 +1,7 @@
 $(document).ready(function () {
 	'use strict';
-	var defeat_cache = '?v=' + (new Date()).getTime();
+	//var defeat_cache = '?v=' + Date.now(); // dev only
+	var defeat_cache = '?v=34'; // stable and cache ok
 
 	/* 
 	  * Page level support functions and general settings, defaults
@@ -18,7 +19,7 @@ $(document).ready(function () {
 	};
 	chart_state.notify = function () {
 		$('.control').trigger('state_change', [chart_state]);
-	}
+	};
 	
 	var pattern1 = new RegExp('[$%,]', 'g');
 	var pattern2 = new RegExp(' ', 'g');
