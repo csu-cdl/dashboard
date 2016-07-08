@@ -14,23 +14,26 @@ $(document).ready(function () {
 		colors: ['#ED361B', '#058DC7', '#50B432', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
 	});
 
-	var chart_state = {
+	var chart_state;
+	chart_state = {
 		'selected_tab_name':'chart', 'campus':'Bakersfield', 
 		'grad_year':'6yr', 'cohort':'2008', 'years':[], 'peer_count':5,
 		'trends_since':'0', 'type':'GR', 'max_6yr':'2008', 
 		'notify':function () {
-			$('.control').trigger('state_change', [this]);
+			$('.control').trigger('state_change', [chart_state]);
 		}
 	};
 	
-	var pattern1 = new RegExp('[$%,]','g'), pattern2 = new RegExp(' ','g');
+	var pattern1 = new RegExp('[$%,]','g');
+	var pattern2 = new RegExp(' ','g');
 
 	var cohort2col_6yr = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
 	var cohort2col_4yr = {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11};
 	var years = {'4yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008'],
 			'6yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008']};
 	var map_years = {'5':-5,'3':-3,'0':0}; // modify to match returned values from control 
-	var retained_json_data, peer_campus_urls; // saves having to reload data
+	var retained_json_data;
+	var peer_campus_urls; // saves having to reload data
 
 	// one place to consistently convert to shorter csu name
 	var convert_csu_campus_name = function (name) {
@@ -160,7 +163,10 @@ $(document).ready(function () {
 	};
 
 	var update_chart_peer_comparisons = function (config, json_data) {
-		var i, ilen, row, col, key, value, chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
+		var col;
+		var key;
+		var value;
+		var chart_data = {'title':'', 'ylabel':'', 'series':[], 'tooltip':[], 'color':'#000'};
 		if (config.grad_year === '6yr') {
 			col = cohort2col_6yr[config.cohort];
 		} else {
@@ -168,9 +174,7 @@ $(document).ready(function () {
 		}
 		chart_data.title = config.grad_year.slice(0,1) + ' Year Graduation Rate for First-Time, Full-Time Freshmen';
 		chart_data.subtitle = config.cohort + ' Cohort';
-		ilen = json_data.rows.length;
-		for (i = 0; i < ilen; i+=1) {
-			row = json_data.rows[i];
+		json_data.rows.forEach(function (row, i) {
 			key = row[0];
 			key = convert_csu_campus_name(key);
 			key = shorten_peer_name(key);
@@ -185,7 +189,7 @@ $(document).ready(function () {
 			if (config.campus === 'Maritime Academy' && key.indexOf('California') === -1) {
 				chart_data.series[i] = {'name':key,'y':value,'color':'#159'};
 			}
-		}
+		});
 		// descending sort by y-axis value
 		chart_data.series = chart_data.series.sort(function (b,a) {
 			return a.y - b.y;
@@ -193,7 +197,7 @@ $(document).ready(function () {
 
 		var s0 = chart_data.series[0];
 		var s1 = chart_data.series[1];
-		if (isNaN(s0.y)) {
+		if (Number.isNaN(s0.y)) {
 			chart_data.series[0] = s1;
 			chart_data.series[1] = s0;
 		}
@@ -248,21 +252,16 @@ $(document).ready(function () {
 
 	// only show year_span of series (series array is sliced at position)
 	var truncate_data = function (data, position) {
-		var i, ilen = data.length, out = [], item, key, itemset;
-		for (i = 0; i < ilen; i+=1) {
-			itemset = {};
-			for (key in data[i]) {
-				if (data[i].hasOwnProperty(key)) {
-					item = data[i][key];
-					if (key === 'data') {
-						itemset[key] = item.slice(map_years[position]);
-					} else {
-						itemset[key] = item;
-					}
-				}
-			} 
+		var out = [];
+		var itemset;
+		data.forEach(function (item) { // assumes only name, data, lineWidth properties
+			itemset = {'name':item.name};
+			if (item.hasOwnProperty('lineWidth')) {
+				itemset.lineWidth = item.lineWidth;
+			}
+			itemset.data = item.data.slice(map_years[position]);
 			out.push(itemset);
-		}
+		});
 		return out;
 	};
 
@@ -307,22 +306,25 @@ $(document).ready(function () {
 
 	// select appropriate subset of peers
 	var filter_peers = function (config, json_data) {
-		var i, ilen, row, name, series, rows = json_data.rows, out_data = [], selected_campus_data;
-		ilen = rows.length;
+		//var i, ilen, row, 
+		var name;
+		var series;
+		var rows = json_data.rows;
+		var out_data = [];
+		var selected_campus_data;
+		//ilen = rows.length;
 		var parse_item = function (item, j, a) {
 			a[j] = parseFloat(item);
-			a[j] = isNaN(a[j])?null:a[j];
+			//a[j] = isNaN(a[j])?null:a[j];
+			a[j] = Number.isNaN(a[j]) ? null : a[j];
 		};
-		for (i = 0; i < ilen; i+=1) {
-			row = rows[i];
+		rows.forEach(function (row) {
+			//for (i = 0; i < ilen; i+=1) {
+			//row = rows[i];
 			name = row[0];
 			name = shorten_peer_name(name);
 			series = row.slice(1);
 			series.forEach(parse_item);
-			//function (item, j, a) {
-			//	a[j] = parseFloat(item);
-			//	a[j] = isNaN(a[j])?null:a[j];
-			//});
 			if (config.grad_year === '4yr') { // hack to fix bad 4yr data
 				series = series.slice(2); // skipping first two years (which are really 1998, 1999: not 2000, 2001)
 			}
@@ -332,10 +334,11 @@ $(document).ready(function () {
 					name === 'California Polytechnic State University-' + config.campus || 
 					name === config.campus + ' State University') {
 				selected_campus_data = {'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 4};
+				//console.log(JSON.stringify(selected_campus_data));
 			} else {
 				out_data.push({'name':convert_csu_campus_name(name), 'data':series});
 			}
-		}
+		});
 		out_data.sort(function (a,b) {
 			return a.data.slice(-1)-b.data.slice(-1);
 		});
@@ -343,32 +346,34 @@ $(document).ready(function () {
 		out_data_subset.sort(function (a,b) {
 			return a.name>b.name?1:a.name===b.name?0:-1;
 		});
+		//console.log(JSON.stringify(selected_campus_data));
 		out_data_subset.unshift(selected_campus_data);
 		return out_data_subset;
 	};
 
 	var create_table_historical_trends = function (config, peer_subset) {
-		var i, ilen = peer_subset.length, line, avg, year_start, year_end, n;
-		year_start = config.years[0];
-		year_end = config.years.slice(-1)[0];
-		n = config.grad_year[0];
+		var line;
+		var avg;
+		var year_start = config.years[0];
+		var year_end = config.years.slice(-1)[0];
+		var n = config.grad_year[0];
 		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Grad Rates';
 		var detail = '<table class="table table-striped"><tbody>';
-		for (i = 0; i < ilen; i+=1) {
-			if (!peer_subset[i].data || peer_subset[i].data.slice(-1)[0] === null || peer_subset[i].data[0] === null) {
-				line = '<tr><td>' + peer_subset[i].name + '</td><td class="nowrap" style="min-width:3em;text-align:right;">' + 'n/a</td></tr>'; // Note: style to css
+		peer_subset.forEach(function (item) {
+			if (!item.data || item.data.slice(-1)[0] === null || item.data[0] === null) {
+				line = '<tr><td>' + item.name + '</td><td class="nowrap" style="min-width:3em;text-align:right;">' + 'n/a</td></tr>'; // Note: style to css
 			} else {
 				avg = '0.0'; // avoid divide by zero
-				if (peer_subset[i].data && peer_subset[i].data.length) {
-					avg = '' + Math.round(10.0 * (peer_subset[i].data.slice(-1)[0] - peer_subset[i].data[0]) / (peer_subset[i].data.length - 1))/10.0;
+				if (item.data && item.data.length > 1) {
+					avg = '' + Math.round(10.0 * (item.data.slice(-1)[0] - item.data[0]) / (item.data.length - 1))/10.0;
 				}
-				if (avg.split('.').length === 1) {
+				if (avg.split('.').length === 1) { // formatting
 					avg += '.0';
 				}
-				line = '<tr><td>' + peer_subset[i].name + '</td><td class="nowrap" style="min-width:3em;text-align:right;">' + avg + ' % points</td></tr>'; // Note: style to css
+				line = '<tr><td>' + item.name + '</td><td class="nowrap" style="min-width:3em;text-align:right;">' + avg + ' % points</td></tr>'; // Note: style to css
 			}
 			detail += line;
-		}
+		});
 		detail += '</tbody></table>';
 		$('#text_panel_0').html('<h3>' + heading + '</h3>' + detail);
 	};
@@ -377,53 +382,51 @@ $(document).ready(function () {
 	  * Functions related to 'Data Tables' tab
 	  */
 
-	//var forEach = function (array, callback, scope) {
-	//	var i, ilen = array.length;
-	//	for (i = 0; i < ilen; i+=1) {
-	//		callback.call(scope, array[i], i, array);
-	//	}
-	//};
-
 	var sortcol = function (tbody, col, direction) {
-		var i, ilen = tbody.children.length, trs = [], tr, td, row, frag;
+		var i;
+		var ilen = tbody.children.length;
+		var trs = [];
+		var tr;
+		var td;
 		for (i = 0; i < ilen; i+=1) {
 			tr = tbody.children[i];
 			td = tr.children[col].innerText;
 			trs[i] = [td,i,tr.innerHTML,tr.className || ''];
 		}
-		frag = document.createDocumentFragment();
+		var frag = document.createDocumentFragment();
 		if (direction === 'ascending') {
 			trs.sort(function (a,b) {
-				var aa = a[0].toUpperCase(), bb = b[0].toUpperCase();
-				aa = aa.indexOf('ds*') !== -1?'$0':aa;
-				bb = bb.indexOf('ds*') !== -1?'$0':bb;
+				var aa = a[0].toUpperCase();
+				var bb = b[0].toUpperCase();
+				aa = aa.indexOf('ds*') !== -1 ? '$0' : aa;
+				bb = bb.indexOf('ds*') !== -1 ? '$0' : bb;
 				aa = aa.replace(pattern1,'');
 				bb = bb.replace(pattern1,'');
-				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
-				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
-				return aa>bb?1:aa===bb?0:-1;
+				aa = Number.isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
+				bb = Number.isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
+				return aa > bb ? 1 : (aa === bb) ? 0 : -1;
 			});
 		} else {
 			trs.sort(function (b,a) {
-				var aa = a[0].toUpperCase(), bb = b[0].toUpperCase();
-				aa = aa.indexOf('ds*') !== -1?'$0':aa;
-				bb = bb.indexOf('ds*') !== -1?'$0':bb;
+				var aa = a[0].toUpperCase();
+				var bb = b[0].toUpperCase();
+				aa = aa.indexOf('ds*') !== -1 ? '$0' : aa;
+				bb = bb.indexOf('ds*') !== -1 ? '$0' : bb;
 				aa = aa.replace(pattern1,'');
 				bb = bb.replace(pattern1,'');
-				aa = isNaN(parseFloat(aa))?aa:parseFloat(aa);
-				bb = isNaN(parseFloat(bb))?bb:parseFloat(bb);
-				return aa>bb?1:aa===bb?0:-1;
+				aa = Number.isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
+				bb = Number.isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
+				return aa > bb ? 1 : (aa === bb) ? 0 : -1;
 			});
 		}
-		ilen = trs.length;
-		for (i = 0; i < ilen; i+=1) {
-			row = document.createElement('tr');
-			if (trs[i][3].indexOf('highlight') !== -1) {
+		trs.forEach(function (tr) {
+			var row = document.createElement('tr');
+			if (tr[3].indexOf('highlight') !== -1) {
 				row.className = "highlight";
 			}
-			row.innerHTML = trs[i][2];
+			row.innerHTML = tr[2];
 			frag.appendChild(row);
-		}
+		});
 		tbody.innerHTML = '';
 		tbody.appendChild(frag,tbody);
 	};
@@ -431,7 +434,8 @@ $(document).ready(function () {
 	var sort_toggle_state = {}; // for toggling sort direction
 	var create_table_peers = function (json, config) {
 		var out = '<thead><tr>';
-		var one_or_two, header_copy = json.headers[0];
+		var one_or_two;
+		var header_copy = json.headers[0];
 		if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
 			one_or_two = (header_copy[2] === 'Underrepresented Minority 6-Year Grad Rate') ? 2 : 1;
 			header_copy.splice(1,one_or_two,header_copy.splice(-1,1)[0]); // remove 6yr column(s) and move last column to 2nd column position
@@ -466,7 +470,8 @@ $(document).ready(function () {
 				row_copy.splice(-1,1); // simply remove last col
 			}
 			row_copy.forEach(function (item,i) {
-				var name,link;
+				var name;
+				var link;
 				if (item === '-') {
 					item = 'ds*'; // per spec, replace dash in source with 'ds*' indicating data suppressed
 				}
@@ -497,15 +502,15 @@ $(document).ready(function () {
 			});
 			out3 += '</tr>';
 		});
-
 		out3 += '</tbody>';
 		$('#desctable').html(out + out3);
+
 		var cols = [];
+		var tbody = $('#tb1')[0];
 		json.headers[0].forEach(function (item,i) {
 			var ord = 'ord' + i;
 			cols.push('#col_' + i);
 			$(cols[i]).on('click', function () {
-				var tbody = document.querySelector('#tb1');
 				if (!sort_toggle_state[ord] || sort_toggle_state[ord] !== 'ascending') { // toggle
 					sort_toggle_state[ord] = 'ascending';
 				} else {
@@ -535,6 +540,7 @@ $(document).ready(function () {
 
 	var update_chart_historical_trends = function (config, json_data) {
 		var peer_subset = filter_peers(config, json_data);
+		//console.log(JSON.stringify(peer_subset));
 		create_chart_historical_trends(config, truncate_data(peer_subset, config.years.length));
 		create_table_historical_trends(config, truncate_data(peer_subset, config.years.length));
 	};
