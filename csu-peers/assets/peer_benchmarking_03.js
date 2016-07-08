@@ -1,6 +1,6 @@
 $(document).ready(function () {
 	'use strict';
-	var defeat_cache = '?v=33';
+	var defeat_cache = '?v=' + (new Date()).getTime();
 
 	/* 
 	  * Page level support functions and general settings, defaults
@@ -10,22 +10,19 @@ $(document).ready(function () {
 		colors: ['#ED361B', '#058DC7', '#50B432', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
 	});
 
-	var chart_state;
-	chart_state = {
+	var chart_state = {
 		'selected_tab_name':'chart', 'campus':'Bakersfield', 
 		'grad_year':'6yr', 'cohort':'2008', 'years':[], 'peer_count':5,
 		'trends_since':'0', 'type':'GR', 'max_6yr':'2008', 
-		'notify':function () {
-			$('.control').trigger('state_change', [chart_state]);
-		}
+		'notify':null
 	};
+	chart_state.notify = function () {
+		$('.control').trigger('state_change', [chart_state]);
+	}
 	
 	var pattern1 = new RegExp('[$%,]', 'g');
 	var pattern2 = new RegExp(' ', 'g');
 
-	var years = {'4yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008'],
-			'6yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008']};
-	var map_years = {'5':-5, '3':-3, '0':0}; // modify to match returned values from control 
 	var retained_json_data;
 	var peer_campus_urls; // saves having to reload data
 
@@ -181,7 +178,9 @@ $(document).ready(function () {
 			config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
 	};
 
-	// fetch appropriate data set
+	// fetch appropriate data set, subsequent fetches of same campus/grad_year will be from cache
+	// change of number of years to show does not require fetch
+	// nor does a change of cohort year, as this file also provides data for peer comparisons graph
 	var load_chart_historical_trends = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
 		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
@@ -205,12 +204,10 @@ $(document).ready(function () {
 		var out = [];
 		var itemset;
 		data.forEach(function (item) { // assumes only name, data, lineWidth properties
-			if (item && item.hasOwnProperty('name') && item.hasOwnProperty('data')) {
+			if (item && item.hasOwnProperty('name')) {
 				itemset = {'name':item.name};
-				if (item.hasOwnProperty('lineWidth')) {
-					itemset.lineWidth = item.lineWidth;
-				}
-				itemset.data = item.data.slice(map_years[position]);
+				itemset.data = item.data.slice(position);
+				itemset.lineWidth = item.lineWidth;
 				out.push(itemset);
 			}
 		});
@@ -235,7 +232,7 @@ $(document).ready(function () {
 			if (match_csu_campus(config.campus, name)) {
 				selected_campus_data = {'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 4};
 			} else {
-				out_data.push({'name':convert_csu_campus_name(name), 'data':series});
+				out_data.push({'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 2});
 			}
 		});
 		out_data.sort(function (a,b) {
@@ -255,9 +252,7 @@ $(document).ready(function () {
 		var year_start = config.years[0];
 		var year_end = config.years.slice(-1)[0];
 		var n = config.grad_year[0];
-		var trend_table_row_template = '<tr><td>{name}</td><td class="nowrap"' +
-			' style="min-width:3em;text-align:right;"' +  // Note: style to css
-			'>{avg}</td></tr>';
+		var trend_table_row_template = '<tr><td>{name}</td><td class="nowrap">{avg}</td></tr>';
 		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Grad Rates';
 		var detail = '<table class="table table-striped"><tbody>';
 		peer_subset.forEach(function (item) {
@@ -279,7 +274,12 @@ $(document).ready(function () {
 	};
 
 	var update_chart_historical_trends = function (config, json_data) {
-		var truncated_peer_subset = truncate_data(filter_peers(config, json_data), config.years.length);
+		var map_years = {'5':-5, '3':-3, '0':0}; // modify to match returned values from control 
+		var years = {'4yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008'],
+			'6yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008']};
+		config.years = years[config.grad_year].slice(map_years[config.trends_since]); // config.years used only with historical trends
+
+		var truncated_peer_subset = truncate_data(filter_peers(config, json_data), map_years[config.trends_since]);
 		create_chart_historical_trends(config, truncated_peer_subset);
 		create_table_historical_trends(config, truncated_peer_subset);
 	};
@@ -328,7 +328,7 @@ $(document).ready(function () {
 			}
 			trs.forEach(function (tr) {
 				var row = document.createElement('tr');
-				if (tr[3].indexOf('highlight') !== -1) {
+				if (tr[3].indexOf('highlight') !== -1) { // reapply className to tr element represented by frag
 					row.className = "highlight";
 				}
 				row.innerHTML = tr[2];
@@ -356,10 +356,10 @@ $(document).ready(function () {
 
 	var relabel_table_peers = function (item) {
 		item = (item === 'Main') ? 'Campus': item;
-		item = (item === 'Underrepresented Minority 6-Year Grad Rate') ? 'URM 6-Year Grad Rate': item;
-		item = (item === '% Pell Recipients Among Freshmen') ? '% Pell Eligible': item;
-		item = (item === '% Underrepresented Minority') ? '% URM': item;
-		item = (item === 'Average High School GPA Among College Freshmen') ? 'Average High School GPA': item;
+		item = (item === 'Underrepresented Minority 6-Year Grad Rate') ? 'URM&nbsp;6-Year Grad&nbsp;Rate': item;
+		item = (item === '% Pell Recipients Among Freshmen') ? '%&nbsp;Pell Eligible': item;
+		item = (item === '% Underrepresented Minority') ? '%&nbsp;URM': item;
+		item = (item === 'Average High School GPA Among College Freshmen') ? 'Average&nbsp;High School&nbsp;GPA': item;
 		item = (item === 'Estimated Median SAT / ACT') ? 'Average SAT&nbsp;Score': item;
 		item = (item === 'Size (Undergrad FTE)') ? '(Undergrad FTE)&nbsp;Size': item;
 		item = item.replace('Grad Rate','Grad&nbsp;Rate');
@@ -382,7 +382,7 @@ $(document).ready(function () {
 			if (i === 0) {
 				thead_html += '<th id="col_' + i + '" class="col_campus">' + item + '</th>'; 
 			} else {
-				thead_html += '<th id="col_' + i + '"  style="text-align:right;padding-right:5px;">' + item + '</th>';  // Note: move style to css
+				thead_html += '<th id="col_' + i + '">' + item + '</th>';
 			}
 		});
 		thead_html += '</tr></thead>';
@@ -397,11 +397,7 @@ $(document).ready(function () {
 			row_copy.forEach(function (item,i) {
 				var name;
 				var link;
-				var color;
-				var campus_column_template = '<td class="col_campus">' + 
-					'<a href="{link}" target="_blank"' + 
-					' style="color:{color};text-decoration:underline;"' + // Note: move style to css
-					'>{name}</a></td>';
+				var campus_column_template = '<td class="col_campus"><a href="{link}" target="_blank">{name}</a></td>';
 				if (item === '-') {
 					item = 'ds*'; // per spec, replace dash in source with 'ds*' indicating data suppressed
 				}
@@ -413,16 +409,14 @@ $(document).ready(function () {
 						link = peer_campus_urls[name];
 					}
 					if (match_csu_campus(config.campus, name)) {
-						color = '#b00';
 						tbody_html += '<tr class="highlight">'; // row to highlight matches csu campus selected
 					} else {
-						color = '#111';
 						tbody_html += '<tr>';
 					}
 					name = shorten_peer_name(name);
-					tbody_html += campus_column_template.replace('{link}', link).replace('{name}', convert_csu_campus_name(name)).replace('{color}', color);
+					tbody_html += campus_column_template.replace('{link}', link).replace('{name}', convert_csu_campus_name(name));
 				} else {
-					tbody_html += '<td style="text-align:right;padding-right:5px;">' + item + '</td>'; // Note: move style to css
+					tbody_html += '<td>' + item + '</td>';
 				}
 			});
 			tbody_html += '</tr>';
@@ -497,7 +491,6 @@ $(document).ready(function () {
 
 		$('#year_selector').on('change', function (e) { // 6yr or 4yr
 			chart_state.grad_year = e.target.value;
-			chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
 			chart_state.notify();
 			load_chart_historical_trends(chart_state,  function (json_data, chart_state) {
 				retained_json_data = json_data;
@@ -509,7 +502,6 @@ $(document).ready(function () {
 
 		$('#year_span_selector').on('change', function (e) { // Past Three Years, Past Five Years, Since 2000
 			chart_state.trends_since = e.target.value;
-			chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
 			update_chart_historical_trends(chart_state, retained_json_data);
 		});
 
@@ -525,7 +517,6 @@ $(document).ready(function () {
 		});
 
 		load_chart_historical_trends(chart_state, function (json_data, chart_state) {
-			chart_state.years = years[chart_state.grad_year].slice(map_years[chart_state.trends_since]);
 			retained_json_data = json_data;
 			update_chart_peer_comparisons(chart_state, retained_json_data);
 			update_chart_historical_trends(chart_state, retained_json_data);
