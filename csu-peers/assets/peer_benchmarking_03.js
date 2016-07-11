@@ -130,7 +130,7 @@ $(document).ready(function () {
 
 		var s0 = series[0];
 		var s1 = series[1];
-		if (Number.isNaN(s0.y)) {
+		if (isNaN(s0.y)) {
 			series[0] = s1;
 			series[1] = s0;
 		}
@@ -221,7 +221,7 @@ $(document).ready(function () {
 		var selected_campus_data;
 		var parse_item = function (item, j, a) {
 			a[j] = parseFloat(item);
-			a[j] = Number.isNaN(a[j]) ? null : a[j];
+			a[j] = isNaN(a[j]) ? null : a[j];
 		};
 		json_data.rows.forEach(function (row) {
 			var name = shorten_peer_name(row[0]);
@@ -310,8 +310,8 @@ $(document).ready(function () {
 					bb = bb.indexOf('ds*') !== -1 ? '$0' : bb;
 					aa = aa.replace(pattern1,'');
 					bb = bb.replace(pattern1,'');
-					aa = Number.isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
-					bb = Number.isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
+					aa = isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
+					bb = isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
 					return aa > bb ? 1 : (aa === bb) ? 0 : -1;
 				});
 			} else {
@@ -322,8 +322,8 @@ $(document).ready(function () {
 					bb = bb.indexOf('ds*') !== -1 ? '$0' : bb;
 					aa = aa.replace(pattern1,'');
 					bb = bb.replace(pattern1,'');
-					aa = Number.isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
-					bb = Number.isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
+					aa = isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
+					bb = isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
 					return aa > bb ? 1 : (aa === bb) ? 0 : -1;
 				});
 			}
