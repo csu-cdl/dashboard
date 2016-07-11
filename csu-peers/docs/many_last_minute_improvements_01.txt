@@ -1,0 +1,38 @@
+		Jeff
+
+		In the dropdown row,
+x		•	In the first dropdown, pluralize graduation “rates”
+x		•	In the text at the end, change “cohort.” to “entering freshman cohort” (delete the period)
+		On the CSU Comparisons tab:
+x		•	Change the title to “6-Year Graduation Rates for First-Time, Full-Time Freshmen” and “4-Year Graduation Rates for First-Time, Full-Time Freshmen”
+x		•	For all CSU Campuses, delete the hyphen on the x-axis labels (CSU-Stanislaus should be CSU Stanislaus)
+xdata	•	When a user selects 4-year rates from the dropdown, please default to the 2010 cohort (most recent) as opposed to the 2008 cohort
+		On the data tables tab
+		•	Change the heading labels as follows:
+x		o	Main = Campus
+x		o	Underrepresented Minority 6-Year Grad Rate = URM 6-Year Grad Rate
+x		o	% Pell Recipients Among Freshmen = % Pell Eligible
+x		o	% Underrepresented Minorities = % URM
+x		o	Average High School GPA… = Average High School GPA
+x		o	Estimated/Mean SAT = Average SAT Score
+x		o	Delete Median Earnings
+x		o	Delete Loan Default Rate
+
+xk		•	Double the width of the campus column so that all entries fit on one line
+data		•	Add 4-Year Grad Rates to the Data tables (for users who select 4-year rates)
+xk		•	For the selected campus, make all text across the row red (not just the name of the campus)
+k		•	If possible, increase the font size 
+		On the Methodology tab:
+xk		•	Add the CRO logo  
+
+		On the Campus Peer Trends tab:
+x		•	Increase the thickness of the lines in the line graph
+x		•	Change the color of the CSU campus from blue (since there is already a blue line) to red.  Also, increase the thickness of this line so it’s slightly larger than the others.
+x		•	Capitalize the word “Time” in both places that it appears in the title
+?		•	Roy - I think we need an asterisk on the improvement chart with some text explaining that we choose the top four peers.
+?		•	We need to add “N/A” for Channel Islands when users select both 4-year and 6-year rates since 2000
+		•	To conserve space in the table on the right:
+x		o	Round to the nearest tenths place 
+x		o	Change “percentage points” to “% points”
+xk		o	Shrink the title so it fits on two lines by decreasing the font size and abbreviating “Graduation” to “Grad”
+
