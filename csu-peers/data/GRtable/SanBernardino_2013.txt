@@ -1,7 +1,0 @@
-Main	2013 6-Year Grad Rate	Underrepresented Minority 6-Year Grad Rate	% Pell Recipients Among Freshmen	% Underrepresented Minority	Average High School GPA Among College Freshmen	Estimated Median SAT / ACT	"Total Price for In-State, On-Campus Students"	Average Net Price After Grants	Federal Loan 3-Year Default Rate	State	Size (Undergrad FTE)	Sector	"Endowment Assets, FY2013"
-California State University-Fresno	48.6%	43.1%	62.0%	45.3%	3.30	920	"$20,756"	"$6,228"	6.5%	CA	"18,010"	Public	"$136,018,304"
-Kean University	46.2%	40.9%	45.4%	40.0%	3.05	930	"$27,085"	"$12,092"	10.4%	NJ	"10,898"	Public	"$13,399,231"
-CUNY John Jay College of Criminal Justice	43.4%	43.1%	63.8%	62.9%	2.77	950	-	"$5,552"	10.3%	NY	"11,246"	Public	"$5,835,244"
-Stephen F Austin State University	43.2%	41.5%	46.2%	37.2%	-	987	"$22,239"	"$14,275"	12.9%	TX	"10,187"	Public	"$59,287,457"
-California State University-San Bernardino	41.1%	37.6%	66.9%	61.4%	3.21	904	"$20,712"	"$6,571"	9.7%	CA	"14,793"	Public	"$21,312,719"
-California State University-Los Angeles	35.7%	32.1%	72.1%	63.5%	3.16	870	"$21,927"	"$4,756"	7.6%	CA	"16,045"	Public	"$17,355,399"

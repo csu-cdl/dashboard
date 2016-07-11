@@ -1,7 +1,0 @@
-Main	2010 6-Year Grad Rate	% Pell Recipients Among Freshmen	% Underrepresented Minority	Estimated Median SAT / ACT	In-State Tuition and Fees	State	Size (Undergrad FTE)	Sector	Carnegie Class	Student Related Expenditures / Total FTE
-California State University-Fresno	50.6%	47.0%	40.2%	930	"$4,672"	CA	"16,439"	Public	Masters Large	"$7,820"
-Kean University	47.3%	44.0%	40.2%	915	"$9,446"	NJ	"10,261"	Public	Masters Large	"$8,129"
-Stephen F Austin State University	44.6%	43.0%	34.7%	965	"$6,732"	TX	"10,207"	Public	Masters Large	"$6,705"
-California State University-San Bernardino	44.0%	58.0%	54.4%	900	"$4,839"	CA	"13,138"	Public	Masters Large	"$6,533"
-CUNY John Jay College of Criminal Justice	40.1%	60.0%	64.0%	935	"$4,929"	NY	"11,371"	Public	Masters Large	"$8,432"
-California State University-Los Angeles	37.4%	62.0%	56.2%	850	"$4,640"	CA	"13,247"	Public	Masters Large	"$7,712"
