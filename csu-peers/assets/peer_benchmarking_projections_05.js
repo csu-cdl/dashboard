@@ -642,7 +642,7 @@ $(document).ready(function () {
 			}
 		});
 		$('#label_year_span_selector').on('state_change', function () {
-			if (['trends', 'projections'].indexOf(chart_state.selected_tab_name) !== -1) {
+			if (['trends'].indexOf(chart_state.selected_tab_name) !== -1) {
 				$('#label_year_span_selector').show();
 			} else {
 				$('#label_year_span_selector').hide();
