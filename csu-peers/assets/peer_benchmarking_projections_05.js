@@ -155,6 +155,10 @@ $(document).ready(function () {
 	let create_chart_projections = function (config, data) {
 		//console.log('projections');
 		$('#projections_chart_container').highcharts({
+			chart: {
+				height: 500,
+				type: 'line'
+			},
 			title: {
 				text: 'Graduation Rate Projections for First-Time, Full-Time Freshmen',
 				x: -20 //center

@@ -91,11 +91,11 @@ tbody tr td.nowrap {
 #projections_shade {
 	width: 464px;
 	left: 528px;
-	height: 200px;
+	height: 290px;
 	background: rgba(127,127,127,0.1);
 	z-index: 30;
 	position: relative;
-	top: -360px;
+	top: -455px;
 }
 
 #projections_shade .gr6yr {
