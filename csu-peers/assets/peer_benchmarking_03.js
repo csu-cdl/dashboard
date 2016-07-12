@@ -11,10 +11,15 @@ $(document).ready(function () {
 		colors: ['#ED361B', '#058DC7', '#50B432', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
 	});
 
+	// single place for server to establish defaults, year range and map of years to data columns, etc.
 	let chart_state = {
 		'selected_tab_name':'chart', 'campus':'Bakersfield', 
 		'grad_year':'6yr', 'cohort':'2008', 'years':[], 'peer_count':5,
 		'trends_since':'0', 'type':'GR', 'max_6yr':'2008', 
+		'yearmap':{
+			'6yr': {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9},
+			'4yr': {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11}
+		},
 		'notify':null
 	};
 	chart_state.notify = function () {
@@ -109,21 +114,12 @@ $(document).ready(function () {
 	};
 
 	let update_chart_peer_comparisons = function (config, json_data) {
-		let cohort2col_6yr = {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9};
-		let cohort2col_4yr = {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11};
-		let col;
-		let key;
-		let value;
 		let series = [];
-		if (config.grad_year === '6yr') {
-			col = cohort2col_6yr[config.cohort];
-		} else {
-			col = cohort2col_4yr[config.cohort];
-		}
+		let col = config.yearmap[config.grad_year][config.cohort];
 
 		json_data.rows.forEach(function (row, i) {
-			key = row[0];
-			value = parseFloat(row[col]);
+			let key = row[0];
+			let value = parseFloat(row[col]);
 
 			if (match_csu_campus(config.campus, key)) {
 				key = convert_csu_campus_name(key);
@@ -282,9 +278,8 @@ $(document).ready(function () {
 
 	let update_chart_historical_trends = function (config, json_data) {
 		let map_years = {'5':-5, '3':-3, '0':0}; // modify to match returned values from control 
-		let years = {'4yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008'],
-			'6yr':['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008']};
-		config.years = years[config.grad_year].slice(map_years[config.trends_since]); // config.years used only with historical trends
+		let yearkeys = Object.keys(config.yearmap[config.grad_year]);
+		config.years = yearkeys.slice(map_years[config.trends_since]); // config.years used only with historical trends
 
 		let truncated_peer_subset = truncate_data(filter_peers(config, json_data), map_years[config.trends_since]);
 		create_chart_historical_trends(config, truncated_peer_subset);
