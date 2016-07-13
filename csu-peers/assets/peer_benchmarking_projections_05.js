@@ -1,13 +1,13 @@
 $(document).ready(function () {
 	'use strict';
-	var defeat_cache = '?v=34'; // stable and cache ok
+	var defeat_cache = '?v=35'; // stable and cache ok
 
 	/*
 	  * Page level support functions and general settings, defaults
 	  */
 
 	Highcharts.setOptions({
-		//colors: ["#de2d26", "#3182bd", "#fd8d3c", "#31a354", "#756bb1", "#fc9272", "#9ecae1", "#fdd0a2", "#a1d99b", "#bcbddc", "#a50f15", "#08519c", "#a63603", "#006d2c", "#54278f", "#fb6a4a", "#6baed6", "#fdae6b", "#74c476", "#9e9ac8", "#fcbba1", "#c6dbef", "#e6550d", "#c7e9c0", "#dadaeb", "#999"]
+		alternate_palette_colors: ["#de2d26", "#3182bd", "#fd8d3c", "#31a354", "#756bb1", "#fc9272", "#9ecae1", "#fdd0a2", "#a1d99b", "#bcbddc", "#a50f15", "#08519c", "#a63603", "#006d2c", "#54278f", "#fb6a4a", "#6baed6", "#fdae6b", "#74c476", "#9e9ac8", "#fcbba1", "#c6dbef", "#e6550d", "#c7e9c0", "#dadaeb", "#999"],
 		colors: ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
 	});
 
@@ -396,6 +396,13 @@ $(document).ready(function () {
 		$('#projections_footnote').html('*Showing ' + convert_location_to_csu_name(config.campus) +
 			' and its four top performing national peers (based on their ' +
 			config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
+
+		$('#download_projections_csv').off('click', function () {
+			console.log(download_series_as_csv(config, json_data));
+		});
+		$('#download_projections_csv').on('click', function () {
+			console.log(download_series_as_csv(config, json_data));
+		});
 	};
 
 	var update_chart_historical_trends = function (config, json_data) { // config is modified
@@ -585,6 +592,48 @@ $(document).ready(function () {
 		});
 	};
 
+	var download_series_as_csv = function (config, json_data, transform_function) {
+		var output = '';
+		if (transform_function && typeof transform_function === 'function') {
+			output = transform_function(json_data);
+		} else {
+			json_data.headers[0].forEach(function (cell) {
+					if (cell.length && cell[0] === '"') {
+						output += cell;
+					} else {
+						output += '"' + cell + '"';
+					}
+			});
+			output += '\n';
+			json_data.rows.forEach(function (row) {
+				var line = [];
+				row.forEach(function (cell) {
+					if (cell.length && cell[0] === '"') {
+						line.push(cell);
+					} else {
+						line.push('"' + cell + '"');
+					}
+				});
+				output += line.join(',') + '\n';
+			});
+		}
+		// download magic here, instead of returning output, create document that downloads
+		var linkDownload = function (a, filename, content) {
+			var contentType =  'data:application/octet-stream,';
+			var uriContent = contentType + encodeURIComponent(content);
+			a.setAttribute('href', uriContent);
+			a.setAttribute('download', filename);
+		};
+		var download = function (filename, content) {
+			var a = document.createElement('a');
+			linkDownload(a, filename, content);
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+		};
+		download('Projected_Trends_' + config.grad_year + '_for_' + config.campus + '.csv', output);
+		//return output;
+	};
 	// initialize
 	(function () {
 		/*
