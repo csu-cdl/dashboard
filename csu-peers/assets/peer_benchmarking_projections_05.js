@@ -632,14 +632,16 @@ $(document).ready(function () {
 			update_chart_historical_trends(chart_state, retained_json_data);
 			update_chart_projected_trends(chart_state, retained_json_data);
 			$('#projections_all').on('click', function () {
-				console.log('all');
-				chart_state.projected_campuses = 'all';
-				update_chart_projected_trends(chart_state, retained_json_data);
+				if (chart_state.projected_campuses !== 'all') { // only if changed
+					chart_state.projected_campuses = 'all';
+					update_chart_projected_trends(chart_state, retained_json_data);
+				}
 			});
 			$('#projections_reset').on('click', function () {
-				console.log('reset');
-				chart_state.projected_campuses = 'default';
-				update_chart_projected_trends(chart_state, retained_json_data);
+				if (chart_state.projected_campuses !== 'default') { // only if changed
+					chart_state.projected_campuses = 'default';
+					update_chart_projected_trends(chart_state, retained_json_data);
+				}
 			});
 		});
 
