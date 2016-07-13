@@ -401,7 +401,7 @@ $(document).ready(function () {
 			console.log(download_series_as_csv(config, json_data));
 		});
 		$('#download_projections_csv').on('click', function () {
-			console.log(download_series_as_csv(config, json_data));
+			download_series_as_csv(config, json_data);
 		});
 	};
 
