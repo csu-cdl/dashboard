@@ -105,7 +105,7 @@ tbody tr td.nowrap {
 
 #projections_legend_all {
 	width: 700px;
-	height: 50px;
+	height: 30px;
 	position: relative;
 	top: -486px;
 	left: 384px;
@@ -123,6 +123,4 @@ tbody tr td.nowrap {
 	text-decoration:underline;
 	outline:none;
 }
-
-#projections_legend_all button: {
 
