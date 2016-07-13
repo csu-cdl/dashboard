@@ -25,7 +25,7 @@ $(document).ready(function () {
 	chart_state.notify = function () {
 		$('.control').trigger('state_change', [chart_state]);
 	};
-	
+
 	var pattern1 = new RegExp('[$%,]', 'g');
 	var pattern2 = new RegExp(' ', 'g');
 
@@ -59,10 +59,9 @@ $(document).ready(function () {
 		name = name.replace(new RegExp('Bowling Green State University.*$'),'Bowling Green State University');
 		name = name.replace(new RegExp('University of South Florida.*$'),'University of South Florida'); // - Main Campus
 		name = name.replace(new RegExp('University of New Mexico.*$'),'University of New Mexico'); // - Main Campus
-		name = name.replace(new RegExp('New Mexico State University.*$'),'New Mexico State University'); // - Main Campus 
+		name = name.replace(new RegExp('New Mexico State University.*$'),'New Mexico State University'); // - Main Campus
 		return name;
 	};
-	// test: console.log(shorten_peer_name('CUNY John Jay College of Criminal Justice'));
 
 	var match_csu_campus = function (location, formal_name) { // true or false
 		return (formal_name === 'California State University-' + location ||
@@ -77,7 +76,7 @@ $(document).ready(function () {
 	  */
 
 	// create the highchart
-	var create_chart_peer_comparisons = function (config, data) { 
+	var create_chart_peer_comparisons = function (config, data) {
 		$('#container').highcharts({
 			credits: {
 				enabled: false
@@ -157,7 +156,6 @@ $(document).ready(function () {
 	  */
 
 	var create_chart_projections = function (config, data) {
-		//console.log('projections');
 		$('#projections_chart_container').highcharts({
 			credits: {
 				enabled: false
@@ -197,7 +195,6 @@ $(document).ready(function () {
 			series: data
 		});
 	};
-
 
 	/*
 	  * Functions specific to 'Historical Trends' tab
@@ -247,7 +244,7 @@ $(document).ready(function () {
 	// nor does a change of cohort year, as this file also provides data for peer comparisons graph
 	var load_chart_historical_trends = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
-		var chart_data_src = 'data/' + config.type + config.grad_year + '/' + 
+		var chart_data_src = 'data/' + config.type + config.grad_year + '/' +
 			config.campus.replace(pattern2, '_') + '_' + config.grad_year + config.type + '.json' + defeat_cache;
 
 		$.ajax({
@@ -262,7 +259,6 @@ $(document).ready(function () {
 
 	// only show year_span of series (series array is sliced at position)
 	var truncate_data = function (data, position) {
-		//console.log(JSON.stringify(data));
 		var out = [];
 		var itemset;
 		data.forEach(function (item) { // assumes only name, data, lineWidth properties
@@ -344,14 +340,12 @@ $(document).ready(function () {
 			var last_given_value = series.data.slice(-1)[0];
 			['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021'].slice(0,17-config.grad_year[0]).forEach(function (year) {
 				series.data.push(null);
-				//series.data.push(Math.round((last_given_value + (Math.random() * 1.2) - 0.15) * 10.0) / 10.0);
-				//last_given_value = series.data.slice(-1)[0];
 			});
 			series.data[series.data.length - 1] = 70.0;
 			series.zoneAxis = 'x';
 			series.zones = [{value: 9}, {dashStyle: 'dot'}];
 		});
-		return series_data
+		return series_data;
 	};
 
 	var create_table_historical_trends = function (config, peer_subset) {
@@ -382,10 +376,9 @@ $(document).ready(function () {
 	};
 
 	var update_chart_projected_trends = function (config, json_data) { // config is modified
-		var map_years = {'5':-5, '3':-3, '0':0}; // modify to match returned values from control 
+		var map_years = {'5':-5, '3':-3, '0':0}; // modify to match returned values from control
 		var yearkeys = Object.keys(config.yearmap[config.grad_year]);
 		config.years = yearkeys.slice(map_years[config.trends_since]); // config.years used only with historical trends
-		//create_chart_projections(config, truncated_peer_subset);
 		create_chart_projections(config, truncate_data(fake_extend_series(config, filter_off_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since])));
 		if (config.grad_year === '6yr') {
 			$('#projections_shade').addClass('gr6yr');
@@ -400,7 +393,7 @@ $(document).ready(function () {
 	};
 
 	var update_chart_historical_trends = function (config, json_data) { // config is modified
-		var map_years = {'5':-5, '3':-3, '0':0}; // modify to match returned values from control 
+		var map_years = {'5':-5, '3':-3, '0':0}; // modify to match returned values from control
 		var yearkeys = Object.keys(config.yearmap[config.grad_year]);
 		config.years = yearkeys.slice(map_years[config.trends_since]); // config.years used only with historical trends
 
@@ -414,7 +407,7 @@ $(document).ready(function () {
 			config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
 	};
 
-	/* 
+	/*
 	  * Functions related to 'Data Tables' tab
 	  */
 
@@ -511,7 +504,7 @@ $(document).ready(function () {
 		header_copy.forEach(function (item, i) {
 			item = relabel_table_peers(item);
 			if (i === 0) {
-				thead_html += '<th id="col_' + i + '" class="col_campus">' + item + '</th>'; 
+				thead_html += '<th id="col_' + i + '" class="col_campus">' + item + '</th>';
 			} else {
 				thead_html += '<th id="col_' + i + '">' + item + '</th>';
 			}
@@ -585,7 +578,7 @@ $(document).ready(function () {
 
 	// initialize
 	(function () {
-		/* 
+		/*
 		  * Connect user input controls to activation functions
 		  */
 
@@ -638,7 +631,7 @@ $(document).ready(function () {
 
 		load_peer_campus_urls(chart_state, function (json_data, chart_state) {
 			peer_campus_urls = json_data;
-			// only table_peers needs the urls and the list needs loading only once 
+			// only table_peers needs the urls and the list needs loading only once
 			// but should be loaded before creating table
 			load_table_peers(chart_state, create_table_peers);
 		});
@@ -660,12 +653,11 @@ $(document).ready(function () {
 			});
 		});
 
-		/* 
+		/*
 		  * Custom event listeners respond to any change of tab, campus, cohort, etc.
 		  */
 
 		$('#label_year_selector').on('state_change', function () {
-			//console.log(chart_state);
 			if (['chart', 'trends', 'table', 'projections'].indexOf(chart_state.selected_tab_name) !== -1) {
 				$('#label_year_selector').show();
 			} else {
@@ -722,13 +714,11 @@ $(document).ready(function () {
 		  */
 
 		chart_state.notify(); // default tab and controls selected on page load
-		
+
 		$(".nav-tabs a").on('click', function (e) { // what to do when a tab is selected
 			$(e.target).tab('show');
 			chart_state.selected_tab_name = e.target.href.split('#')[1]; // i.e., one of ['chart','table','method','trends','projections']
-			//console.log(chart_state.selected_tab_name);
 			chart_state.notify();
 		});
 	}()); // initialized
 });
-
