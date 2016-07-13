@@ -90,7 +90,7 @@ tbody tr td.nowrap {
 
 #projections_shade {
 	width: 464px;
-	left: 528px;
+	left: 558px;
 	height: 290px;
 	background: rgba(127,127,127,0.1);
 	z-index: 30;
@@ -100,5 +100,5 @@ tbody tr td.nowrap {
 
 #projections_shade .gr6yr {
 	width: 506px;
-	left: 486px;
+	left: 516px;
 }
