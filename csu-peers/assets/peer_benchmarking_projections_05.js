@@ -79,6 +79,9 @@ $(document).ready(function () {
 	// create the highchart
 	var create_chart_peer_comparisons = function (config, data) { 
 		$('#container').highcharts({
+			credits: {
+				enabled: false
+			},
 			chart: {
 			    type: 'column'
 			},
@@ -156,6 +159,9 @@ $(document).ready(function () {
 	var create_chart_projections = function (config, data) {
 		//console.log('projections');
 		$('#projections_chart_container').highcharts({
+			credits: {
+				enabled: false
+			},
 			chart: {
 				height: 500,
 				type: 'line'
@@ -199,6 +205,12 @@ $(document).ready(function () {
 
 	var create_chart_historical_trends = function (config, data) {
 		$('#trends_chart_container').highcharts({
+			credits: {
+				enabled: false
+			},
+			chart: {
+				type: 'line'
+			},
 			title: {
 				text: 'Graduation Rate Trends for First-Time, Full-Time Freshmen',
 				x: -20 //center
@@ -260,10 +272,14 @@ $(document).ready(function () {
 				itemset.lineWidth = item.lineWidth;
 				itemset.zIndex = item.zIndex;
 				itemset.visible = item.visible;
+				itemset.connectNulls = item.connectEnds;
+				if (item.hasOwnProperty('zones')) {
+					itemset.zoneAxis = item.zoneAxis;
+					itemset.zones = item.zones;
+				}
 				out.push(itemset);
 			}
 		});
-		//console.log(JSON.stringify(out));
 		return out;
 	};
 
@@ -283,20 +299,18 @@ $(document).ready(function () {
 				series = series.slice(2); // skipping first two years (which are really 1998, 1999: not 2000, 2001)
 			}
 			if (match_csu_campus(config.campus, name)) {
-				selected_campus_data = {'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 4, 'selected': true};
+				selected_campus_data = {'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 4, 'selected': true, 'connectEnds': true};
 			} else {
-				out_data.push({'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 2, 'selected': false});
+				out_data.push({'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 2, 'selected': false, 'connectEnds': true});
 			}
 		});
 		out_data.sort(function (b, a) { // sort by final year's grad_rate descending
-			//console.log(JSON.stringify(a.data.slice(-1)[0]));
 			return a.data.slice(-1) - b.data.slice(-1);
 		});
 		out_data.unshift(selected_campus_data); // but place selected campus in first position
 		out_data.forEach(function (campus_data, i, a) {
 			campus_data.zIndex = a.length - i;
 		});
-		//console.log(JSON.stringify(out_data));
 		return out_data;
 	};
 
@@ -329,10 +343,13 @@ $(document).ready(function () {
 		series_data.forEach(function (series) {
 			var last_given_value = series.data.slice(-1)[0];
 			['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021'].slice(0,17-config.grad_year[0]).forEach(function (year) {
-				series.data.push(Math.round((last_given_value + (Math.random() * 1.2) - 0.15) * 10.0) / 10.0);
-				last_given_value = series.data.slice(-1)[0];
+				series.data.push(null);
+				//series.data.push(Math.round((last_given_value + (Math.random() * 1.2) - 0.15) * 10.0) / 10.0);
+				//last_given_value = series.data.slice(-1)[0];
 			});
-			//console.log(JSON.stringify(series.data));
+			series.data[series.data.length - 1] = 70.0;
+			series.zoneAxis = 'x';
+			series.zones = [{value: 9}, {dashStyle: 'dot'}];
 		});
 		return series_data
 	};
