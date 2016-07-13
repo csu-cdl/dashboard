@@ -347,7 +347,7 @@ $(document).ready(function () {
 			config.projected_years.slice(0, 17 - config.grad_year[0]).forEach(function () {
 				series.data.push(null);
 			});
-			series.data[series.data.length - 1] = 70.0;
+			series.data[series.data.length - 1] = config.grad_year === '6yr' ? 65.0 : 40.0;
 			series.zoneAxis = 'x';
 			series.zones = [{value: 9}, {dashStyle: 'dot'}];
 		});
