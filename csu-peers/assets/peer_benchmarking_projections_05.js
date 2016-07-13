@@ -7,7 +7,7 @@ $(document).ready(function () {
 	  */
 
 	Highcharts.setOptions({
-		colors: ['#ED361B', '#058DC7', '#50B432', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
+		colors: ["#f00","#0f3","#00f","#0df","#f0f","#fe0","#f90","#b3a","#f3a","#60f","#0af","#0dc","#6da","#6ad","#a6d","#ad6","#da6","#d6a","#6a6","#a6a","#a66","#66a","#aa6","#6aa","#06a","#6a0"]
 	});
 
 	// single place for server to establish defaults, year range and map of years to data columns, etc.
