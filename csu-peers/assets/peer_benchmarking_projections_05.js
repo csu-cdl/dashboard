@@ -7,20 +7,28 @@ $(document).ready(function () {
 	  */
 
 	Highcharts.setOptions({
-		colors: ["#f00","#0f3","#00f","#0df","#f0f","#fe0","#f90","#b3a","#f3a","#60f","#0af","#0dc","#6da","#6ad","#a6d","#ad6","#da6","#d6a","#6a6","#a6a","#a66","#66a","#aa6","#6aa","#06a","#6a0"]
+		//colors: ["#de2d26", "#3182bd", "#fd8d3c", "#31a354", "#756bb1", "#fc9272", "#9ecae1", "#fdd0a2", "#a1d99b", "#bcbddc", "#a50f15", "#08519c", "#a63603", "#006d2c", "#54278f", "#fb6a4a", "#6baed6", "#fdae6b", "#74c476", "#9e9ac8", "#fcbba1", "#c6dbef", "#e6550d", "#c7e9c0", "#dadaeb", "#999"]
+		colors: ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
 	});
 
 	// single place for server to establish defaults, year range and map of years to data columns, etc.
 	var chart_state = {
-		'selected_tab_name':'chart', 'campus':'Bakersfield',
-		'grad_year':'6yr', 'cohort':'2008', 'years':[], 'peer_count':5,
-		'trends_since':'0', 'type':'GR', 'max_6yr':'2008',
-		'yearmap':{
-			'6yr': {'2000':1, '2001':2, '2002':3, '2003':4, '2004':5, '2005':6, '2006':7, '2007':8, '2008':9},
-			'4yr': {'2000':3, '2001':4, '2002':5, '2003':6, '2004':7, '2005':8, '2006':9, '2007':10, '2008':11}
+		'selected_tab_name': 'chart',
+		'campus': 'Bakersfield',
+		'grad_year': '6yr',
+		'cohort': '2008',
+		'years': [],
+		'peer_count': 5,
+		'trends_since': '0',
+		'type': 'GR',
+		'max_6yr': '2008',
+		'yearmap': {
+			'6yr': {'2000': 1, '2001': 2, '2002': 3, '2003': 4, '2004': 5, '2005': 6, '2006': 7, '2007': 8, '2008': 9},
+			'4yr': {'2000': 3, '2001': 4, '2002': 5, '2003': 6, '2004': 7, '2005': 8, '2006': 9, '2007': 10, '2008': 11}
 		},
-		'projected_campuses':'default',
-		'notify':null
+		'projected_years': ['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021'],
+		'projected_campuses': 'default',
+		'notify': null
 	};
 	chart_state.notify = function () {
 		$('.control').trigger('state_change', [chart_state]);
@@ -42,9 +50,8 @@ $(document).ready(function () {
 	};
 
 	var convert_location_to_csu_name = function (location) {
-		if (['Bakersfield','Channel Islands','Chico','Dominguez Hills','East Bay','Fresno','Fullerton',
-				'Long Beach','Los Angeles','Monterey Bay','Northridge','Pomona','Sacramento',
-				'San Bernardino','San Luis Obispo','San Marcos','Stanislaus'].indexOf(location) !== -1) {
+		var csu_locations_ordinary = ['Bakersfield', 'Channel Islands', 'Chico', 'Dominguez Hills', 'East Bay', 'Fresno', 'Fullerton', 'Long Beach', 'Los Angeles', 'Monterey Bay', 'Northridge', 'Pomona', 'Sacramento', 'San Bernardino', 'San Luis Obispo', 'San Marcos', 'Stanislaus'];
+		if (csu_locations_ordinary.indexOf(location) !== -1) {
 			return 'CSU ' + location;
 		} else if (location === 'Maritime Academy') {
 			return 'California Maritime Academy';
@@ -55,11 +62,11 @@ $(document).ready(function () {
 
 	var shorten_peer_name = function (campus_name) {
 		var name = campus_name; // so as not to reassign campus_name
-		name = name.replace(new RegExp('CUNY John Jay College.*$'),'CUNY John Jay College'); // of Criminal Justice
-		name = name.replace(new RegExp('Bowling Green State University.*$'),'Bowling Green State University');
-		name = name.replace(new RegExp('University of South Florida.*$'),'University of South Florida'); // - Main Campus
-		name = name.replace(new RegExp('University of New Mexico.*$'),'University of New Mexico'); // - Main Campus
-		name = name.replace(new RegExp('New Mexico State University.*$'),'New Mexico State University'); // - Main Campus
+		name = name.replace(new RegExp('CUNY John Jay College.*$'), 'CUNY John Jay College'); // of Criminal Justice
+		name = name.replace(new RegExp('Bowling Green State University.*$'), 'Bowling Green State University');
+		name = name.replace(new RegExp('University of South Florida.*$'), 'University of South Florida'); // - Main Campus
+		name = name.replace(new RegExp('University of New Mexico.*$'), 'University of New Mexico'); // - Main Campus
+		name = name.replace(new RegExp('New Mexico State University.*$'), 'New Mexico State University'); // - Main Campus
 		return name;
 	};
 
@@ -169,7 +176,7 @@ $(document).ready(function () {
 				x: -20 //center
 			},
 			xAxis: {
-				categories: config.years.concat(['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021'].slice(0,17-config.grad_year[0]))
+				categories: config.years.concat(config.projected_years.slice(0, 17 - config.grad_year[0]))
 			},
 			yAxis: {
 				title: {
@@ -322,7 +329,7 @@ $(document).ready(function () {
 	var filter_off_peer_series = function (config, series_data) {
 		var out_data_subset = series_data.slice(1).map(function (item, i) {
 			if (config.projected_campuses === 'default') {
-				item.visible = i < 4;
+				item.visible = (i < 4);
 			} else {
 				item.visible = true;
 			}
@@ -337,8 +344,7 @@ $(document).ready(function () {
 
 	var fake_extend_series = function (config, series_data) {
 		series_data.forEach(function (series) {
-			var last_given_value = series.data.slice(-1)[0];
-			['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021'].slice(0,17-config.grad_year[0]).forEach(function (year) {
+			config.projected_years.slice(0, 17 - config.grad_year[0]).forEach(function () {
 				series.data.push(null);
 			});
 			series.data[series.data.length - 1] = 70.0;
@@ -418,7 +424,7 @@ $(document).ready(function () {
 			var trs = [];
 			var tr;
 			var td;
-			for (i = 0; i < ilen; i+=1) {
+			for (i = 0; i < ilen; i +=1) {
 				tr = tbody.children[i];
 				td = tr.children[col].innerText;
 				trs[i] = [td,i,tr.innerHTML,tr.className || ''];
@@ -430,8 +436,8 @@ $(document).ready(function () {
 					var bb = b[0].toUpperCase();
 					aa = aa.indexOf('ds*') !== -1 ? '$0' : aa;
 					bb = bb.indexOf('ds*') !== -1 ? '$0' : bb;
-					aa = aa.replace(pattern1,'');
-					bb = bb.replace(pattern1,'');
+					aa = aa.replace(pattern1, '');
+					bb = bb.replace(pattern1, '');
 					aa = isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
 					bb = isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
 					return aa > bb ? 1 : (aa === bb) ? 0 : -1;
@@ -442,8 +448,8 @@ $(document).ready(function () {
 					var bb = b[0].toUpperCase();
 					aa = aa.indexOf('ds*') !== -1 ? '$0' : aa;
 					bb = bb.indexOf('ds*') !== -1 ? '$0' : bb;
-					aa = aa.replace(pattern1,'');
-					bb = bb.replace(pattern1,'');
+					aa = aa.replace(pattern1, '');
+					bb = bb.replace(pattern1, '');
 					aa = isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
 					bb = isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
 					return aa > bb ? 1 : (aa === bb) ? 0 : -1;
@@ -463,7 +469,7 @@ $(document).ready(function () {
 
 		var sort_toggle_state = {}; // for toggling sort direction
 		var cols = [];
-		header.forEach(function (item, i) {
+		header.forEach(function (item, i) { // not interested in the header text, only its position
 			var ord = 'ord' + i;
 			cols.push('#col_' + i);
 			$(cols[i]).on('click', function () {
@@ -474,6 +480,9 @@ $(document).ready(function () {
 				}
 				sortcol(tbody, i, sort_toggle_state[ord]);
 			});
+			if (item === 'never @*%&!ng used') { // idiocy for the sake of the linter obsessed
+				return;
+			}
 		});
 	};
 
@@ -496,7 +505,7 @@ $(document).ready(function () {
 		var header_copy = json.headers[0];
 		if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
 			one_or_two = (header_copy[2] === 'Underrepresented Minority 6-Year Grad Rate') ? 2 : 1;
-			header_copy.splice(1,one_or_two,header_copy.splice(-1,1)[0]); // remove 6yr column(s) and move last column to 2nd column position
+			header_copy.splice(1,one_or_two,header_copy.splice(-1, 1)[0]); // remove 6yr column(s) and move last column to 2nd column position
 			header_copy[1] = config.cohort + '&nbsp;4yr Grad&nbsp;Rate';
 		} else { // 6yr
 			header_copy.splice(-1,1); // simply remove last col
@@ -658,28 +667,32 @@ $(document).ready(function () {
 		  */
 
 		$('#label_year_selector').on('state_change', function () {
-			if (['chart', 'trends', 'table', 'projections'].indexOf(chart_state.selected_tab_name) !== -1) {
+			var pertinent_tabs = ['chart', 'trends', 'table', 'projections'];
+			if (pertinent_tabs.indexOf(chart_state.selected_tab_name) !== -1) {
 				$('#label_year_selector').show();
 			} else {
 				$('#label_year_selector').hide();
 			}
 		});
 		$('#label_campus_selector').on('state_change', function () {
-			if (['chart', 'trends', 'table', 'projections'].indexOf(chart_state.selected_tab_name) !== -1) {
+			var pertinent_tabs = ['chart', 'trends', 'table', 'projections'];
+			if (pertinent_tabs.indexOf(chart_state.selected_tab_name) !== -1) {
 				$('#label_campus_selector').show();
 			} else {
 				$('#label_campus_selector').hide();
 			}
 		});
 		$('#label_cohort_selector').on('state_change', function () {
-			if (['chart', 'table'].indexOf(chart_state.selected_tab_name) !== -1) {
+			var pertinent_tabs = ['chart', 'table'];
+			if (pertinent_tabs.indexOf(chart_state.selected_tab_name) !== -1) {
 				$('#label_cohort_selector').show();
 			} else {
 				$('#label_cohort_selector').hide();
 			}
 		});
 		$('#label_year_span_selector').on('state_change', function () {
-			if (['trends'].indexOf(chart_state.selected_tab_name) !== -1) {
+			var pertinent_tabs = ['trends'];
+			if (pertinent_tabs.indexOf(chart_state.selected_tab_name) !== -1) {
 				$('#label_year_span_selector').show();
 			} else {
 				$('#label_year_span_selector').hide();
