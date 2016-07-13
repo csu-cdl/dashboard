@@ -638,10 +638,8 @@ $(document).ready(function () {
 				}
 			});
 			$('#projections_reset').on('click', function () {
-				if (chart_state.projected_campuses !== 'default') { // only if changed
-					chart_state.projected_campuses = 'default';
-					update_chart_projected_trends(chart_state, retained_json_data);
-				}
+				chart_state.projected_campuses = 'default';
+				update_chart_projected_trends(chart_state, retained_json_data);
 			});
 		});
 
