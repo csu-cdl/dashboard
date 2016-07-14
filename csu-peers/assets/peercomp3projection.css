@@ -89,8 +89,8 @@ tbody tr td.nowrap {
 }
 
 #projections_shade {
-	width: 506px;
-	left: 516px;
+	width: 546px;
+	left: 475px;
 	height: 290px;
 	background: rgba(127,127,127,0.1);
 	z-index: 30;
@@ -99,8 +99,8 @@ tbody tr td.nowrap {
 }
 
 #projections_shade.gr6yr {
-	width: 464px;
-	left: 558px;
+	width: 510px;
+	left: 512px;
 }
 
 #projections_legend_all {

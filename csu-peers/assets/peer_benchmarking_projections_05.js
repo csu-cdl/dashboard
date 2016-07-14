@@ -344,12 +344,13 @@ $(document).ready(function () {
 
 	var fake_extend_series = function (config, series_data) {
 		series_data.forEach(function (series) {
-			config.projected_years.slice(0, 17 - config.grad_year[0]).forEach(function () {
+			var number_projected_years = config.projected_years.length - (config.grad_year[0] - 4);
+			config.projected_years.slice(0, number_projected_years).forEach(function () {
 				series.data.push(null);
 			});
 			series.data[series.data.length - 1] = config.grad_year === '6yr' ? 65.0 : 40.0;
 			series.zoneAxis = 'x';
-			series.zones = [{value: 9}, {dashStyle: 'dot'}];
+			series.zones = [{value: config.years.length}, {dashStyle: 'dot'}];
 		});
 		return series_data;
 	};
