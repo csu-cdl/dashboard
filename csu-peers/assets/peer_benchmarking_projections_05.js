@@ -396,13 +396,6 @@ $(document).ready(function () {
 		$('#projections_footnote').html('*Showing ' + convert_location_to_csu_name(config.campus) +
 			' and its four top performing national peers (based on their ' +
 			config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
-
-		$('#download_projections_csv').off('click', function () {
-			console.log(download_series_as_csv(config, json_data));
-		});
-		$('#download_projections_csv').on('click', function () {
-			download_series_as_csv(config, json_data);
-		});
 	};
 
 	var update_chart_historical_trends = function (config, json_data) { // config is modified
@@ -593,18 +586,20 @@ $(document).ready(function () {
 	};
 
 	var download_series_as_csv = function (config, json_data, transform_function) {
+		console.log(config.campus);
 		var output = '';
 		if (transform_function && typeof transform_function === 'function') {
 			output = transform_function(json_data);
 		} else {
+			var head = [];
 			json_data.headers[0].forEach(function (cell) {
 					if (cell.length && cell[0] === '"') {
-						output += cell;
+						head.push(cell);
 					} else {
-						output += '"' + cell + '"';
+						head.push('"' + cell + '"');
 					}
 			});
-			output += '\n';
+			output += head.join(',') + '\n';
 			json_data.rows.forEach(function (row) {
 				var line = [];
 				row.forEach(function (cell) {
@@ -708,6 +703,9 @@ $(document).ready(function () {
 			$('#projections_reset').on('click', function () {
 				chart_state.projected_campuses = 'default';
 				update_chart_projected_trends(chart_state, retained_json_data);
+			});
+			$('#download_projections_csv').on('click', function () {
+				download_series_as_csv(chart_state, retained_json_data);
 			});
 		});
 
