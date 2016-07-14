@@ -89,7 +89,7 @@ tbody tr td.nowrap {
 }
 
 #projections_shade {
-	width: 546px;
+	width: 520px;
 	left: 471px;
 	height: 290px;
 	background: rgba(127,127,127,0.1);
@@ -99,7 +99,7 @@ tbody tr td.nowrap {
 }
 
 #projections_shade.gr6yr {
-	width: 510px;
+	width: 480px;
 	left: 511px;
 }
 
@@ -130,15 +130,15 @@ tbody tr td.nowrap {
 	font-size: 0.833em;
 	font-weight: 600;
 	color:#777;
-	width:100px;
+	width:120px;
 	height:30px;
 	background:inherit;
-	text-align:left;
+	text-align:right;
 	text-decoration:underline;
 	outline:none;
 	position: relative;
-	top: -358px;
-	left: 930px;
+	top: -878px;
+	left: 976px;
 }
 
 #historical_legend_all {
@@ -168,13 +168,13 @@ tbody tr td.nowrap {
 	font-size: 0.833em;
 	font-weight: 600;
 	color:#777;
-	width:100px;
+	width:120px;
 	height:30px;
 	background:inherit;
-	text-align:left;
+	text-align:right;
 	text-decoration:underline;
 	outline:none;
 	position: relative;
-	top: -68px;
-	left: 990px;
+	top: -538px;
+	left: 976px;
 }
