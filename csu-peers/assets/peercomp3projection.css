@@ -90,7 +90,7 @@ tbody tr td.nowrap {
 
 #projections_shade {
 	width: 546px;
-	left: 475px;
+	left: 471px;
 	height: 290px;
 	background: rgba(127,127,127,0.1);
 	z-index: 30;
@@ -100,7 +100,7 @@ tbody tr td.nowrap {
 
 #projections_shade.gr6yr {
 	width: 510px;
-	left: 512px;
+	left: 511px;
 }
 
 #projections_legend_all {
@@ -108,7 +108,7 @@ tbody tr td.nowrap {
 	height: 30px;
 	position: relative;
 	top: -486px;
-	left: 384px;
+	left: 368px;
 }
 
 #projections_legend_all button {
@@ -137,6 +137,44 @@ tbody tr td.nowrap {
 	text-decoration:underline;
 	outline:none;
 	position: relative;
-	top: -864px;
-	left: 1000px;
+	top: -358px;
+	left: 930px;
+}
+
+#historical_legend_all {
+	width: 700px;
+	height: 30px;
+	position: relative;
+	top: -198px;
+	left: 322px;
+}
+
+#historical_legend_all button {
+	border: none;
+	font-family: sans-serif;
+	font-size: 0.833em;
+	font-weight: 600;
+	color:#777;
+	width:300px;
+	background:inherit;
+	text-align:left;
+	text-decoration:underline;
+	outline:none;
+}
+
+#download_historical_csv {
+	border: none;
+	font-family: sans-serif;
+	font-size: 0.833em;
+	font-weight: 600;
+	color:#777;
+	width:100px;
+	height:30px;
+	background:inherit;
+	text-align:left;
+	text-decoration:underline;
+	outline:none;
+	position: relative;
+	top: -68px;
+	left: 990px;
 }

@@ -169,7 +169,9 @@ $(document).ready(function () {
 			},
 			chart: {
 				height: 500,
-				type: 'line'
+				width: 1000,
+				type: 'line',
+				spacingLeft: 20
 			},
 			title: {
 				text: 'Graduation Rate Projections for First-Time, Full-Time Freshmen',
@@ -197,7 +199,8 @@ $(document).ready(function () {
 				align: 'center',
 				width: 900,
 				itemWidth: 300,
-				borderWidth: 0
+				borderWidth: 0,
+				x: 10
 			},
 			series: data
 		});
@@ -213,7 +216,10 @@ $(document).ready(function () {
 				enabled: false
 			},
 			chart: {
-				type: 'line'
+				type: 'line',
+				width: 900,
+				height: 450,
+				spacingRight: 200
 			},
 			title: {
 				text: 'Graduation Rate Trends for First-Time, Full-Time Freshmen',
@@ -239,7 +245,9 @@ $(document).ready(function () {
 				title: {style: {'color': '#777'}, text: '(Click to show/hide campuses)'},
 				layout: 'horizontal',
 				align: 'center',
-				width: 200,
+				width: 1150,
+				itemWidth: 300,
+				x: 240,
 				borderWidth: 0
 			},
 			series: data
@@ -403,9 +411,9 @@ $(document).ready(function () {
 		var map_years = {'5':-5, '3':-3, '0':0}; // modify to match returned values from control
 		var yearkeys = Object.keys(config.yearmap[config.grad_year]);
 		config.years = yearkeys.slice(map_years[config.trends_since]); // config.years used only with historical trends
-
 		var truncated_peer_subset = truncate_data(filter_out_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since]);
-		create_chart_historical_trends(config, truncated_peer_subset);
+		
+		create_chart_historical_trends(config, truncate_data(filter_off_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since]));
 		create_table_historical_trends(config, truncated_peer_subset);
 
 		// Footnote also changes with change in grad_year, cohort, and campus name
@@ -695,6 +703,21 @@ $(document).ready(function () {
 			update_chart_peer_comparisons(chart_state, retained_json_data);
 			update_chart_historical_trends(chart_state, retained_json_data);
 			update_chart_projected_trends(chart_state, retained_json_data);
+
+			$('#historical_all').on('click', function () {
+				if (chart_state.projected_campuses !== 'all') { // only if changed
+					chart_state.projected_campuses = 'all';
+					update_chart_historical_trends(chart_state, retained_json_data);
+				}
+			});
+			$('#historical_reset').on('click', function () {
+				chart_state.projected_campuses = 'default';
+				update_chart_historical_trends(chart_state, retained_json_data);
+			});
+			$('#download_historical_csv').on('click', function () {
+				download_series_as_csv(chart_state, retained_json_data);
+			});
+
 			$('#projections_all').on('click', function () {
 				if (chart_state.projected_campuses !== 'all') { // only if changed
 					chart_state.projected_campuses = 'all';
