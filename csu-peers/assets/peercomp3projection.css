@@ -89,26 +89,27 @@ tbody tr td.nowrap {
 }
 
 #projections_shade {
-	width: 520px;
-	left: 471px;
-	height: 290px;
+	width: 610px;
+	left: 385px;
+	height: 280px;
 	background: rgba(127,127,127,0.1);
-	z-index: 30;
+	z-index: -1;
 	position: relative;
-	top: -455px;
+	top: -452px;
 }
 
 #projections_shade.gr6yr {
-	width: 480px;
-	left: 511px;
+	width: 585px;
+	left: 406px;
 }
 
 #projections_legend_all {
 	width: 700px;
 	height: 30px;
 	position: relative;
-	top: -486px;
+	top: -490px;
 	left: 368px;
+	visibility: hidden;
 }
 
 #projections_legend_all button {
@@ -137,7 +138,7 @@ tbody tr td.nowrap {
 	text-decoration:underline;
 	outline:none;
 	position: relative;
-	top: -878px;
+	top: -868px;
 	left: 976px;
 }
 
