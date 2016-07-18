@@ -1003,6 +1003,6 @@ $(document).ready(function () {
 			chart_state.selected_tab_name = e.target.href.split('#')[1]; // i.e., one of ['chart','table','method','trends','projections']
 			chart_state.notify();
 		});
-		$('.nav-tabs a').each(function (i) {if (i===2){$(this).tab('show')}});
+		//$('.nav-tabs a').each(function (i) {if (i===2){$(this).tab('show')}});
 	}()); // initialized
 });
