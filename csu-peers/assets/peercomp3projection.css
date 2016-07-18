@@ -184,3 +184,20 @@ tbody tr td.nowrap {
 	position:relative;
 	top:-200px;
 }
+
+#explanation {
+	font-family:"Trebuchet MS", Helvetica, sans-serif;
+	font-size:16px;
+	font-weight: 400;
+	line-height:1.4em;
+	color: #111;
+	margin:10px auto;
+	width:750px;
+}
+#explanation h2{
+	font-size:1.1em;
+	font-weight: 600;
+}
+#explanation li {
+	margin:0.5em;
+}
