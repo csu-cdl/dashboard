@@ -82,35 +82,6 @@ $(document).ready(function () {
 			formal_name === location + ' State University');
 	};
 
-	var formal_csu_campus_to_location = function (formal_name) {
-		var map = {
-			'California State University-Bakersfield': 'Bakersfield',
-			'California State University-Channel Islands': 'Channel_Islands',
-			'California State University-Chico': 'Chico',
-			'California State University-Dominguez Hills': 'Dominguez_Hills',
-			'California State University-East Bay': 'East_Bay',
-			'California State University-Fresno': 'Fresno',
-			'California State University-Fullerton': 'Fullerton',
-			'Humboldt State University': 'Humboldt',
-			'California State University-Long Beach': 'Long_Beach',
-			'California State University-Los Angeles': 'Los_Angeles',
-			'The California Maritime Academy': 'Maritime_Academy',
-			'California State University-Monterey Bay': 'Monterey_Bay',
-			'California State University-Northridge': 'Northridge',
-			'California State Polytechnic University-Pomona': 'Pomona',
-			'California State University-Sacramento': 'Sacramento',
-			'California State University-San Bernardino': 'San_Bernardino',
-			'San Diego State University': 'San_Diego',
-			'San Francisco State University': 'San_Francisco',
-			'San Jose State University': 'San_Jose',
-			'California Polytechnic State University-San Luis Obispo': 'San_Luis_Obispo',
-			'California State University-San Marcos': 'San_Marcos',
-			'Sonoma State University': 'Sonoma',
-			'California State University-Stanislaus': 'Stanislaus'
-		};
-		return map[formal_name];
-	};
-
 	var create_chart_peer_comparisons = function (config, data) {
 		$('#container').highcharts({
 			credits: {
@@ -257,7 +228,7 @@ $(document).ready(function () {
 	var truncate_data = function (data, position) {
 		var out = [];
 		var itemset;
-		data.forEach(function (item, i) { // assumes only name, data, lineWidth properties
+		data.forEach(function (item) { // assumes only name, data, lineWidth properties
 			if (item && item.hasOwnProperty('name')) {
 				itemset = {'name':item.name};
 				itemset.data = item.data.slice(position);
@@ -357,7 +328,7 @@ $(document).ready(function () {
 		years_actual.sort(); // guarantee order
 		years_all = years_actual.concat(years_projected);
 		years_all.sort();
-		years_all = years_all.filter(function (el, i, a) {return i < 1 || el !== a[i - 1]});
+		years_all = years_all.filter(function (el, i, a) {return i < 1 || el !== a[i - 1];});
 		config.years_all = years_all;
 
 		years_all.forEach(function (year, i) {
@@ -411,7 +382,6 @@ $(document).ready(function () {
 		var visible_projected_psd = pchart ? pchart.get('projected_psd').visible : true;
 		var visible_actual = pchart ? pchart.get('actual').visible : true;
 
-		var series_actual_with_attributes = [];
 		var series = [{
 			name: 'Historical Graduation Rates',
 			id: 'actual',
@@ -534,11 +504,6 @@ $(document).ready(function () {
 	};
 
 	var update_chart_projected_trends = function (config, json_data) { // config is modified
-		var parse_item = function (item, j, a) {
-			a[j] = parseFloat(item);
-			a[j] = isNaN(a[j]) ? null : a[j];
-		};
-		
 		create_chart_projections(config, build_projected_series(config, json_data));
 	};
 
@@ -751,7 +716,6 @@ $(document).ready(function () {
 	};
 
 	var download_series_as_csv = function (config, json_data, transform_function) {
-		console.log(config.campus);
 		var output = '';
 		if (transform_function && typeof transform_function === 'function') {
 			output = transform_function(json_data);
@@ -852,7 +816,6 @@ $(document).ready(function () {
 			load_chart_historical_trends(chart_state,  function (json_data, chart_state) {
 				retained_json_data = json_data;
 				update_chart_historical_trends(chart_state, retained_json_data);
-				//update_chart_projected_trends(chart_state, retained_json_data);
 				update_chart_peer_comparisons(chart_state, retained_json_data);
 			});
 			
@@ -881,7 +844,6 @@ $(document).ready(function () {
 				retained_json_data = json_data;
 				update_chart_peer_comparisons(chart_state, retained_json_data);
 				update_chart_historical_trends(chart_state, retained_json_data);
-				//update_chart_projected_trends(chart_state, retained_json_data);
 			});
 			update_chart_projected_trends(chart_state, retained_projected_json_data);
 			load_table_peers(chart_state, create_table_peers); // Note: eliminate unnecessary data fetch
@@ -914,7 +876,6 @@ $(document).ready(function () {
 			retained_json_data = json_data;
 			update_chart_peer_comparisons(chart_state, retained_json_data);
 			update_chart_historical_trends(chart_state, retained_json_data);
-			//update_chart_projected_trends(chart_state, retained_json_data);
 
 			$('#historical_all').on('click', function () {
 				if (chart_state.projected_campuses !== 'all') { // only if changed
@@ -1002,6 +963,6 @@ $(document).ready(function () {
 			chart_state.selected_tab_name = e.target.href.split('#')[1]; // i.e., one of ['chart','table','method','trends','projections']
 			chart_state.notify();
 		});
-		$('.nav-tabs a').each(function (i) {if (i===0){$(this).tab('show')}});
+		$('.nav-tabs a').each(function (i, el) {if (i===0){$(el).tab('show');}});
 	}()); // initialized
 });
