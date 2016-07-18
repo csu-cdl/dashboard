@@ -444,7 +444,7 @@ $(document).ready(function () {
 			marker: {radius: 4},
 			data: series_projected_prj
 		},{
-			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_lower'] + '% System Goal',
+			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper'] + '% System Goal',
 			id: 'upperbound',
 			type: 'line',
 			dashStyle: 'Solid',
@@ -475,7 +475,7 @@ $(document).ready(function () {
 			marker: {radius: 4},
 			data: series_projected_psd
 		},{
-			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper'] + '% System Goal',
+			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_lower'] + '% System Goal',
 			id: 'lowerbound',
 			//linkedTo: 'upperbound',
 			type: 'line',
