@@ -153,7 +153,6 @@ $(document).ready(function () {
 	};
 
 	var create_chart_projections = function (config, data) {
-		//console.log(JSON.stringify([config,data,(config.years.concat(config.projected_years)).slice(0,12)]));
 		$('#projections_chart_container').highcharts({
 			credits: {
 				enabled: false
@@ -462,7 +461,6 @@ $(document).ready(function () {
 		},{
 			name: 'Jodie\'s Methodology +1 Standard Deviation',
 			id: 'projected_psd',
-			//linkedTo: 'projected_prj',
 			type: 'line',
 			dashStyle: 'Dot',
 			visible: visible_projected_psd,
@@ -477,7 +475,6 @@ $(document).ready(function () {
 		},{
 			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_lower'] + '% System Goal',
 			id: 'lowerbound',
-			//linkedTo: 'upperbound',
 			type: 'line',
 			dashStyle: 'Solid',
 			visible: visible_lower,
@@ -494,7 +491,6 @@ $(document).ready(function () {
 		},{
 			name: 'Jodie\'s Methodology -1 Standard Deviation',
 			id: 'projected_msd',
-			//linkedTo: 'projected_prj',
 			type: 'line',
 			dashStyle: 'Dot',
 			visible: visible_projected_msd,
@@ -538,18 +534,12 @@ $(document).ready(function () {
 	};
 
 	var update_chart_projected_trends = function (config, json_data) { // config is modified
-		//console.log(config.campus);
 		var parse_item = function (item, j, a) {
 			a[j] = parseFloat(item);
 			a[j] = isNaN(a[j]) ? null : a[j];
 		};
 		
 		create_chart_projections(config, build_projected_series(config, json_data));
-
-		// Footnote also changes with change in grad_year, cohort, and campus name
-		//$('#projections_footnote').html('*Showing ' + convert_location_to_csu_name(config.campus) +
-		//	' and its four top performing national peers (based on their ' +
-		//	config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
 	};
 
 	var update_chart_peer_comparisons = function (config, json_data) {
@@ -802,7 +792,6 @@ $(document).ready(function () {
 			document.body.removeChild(a);
 		};
 		download('Projected_Trends_' + config.grad_year + '_for_' + config.campus + '.csv', output);
-		//return output;
 	};
 
 	var load_peer_campus_urls = function (config, callback) {
@@ -916,18 +905,6 @@ $(document).ready(function () {
 		load_chart_projected_trends(chart_state, function (json_data, chart_state) {
 			retained_projected_json_data = json_data;
 			update_chart_projected_trends(chart_state, retained_projected_json_data);
-			/*
-			$('#projections_all').on('click', function () {
-				if (chart_state.projected_campuses !== 'all') { // only if changed
-					chart_state.projected_campuses = 'all';
-					update_chart_projected_trends(chart_state, retained_json_data);
-				}
-			});
-			$('#projections_reset').on('click', function () {
-				chart_state.projected_campuses = 'default';
-				update_chart_projected_trends(chart_state, retained_json_data);
-			});
-			*/
 			$('#download_projections_csv').on('click', function () {
 				download_series_as_csv(chart_state, retained_json_data);
 			});
@@ -1025,6 +1002,6 @@ $(document).ready(function () {
 			chart_state.selected_tab_name = e.target.href.split('#')[1]; // i.e., one of ['chart','table','method','trends','projections']
 			chart_state.notify();
 		});
-		//$('.nav-tabs a').each(function (i) {if (i===2){$(this).tab('show')}});
+		$('.nav-tabs a').each(function (i) {if (i===0){$(this).tab('show')}});
 	}()); // initialized
 });
