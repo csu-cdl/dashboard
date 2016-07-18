@@ -15,7 +15,7 @@ $(document).ready(function () {
 	var chart_state = {
 		'selected_tab_name': 'projections',
 		'campus': 'Bakersfield',
-		'grad_year': '6yr',
+		'grad_year': '4yr',
 		'cohort': '2008',
 		'years': [],
 		'years_all': [],
@@ -23,6 +23,7 @@ $(document).ready(function () {
 		'trends_since': '0',
 		'type': 'GR',
 		'max_6yr': '2008',
+		'system_goals': {'4yr_lower': 30, '4yr_upper': 35, '6yr_lower': 65, '6yr_upper': 70},
 		'yearmap': {
 			'6yr': {'2000': 1, '2001': 2, '2002': 3, '2003': 4, '2004': 5, '2005': 6, '2006': 7, '2007': 8, '2008': 9},
 			'4yr': {'2000': 3, '2001': 4, '2002': 5, '2003': 6, '2004': 7, '2005': 8, '2006': 9, '2007': 10, '2008': 11}
@@ -378,29 +379,46 @@ $(document).ready(function () {
 			} else {
 				series_actual.push(null);
 			}
+			
 			if (selected_campus_data.prj.hasOwnProperty(year)) {
 				series_projected_prj.push(selected_campus_data.prj[year]);
+			} else if (selected_campus_data.average.hasOwnProperty(year)) {
+				series_projected_prj.push(selected_campus_data.average[year]);
 			} else {
 				series_projected_prj.push(null);
 			}
 			if (selected_campus_data.psd.hasOwnProperty(year)) {
 				series_projected_psd.push(selected_campus_data.psd[year]);
+			} else if (selected_campus_data.average.hasOwnProperty(year)) {
+				series_projected_psd.push(selected_campus_data.average[year]);
 			} else {
 				series_projected_psd.push(null);
 			}
 			if (selected_campus_data.msd.hasOwnProperty(year)) {
 				series_projected_msd.push(selected_campus_data.msd[year]);
+			} else if (selected_campus_data.average.hasOwnProperty(year)) {
+				series_projected_msd.push(selected_campus_data.average[year]);
 			} else {
 				series_projected_msd.push(null);
 			}
 		});
-		
+
+		var pchart = $('#projections_chart_container').highcharts();		
+		// make legend state sticky when changing campus or grad_year
+		var visible_lower = pchart ? pchart.get('lowerbound').visible : true;
+		var visible_upper = pchart ? pchart.get('upperbound').visible : true;
+		var visible_projected_prj = pchart ? pchart.get('projected_prj').visible : true;
+		var visible_projected_msd = pchart ? pchart.get('projected_msd').visible : true;
+		var visible_projected_psd = pchart ? pchart.get('projected_psd').visible : true;
+		var visible_actual = pchart ? pchart.get('actual').visible : true;
+
 		var series_actual_with_attributes = [];
 		var series = [{
-			name: 'Historical',
+			name: 'Historical Graduation Rates',
 			id: 'actual',
 			type: 'line',
 			dashStyle: 'Solid',
+			visible: visible_actual,
 			dataLabels: {
 				enabled: true,
 				align: 'center',
@@ -416,6 +434,7 @@ $(document).ready(function () {
 			id: 'projected_prj',
 			type: 'line',
 			dashStyle: 'Dot',
+			visible: visible_projected_prj,
 			dataLabels: {
 				enabled: false,
 				align: 'center',
@@ -425,38 +444,11 @@ $(document).ready(function () {
 			marker: {radius: 4},
 			data: series_projected_prj
 		},{
-			name: 'Jodie\'s Methodology +1 Standard Deviation',
-			id: 'projected_psd',
-			//linkedTo: 'projected_prj',
-			type: 'line',
-			dashStyle: 'Dot',
-			dataLabels: {
-				enabled: false,
-				align: 'center',
-				format: '{point.y: ,.0f}%',
-				style: {fontSize: '0.8em'}
-			},
-			marker: {radius: 4},
-			data: series_projected_psd
-		},{
-			name: 'Jodie\'s Methodology -1 Standard Deviation',
-			id: 'projected_msd',
-			//linkedTo: 'projected_prj',
-			type: 'line',
-			dashStyle: 'Dot',
-			dataLabels: {
-				enabled: false,
-				align: 'center',
-				format: '{point.y: ,.0f}%',
-				style: {fontSize: '0.8em'}
-			},
-			marker: {radius: 3},
-			data: series_projected_msd
-		},{
-			name: 'Linear Model - 35% System 4-Year Graduation Rate',
+			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_lower'] + '% System Goal',
 			id: 'upperbound',
 			type: 'line',
 			dashStyle: 'Solid',
+			visible: visible_upper,
 			dataLabels: {
 				enabled: false,
 				align: 'center',
@@ -468,11 +460,27 @@ $(document).ready(function () {
 			zIndex:1,
 			data: series_bound_upper
 		},{
-			name: 'Linear Model - 30% System Freshman 4-Year Graduation Rate',
+			name: 'Jodie\'s Methodology +1 Standard Deviation',
+			id: 'projected_psd',
+			//linkedTo: 'projected_prj',
+			type: 'line',
+			dashStyle: 'Dot',
+			visible: visible_projected_psd,
+			dataLabels: {
+				enabled: false,
+				align: 'center',
+				format: '{point.y: ,.0f}%',
+				style: {fontSize: '0.8em'}
+			},
+			marker: {radius: 4},
+			data: series_projected_psd
+		},{
+			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper'] + '% System Goal',
 			id: 'lowerbound',
 			//linkedTo: 'upperbound',
 			type: 'line',
 			dashStyle: 'Solid',
+			visible: visible_lower,
 			dataLabels: {
 				enabled: false,
 				align: 'center',
@@ -483,7 +491,21 @@ $(document).ready(function () {
 			connectNulls: true,
 			zIndex:1,
 			data: series_bound_lower
-			
+		},{
+			name: 'Jodie\'s Methodology -1 Standard Deviation',
+			id: 'projected_msd',
+			//linkedTo: 'projected_prj',
+			type: 'line',
+			dashStyle: 'Dot',
+			visible: visible_projected_msd,
+			dataLabels: {
+				enabled: false,
+				align: 'center',
+				format: '{point.y: ,.0f}%',
+				style: {fontSize: '0.8em'}
+			},
+			marker: {radius: 3},
+			data: series_projected_msd
 		}];
 		return series;
 	};
