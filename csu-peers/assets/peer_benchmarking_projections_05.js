@@ -184,14 +184,14 @@ $(document).ready(function () {
 				}]
 			},
 			tooltip: {
-				pointFormat: '{point.y: ,.0f}'
+				pointFormat: '{point.y: ,.0f}%'
 			},
 			legend: {
 				title: {style: {'color': '#777'}, text: ''},//'(Click to show/hide campuses)'},
 				layout: 'horizontal',
 				align: 'center',
 				width: 900,
-				itemWidth: 300,
+				itemWidth: 440,
 				borderWidth: 0,
 				verticalAlign: 'top',
 				floating: true,
@@ -208,14 +208,18 @@ $(document).ready(function () {
 				enabled: false
 			},
 			chart: {
+				height: 700,
+				width: 1100,
 				type: 'line',
-				width: 900,
-				height: 450,
-				spacingRight: 200
+				spacingTop: 20,
+				spacingLeft: 20,
+				marginRight:400,
+				reflow: false,
+				marginBottom: 400
 			},
 			title: {
 				text: 'Graduation Rate Trends for First-Time, Full-Time Freshmen',
-				x: -20 //center
+				x: -200 //center
 			},
 			xAxis: {
 				categories: config.years
@@ -239,8 +243,11 @@ $(document).ready(function () {
 				align: 'center',
 				width: 1150,
 				itemWidth: 300,
-				x: 240,
-				borderWidth: 0
+				borderWidth: 0,
+				verticalAlign: 'top',
+				floating: true,
+				y: 320,
+				x: 50
 			},
 			series: data
 		});
@@ -390,14 +397,14 @@ $(document).ready(function () {
 		
 		var series_actual_with_attributes = [];
 		var series = [{
-			name: 'Actual',
+			name: 'Historical',
 			id: 'actual',
 			type: 'line',
 			dashStyle: 'Solid',
 			dataLabels: {
 				enabled: true,
 				align: 'center',
-				format: '{point.y: ,.0f}',
+				format: '{point.y: ,.0f}%',
 				style: {fontSize: '0.8em'},
 				zIndex:30
 			},
@@ -405,54 +412,55 @@ $(document).ready(function () {
 			zIndex:10,
 			data: series_actual
 		},{
-			name: 'Projected',
+			name: 'Jodie\'s Methodology',
 			id: 'projected_prj',
 			type: 'line',
 			dashStyle: 'Dot',
 			dataLabels: {
 				enabled: false,
 				align: 'center',
-				format: '{point.y: ,.0f}',
+				format: '{point.y: ,.0f}%',
 				style: {fontSize: '0.8em'}
 			},
 			marker: {radius: 4},
 			data: series_projected_prj
 		},{
+			name: 'Jodie\'s Methodology +1 Standard Deviation',
 			id: 'projected_psd',
-			linkedTo: 'projected_prj',
+			//linkedTo: 'projected_prj',
 			type: 'line',
 			dashStyle: 'Dot',
 			dataLabels: {
 				enabled: false,
 				align: 'center',
-				format: '{point.y: ,.0f}',
+				format: '{point.y: ,.0f}%',
 				style: {fontSize: '0.8em'}
 			},
 			marker: {radius: 4},
 			data: series_projected_psd
 		},{
+			name: 'Jodie\'s Methodology -1 Standard Deviation',
 			id: 'projected_msd',
-			linkedTo: 'projected_prj',
+			//linkedTo: 'projected_prj',
 			type: 'line',
 			dashStyle: 'Dot',
 			dataLabels: {
 				enabled: false,
 				align: 'center',
-				format: '{point.y: ,.0f}',
+				format: '{point.y: ,.0f}%',
 				style: {fontSize: '0.8em'}
 			},
 			marker: {radius: 3},
 			data: series_projected_msd
 		},{
-			name: 'Bounded',
+			name: 'Linear Model - 35% System 4-Year Graduation Rate',
 			id: 'upperbound',
 			type: 'line',
 			dashStyle: 'Solid',
-			visible: false,
 			dataLabels: {
 				enabled: false,
 				align: 'center',
-				format: '{point.y: ,.0f}',
+				format: '{point.y: ,.0f}%',
 				style: {fontSize: '0.8em'}
 			},
 			marker: {radius: 5, symbol: 'circle'},
@@ -460,14 +468,15 @@ $(document).ready(function () {
 			zIndex:1,
 			data: series_bound_upper
 		},{
+			name: 'Linear Model - 30% System Freshman 4-Year Graduation Rate',
 			id: 'lowerbound',
-			linkedTo: 'upperbound',
+			//linkedTo: 'upperbound',
 			type: 'line',
 			dashStyle: 'Solid',
 			dataLabels: {
 				enabled: false,
 				align: 'center',
-				format: '{point.y: ,.0f}',
+				format: '{point.y: ,.0f}%',
 				style: {fontSize: '0.8em'}
 			},
 			marker: {radius: 5, symbol: 'circle'},
@@ -516,9 +525,9 @@ $(document).ready(function () {
 		create_chart_projections(config, build_projected_series(config, json_data));
 
 		// Footnote also changes with change in grad_year, cohort, and campus name
-		$('#projections_footnote').html('*Showing ' + convert_location_to_csu_name(config.campus) +
-			' and its four top performing national peers (based on their ' +
-			config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
+		//$('#projections_footnote').html('*Showing ' + convert_location_to_csu_name(config.campus) +
+		//	' and its four top performing national peers (based on their ' +
+		//	config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
 	};
 
 	var update_chart_peer_comparisons = function (config, json_data) {
