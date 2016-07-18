@@ -198,6 +198,10 @@ tbody tr td.nowrap {
 	font-size:1.1em;
 	font-weight: 600;
 }
+#explanation h3{
+	font-size:1em;
+	font-weight: 400;
+}
 #explanation li {
 	margin:0.5em;
 }
