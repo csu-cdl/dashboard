@@ -481,7 +481,7 @@ $(document).ready(function () {
 		var year_end = config.years.slice(-1)[0];
 		var n = config.grad_year[0];
 		var trend_table_row_template = '<tr><td>{name}</td><td class="nowrap">{avg}</td></tr>';
-		var heading = year_start + '-' + year_end + ' Average Annual Improvement in ' + n + '-Year Grad Rates';
+		var heading = year_start + '-' + year_end + ' Average Annual Change in ' + n + '&#8209;Year Grad Rates';
 		var detail = '<table class="table table-striped"><tbody>';
 		peer_subset.forEach(function (item) {
 			var line;
