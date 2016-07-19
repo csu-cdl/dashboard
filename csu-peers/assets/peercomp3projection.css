@@ -87,7 +87,7 @@ tbody tr td.nowrap {
 	min-width:3em;
 	text-align:right;
 }
-
+/*
 #projections_shade {
 	width: 610px;
 	left: 385px;
@@ -141,12 +141,12 @@ tbody tr td.nowrap {
 	top: -868px;
 	left: 976px;
 }
-
+*/
 #historical_legend_all {
 	width: 700px;
 	height: 30px;
 	position: relative;
-	top: -375px;
+	top: -395px;
 	left: 400px;
 }
 

@@ -22,6 +22,7 @@ $(document).ready(function () {
 		'projected_years': ['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
 		'projected_campuses': 'default',
 		'historical_default_count': 5,
+		'loaded': false,
 		'notify': null,
 		'palette': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
 	};
@@ -181,13 +182,13 @@ $(document).ready(function () {
 				enabled: false
 			},
 			chart: {
-				height: 690,
+				height: 740,
 				width: 750,
 				type: 'line',
 				spacingTop: 20,
 				spacingLeft: 10,
 				marginRight: 10,
-				marginBottom: 420,
+				marginBottom: 440,
 				reflow: false
 			},
 			title: {
@@ -219,7 +220,7 @@ $(document).ready(function () {
 				borderWidth: 0,
 				verticalAlign: 'top',
 				floating: true,
-				y: 290,
+				y: 320,
 				x: 100
 			},
 			series: data
@@ -604,7 +605,11 @@ $(document).ready(function () {
 
 		create_chart_historical_trends(config, truncated_peer_subset);
 		create_table_historical_trends(config, truncated_peer_subset);
-
+		$('#trends_chart_container').off('click');
+		$('#trends_chart_container').on('click',  function () {
+			create_table_historical_trends(config, truncated_peer_subset);
+		});
+		
 		// Footnote also changes with change in grad_year, cohort, and campus name
 		$('#trends_footnote').html('*Showing ' + convert_location_to_csu_name(config.campus) +
 				' and its four top performing national peers (based on their ' +
