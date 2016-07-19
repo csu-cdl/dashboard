@@ -87,61 +87,7 @@ tbody tr td.nowrap {
 	min-width:3em;
 	text-align:right;
 }
-/*
-#projections_shade {
-	width: 610px;
-	left: 385px;
-	height: 280px;
-	background: rgba(127,127,127,0.1);
-	z-index: -1;
-	position: relative;
-	top: -452px;
-}
 
-#projections_shade.gr6yr {
-	width: 585px;
-	left: 406px;
-}
-
-#projections_legend_all {
-	width: 700px;
-	height: 30px;
-	position: relative;
-	top: -490px;
-	left: 368px;
-	visibility: hidden;
-}
-
-#projections_legend_all button {
-	border: none;
-	font-family: sans-serif;
-	font-size: 0.833em;
-	font-weight: 600;
-	color:#777;
-	width:300px;
-	background:inherit;
-	text-align:left;
-	text-decoration:underline;
-	outline:none;
-}
-
-#download_projections_csv {
-	border: none;
-	font-family: sans-serif;
-	font-size: 0.833em;
-	font-weight: 600;
-	color:#777;
-	width:120px;
-	height:30px;
-	background:inherit;
-	text-align:right;
-	text-decoration:underline;
-	outline:none;
-	position: relative;
-	top: -868px;
-	left: 976px;
-}
-*/
 #historical_legend_all {
 	width: 700px;
 	height: 30px;

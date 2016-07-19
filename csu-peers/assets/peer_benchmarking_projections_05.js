@@ -1,6 +1,6 @@
 $(document).ready(function () {
 	'use strict';
-	var defeat_cache = '?v=35'; // stable and cache ok
+	var defeat_cache = '?v=36'; // stable and cache ok
 
 	// single place for server to establish defaults, year range and map of years to data columns, etc.
 	var chart_state = {
@@ -21,7 +21,6 @@ $(document).ready(function () {
 		},
 		'projected_years': ['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
 		'projected_campuses': 'default',
-		'historical_default_count': 5,
 		'loaded': false,
 		'notify': null,
 		'palette': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
@@ -45,7 +44,6 @@ $(document).ready(function () {
 	var retained_projected_json_data;
 	var peer_campus_urls; // saves having to reload data
 	var prior_grad_year; // supports detection of need to reset some charts
-	//var save_visible_upper2 = false; // hack to handle asymetry of 4yr/6yr chart data
 
 	// one place to consistently convert to shorter csu name
 	var convert_csu_campus_name = function (campus_name) {
@@ -239,15 +237,6 @@ $(document).ready(function () {
 				itemset.zIndex = item.zIndex;
 				itemset.visible = item.visible;
 				itemset.connectNulls = false;
-				/*
-				if (item.hasOwnProperty('zones')) {
-					itemset.zoneAxis = item.zoneAxis;
-					itemset.zones = item.zones;
-					itemset.linkedTo = item.linkedTo;
-					itemset.id = item.id;
-					itemset.color = item.color;
-				}
-				*/
 				out.push(itemset);
 			}
 		});
@@ -606,10 +595,10 @@ $(document).ready(function () {
 		create_chart_historical_trends(config, truncated_peer_subset);
 		create_table_historical_trends(config, truncated_peer_subset);
 		$('#trends_chart_container').off('click');
-		$('#trends_chart_container').on('click',  function () {
+		$('#trends_chart_container').on('click', function () {
 			create_table_historical_trends(config, truncated_peer_subset);
 		});
-		
+
 		// Footnote also changes with change in grad_year, cohort, and campus name
 		$('#trends_footnote').html('*Showing ' + convert_location_to_csu_name(config.campus) +
 				' and its four top performing national peers (based on their ' +
