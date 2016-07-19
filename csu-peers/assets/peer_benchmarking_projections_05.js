@@ -180,19 +180,18 @@ $(document).ready(function () {
 				enabled: false
 			},
 			chart: {
-				height: 700,
-				width: 1100,
+				height: 690,
+				width: 750,
 				type: 'line',
 				spacingTop: 20,
-				spacingLeft: 20,
-				marginRight: 400,
-				reflow: false,
-				marginBottom: 400,
-				backgroundColor: 'transparent'
+				spacingLeft: 10,
+				marginRight: 10,
+				marginBottom: 420,
+				reflow: false
 			},
 			title: {
 				text: 'Graduation Rate Trends for First-Time, Full-Time Freshmen',
-				x: -200
+				x: 0
 			},
 			xAxis: {
 				categories: config.years
@@ -208,20 +207,19 @@ $(document).ready(function () {
 				}]
 			},
 			tooltip: {
-				valueSuffix: '%',
-				style: {zIndex: 10000}
+				valueSuffix: '%'
 			},
 			legend: {
 				title: {style: {'color': '#777'}, text: '(Click to show/hide campuses)'},
 				layout: 'horizontal',
 				align: 'center',
-				width: 1150,
+				width: 750,
 				itemWidth: 300,
 				borderWidth: 0,
 				verticalAlign: 'top',
 				floating: true,
-				y: 320,
-				x: 50
+				y: 290,
+				x: 100
 			},
 			series: data
 		});

@@ -146,8 +146,8 @@ tbody tr td.nowrap {
 	width: 700px;
 	height: 30px;
 	position: relative;
-	top: -355px;
-	left: 332px;
+	top: -375px;
+	left: 400px;
 }
 
 #historical_legend_all button {
@@ -156,7 +156,7 @@ tbody tr td.nowrap {
 	font-size: 0.833em;
 	font-weight: 600;
 	color:#777;
-	width:300px;
+	width:80px;
 	background:inherit;
 	text-align:left;
 	text-decoration:underline;
@@ -182,7 +182,8 @@ tbody tr td.nowrap {
 
  #trends .footnote {
 	position:relative;
-	top:-280px;
+	top:-264px;
+	z-index: 10;
 }
 
 #explanation {
