@@ -6,11 +6,6 @@ $(document).ready(function () {
 	  * Page level support functions and general settings, defaults
 	  */
 
-	Highcharts.setOptions({
-		alternate_palette_colors: ["#de2d26", "#3182bd", "#fd8d3c", "#31a354", "#756bb1", "#fc9272", "#9ecae1", "#fdd0a2", "#a1d99b", "#bcbddc", "#a50f15", "#08519c", "#a63603", "#006d2c", "#54278f", "#fb6a4a", "#6baed6", "#fdae6b", "#74c476", "#9e9ac8", "#fcbba1", "#c6dbef", "#e6550d", "#c7e9c0", "#dadaeb", "#999"],
-		colors: ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
-	});
-
 	// single place for server to establish defaults, year range and map of years to data columns, etc.
 	var chart_state = {
 		'selected_tab_name': 'projections',
@@ -23,7 +18,7 @@ $(document).ready(function () {
 		'trends_since': '0',
 		'type': 'GR',
 		'max_6yr': '2008',
-		'system_goals': {'4yr_lower': 30, '4yr_upper': 35, '6yr_lower': 65, '6yr_upper': 70},
+		'system_goals': {'4yr_lower': 30, '4yr_upper': 35, '4yr_upper2': 40, '6yr_lower': 65, '6yr_upper': 70},
 		'yearmap': {
 			'6yr': {'2000': 1, '2001': 2, '2002': 3, '2003': 4, '2004': 5, '2005': 6, '2006': 7, '2007': 8, '2008': 9},
 			'4yr': {'2000': 3, '2001': 4, '2002': 5, '2003': 6, '2004': 7, '2005': 8, '2006': 9, '2007': 10, '2008': 11}
@@ -31,11 +26,15 @@ $(document).ready(function () {
 		'projected_years': ['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
 		'projected_campuses': 'default',
 		'notify': null,
-		'colors': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
+		'palette': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
 	};
 	chart_state.notify = function () {
 		$('.control').trigger('state_change', [chart_state]);
 	};
+
+	Highcharts.setOptions({
+		colors: chart_state.palette
+	});
 
 	var pattern1 = new RegExp('[$%,]', 'g');
 	var pattern2 = new RegExp(' ', 'g');
@@ -43,13 +42,15 @@ $(document).ready(function () {
 	var retained_json_data;
 	var retained_projected_json_data;
 	var peer_campus_urls; // saves having to reload data
+	var save_visible_upper2 = false; // hack to handle asymetry of 4yr/6yr chart data
+
 
 	// one place to consistently convert to shorter csu name
 	var convert_csu_campus_name = function (campus_name) {
 		var name = campus_name; // so as not to reassign campus_name
-		name = name.replace('California State University-','CSU ');
-		name = name.replace('California State Polytechnic University-','CSU ');
-		name = name.replace('California Polytechnic State University-','CSU ');
+		name = name.replace('California State University-', 'CSU ');
+		name = name.replace('California State Polytechnic University-', 'CSU ');
+		name = name.replace('California Polytechnic State University-', 'CSU ');
 		return name;
 	};
 
@@ -76,10 +77,10 @@ $(document).ready(function () {
 
 	var match_csu_campus = function (location, formal_name) { // true or false
 		return (formal_name === 'California State University-' + location ||
-			formal_name === 'California ' + location ||
-			formal_name === 'California State Polytechnic University-' + location ||
-			formal_name === 'California Polytechnic State University-' + location ||
-			formal_name === location + ' State University');
+				formal_name === 'California ' + location ||
+				formal_name === 'California State Polytechnic University-' + location ||
+				formal_name === 'California Polytechnic State University-' + location ||
+				formal_name === location + ' State University');
 	};
 
 	var create_chart_peer_comparisons = function (config, data) {
@@ -88,37 +89,37 @@ $(document).ready(function () {
 				enabled: false
 			},
 			chart: {
-			    type: 'column'
+				type: 'column'
 			},
 			title: {
-			    text: config.grad_year.slice(0, 1) + '-Year Graduation Rate for First-Time, Full-Time Freshmen'
+				text: config.grad_year.slice(0, 1) + '-Year Graduation Rate for First-Time, Full-Time Freshmen'
 			},
 			subtitle: {
-			    text: config.cohort + ' Cohort'
+				text: config.cohort + ' Cohort'
 			},
 			xAxis: {
-			    type: 'category',
-			    labels: {
-				rotation: -45,
-				style: {
-				    fontSize: '13px',
-				    fontFamily: 'Verdana, sans-serif'
+				type: 'category',
+				labels: {
+					rotation: -45,
+					style: {
+						fontSize: '13px',
+						fontFamily: 'Verdana, sans-serif'
+					}
 				}
-			    }
 			},
 			yAxis: {
-			    title: {
-			       text:  '% Graduated'
-			    }
+				title: {
+					text: '% Graduated'
+				}
 			},
 			legend: {
-			    enabled: false
+				enabled: false
 			},
 			tooltip: {
-			    pointFormat: 'Rate:{point.y:.0f}%'
+				pointFormat: 'Rate:{point.y:.0f}%'
 			},
 			series: [{
-			    data: data
+				data: data
 			}]
 		});
 	};
@@ -139,7 +140,7 @@ $(document).ready(function () {
 			},
 			title: {
 				text: 'Graduation Rate Projections for First-Time, Full-Time Freshmen',
-				x: -20 //center
+				x: -20
 			},
 			xAxis: {
 				categories: config.years_all
@@ -184,13 +185,13 @@ $(document).ready(function () {
 				type: 'line',
 				spacingTop: 20,
 				spacingLeft: 20,
-				marginRight:400,
+				marginRight: 400,
 				reflow: false,
 				marginBottom: 400
 			},
 			title: {
 				text: 'Graduation Rate Trends for First-Time, Full-Time Freshmen',
-				x: -200 //center
+				x: -200
 			},
 			xAxis: {
 				categories: config.years
@@ -230,7 +231,7 @@ $(document).ready(function () {
 		var itemset;
 		data.forEach(function (item) { // assumes only name, data, lineWidth properties
 			if (item && item.hasOwnProperty('name')) {
-				itemset = {'name':item.name};
+				itemset = {'name': item.name};
 				itemset.data = item.data.slice(position);
 				itemset.lineWidth = item.lineWidth;
 				itemset.zIndex = item.zIndex;
@@ -255,7 +256,9 @@ $(document).ready(function () {
 		var selected_campus_data;
 		var parse_item = function (item, j, a) {
 			a[j] = parseFloat(item);
-			a[j] = isNaN(a[j]) ? null : a[j];
+			a[j] = isNaN(a[j])
+				? null
+				: a[j];
 		};
 		json_data.rows.forEach(function (row) {
 			var name = shorten_peer_name(row[0]);
@@ -265,9 +268,9 @@ $(document).ready(function () {
 				series = series.slice(2); // skipping first two years (which are really 1998, 1999: not 2000, 2001)
 			}
 			if (match_csu_campus(config.campus, name)) {
-				selected_campus_data = {'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 4, 'selected': true, 'connectEnds': true};
+				selected_campus_data = {'name': convert_csu_campus_name(name), 'data': series, 'lineWidth': 4, 'selected': true, 'connectEnds': true};
 			} else {
-				out_data.push({'name':convert_csu_campus_name(name), 'data':series, 'lineWidth': 2, 'selected': false, 'connectEnds': true});
+				out_data.push({'name': convert_csu_campus_name(name), 'data': series, 'lineWidth': 2, 'selected': false, 'connectEnds': true});
 			}
 		});
 		out_data.sort(function (b, a) { // sort by final year's grad_rate descending
@@ -283,7 +286,11 @@ $(document).ready(function () {
 	var filter_out_peer_series = function (config, series_data) {
 		var out_data_subset = series_data.slice(1, config.peer_count);
 		out_data_subset.sort(function (a, b) { // sort by name the few chosen
-			return a.name > b.name ? 1 : (a.name === b.name) ? 0 : -1;
+			return a.name > b.name
+				? 1
+				: (a.name === b.name)
+					? 0
+					: -1;
 		});
 		out_data_subset.unshift(series_data[0]); // but place selected campus in first position
 		return out_data_subset;
@@ -299,7 +306,11 @@ $(document).ready(function () {
 			return item;
 		});
 		out_data_subset.sort(function (a, b) { // sort by name the few chosen
-			return a.name > b.name ? 1 : (a.name === b.name) ? 0 : -1;
+			return a.name > b.name
+				? 1
+				: (a.name === b.name)
+					? 0
+					: -1;
 		});
 		out_data_subset.unshift(series_data[0]); // but place selected campus in first position
 		return out_data_subset;
@@ -317,6 +328,7 @@ $(document).ready(function () {
 		var series_projected_msd = [];
 		var series_bound_upper = [];
 		var series_bound_lower = [];
+		var series_bound_upper2 = [];
 
 		Object.keys(selected_campus_data.prj).forEach(function (key) { // beware undefined order
 			years_projected.push(key);
@@ -328,15 +340,19 @@ $(document).ready(function () {
 		years_actual.sort(); // guarantee order
 		years_all = years_actual.concat(years_projected);
 		years_all.sort();
-		years_all = years_all.filter(function (el, i, a) {return i < 1 || el !== a[i - 1];});
+		years_all = years_all.filter(function (el, i, a) {
+			return i < 1 || el !== a[i - 1];
+		});
 		config.years_all = years_all;
 
 		years_all.forEach(function (year, i) {
 			series_bound_upper.push(null);
 			series_bound_lower.push(null);
+			series_bound_upper2.push(null);
 			if (year === years_actual[years_actual.length - 1]) {
 				series_bound_upper[i] = (selected_campus_data.rates[year]);
 				series_bound_lower[i] = (selected_campus_data.rates[year]);
+				series_bound_upper2[i] = (selected_campus_data.rates[year]);
 			}
 			if (selected_campus_data.upperbound.hasOwnProperty(year)) {
 				series_bound_upper[i] = (selected_campus_data.upperbound[year]);
@@ -344,12 +360,15 @@ $(document).ready(function () {
 			if (selected_campus_data.lowerbound.hasOwnProperty(year)) {
 				series_bound_lower[i] = (selected_campus_data.lowerbound[year]);
 			}
+			if (selected_campus_data.hasOwnProperty('upperbound2') && selected_campus_data.upperbound2.hasOwnProperty(year)) {
+				series_bound_upper2[i] = (selected_campus_data.upperbound2[year]);
+			}
 			if (selected_campus_data.rates.hasOwnProperty(year)) {
 				series_actual.push(selected_campus_data.rates[year]);
 			} else {
 				series_actual.push(null);
 			}
-			
+
 			if (selected_campus_data.prj.hasOwnProperty(year)) {
 				series_projected_prj.push(selected_campus_data.prj[year]);
 			} else if (selected_campus_data.average.hasOwnProperty(year)) {
@@ -373,19 +392,42 @@ $(document).ready(function () {
 			}
 		});
 
-		var pchart = $('#projections_chart_container').highcharts();		
+		var pchart = $('#projections_chart_container').highcharts();
 		// make legend state sticky when changing campus or grad_year
-		var visible_lower = pchart ? pchart.get('lowerbound').visible : true;
-		var visible_upper = pchart ? pchart.get('upperbound').visible : true;
-		var visible_projected_prj = pchart ? pchart.get('projected_prj').visible : true;
-		var visible_projected_msd = pchart ? pchart.get('projected_msd').visible : true;
-		var visible_projected_psd = pchart ? pchart.get('projected_psd').visible : true;
-		var visible_actual = pchart ? pchart.get('actual').visible : true;
+		var visible_lower = pchart
+			? pchart.get('lowerbound').visible
+			: true;
+		var visible_upper = pchart
+			? pchart.get('upperbound').visible
+			: true;
+		var visible_upper2; // not available for 6yr
+		try {
+			visible_upper2 = pchart
+			? pchart.get('upperbound2').visible
+			: true;
+			save_visible_upper2 = visible_upper2;
+		} catch (e) {
+			visible_upper2 = save_visible_upper2;
+			// silence - can't be sticky when previous was 6yr which does not have upperbound2
+		}
+		var visible_projected_prj = pchart
+			? pchart.get('projected_prj').visible
+			: true;
+		var visible_projected_msd = pchart
+			? pchart.get('projected_msd').visible
+			: true;
+		var visible_projected_psd = pchart
+			? pchart.get('projected_psd').visible
+			: true;
+		var visible_actual = pchart
+			? pchart.get('actual').visible
+			: true;
 
 		var series = [{
 			name: 'Historical Graduation Rates',
 			id: 'actual',
 			type: 'line',
+			color: '#d00', // red
 			dashStyle: 'Solid',
 			visible: visible_actual,
 			dataLabels: {
@@ -393,15 +435,16 @@ $(document).ready(function () {
 				align: 'center',
 				format: '{point.y: ,.0f}%',
 				style: {fontSize: '0.8em'},
-				zIndex:30
+				zIndex: 30
 			},
 			marker: {radius: 5},
-			zIndex:10,
+			zIndex: 10,
 			data: series_actual
-		},{
+		}, {
 			name: 'Jodie\'s Methodology',
 			id: 'projected_prj',
 			type: 'line',
+			color: '#00d', // blue
 			dashStyle: 'Dot',
 			visible: visible_projected_prj,
 			dataLabels: {
@@ -410,42 +453,13 @@ $(document).ready(function () {
 				format: '{point.y: ,.0f}%',
 				style: {fontSize: '0.8em'}
 			},
-			marker: {radius: 4},
+			marker: {radius: 4, symbol: 'square'},
 			data: series_projected_prj
-		},{
-			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper'] + '% System Goal',
-			id: 'upperbound',
-			type: 'line',
-			dashStyle: 'Solid',
-			visible: visible_upper,
-			dataLabels: {
-				enabled: false,
-				align: 'center',
-				format: '{point.y: ,.0f}%',
-				style: {fontSize: '0.8em'}
-			},
-			marker: {radius: 5, symbol: 'circle'},
-			connectNulls: true,
-			zIndex:1,
-			data: series_bound_upper
-		},{
-			name: 'Jodie\'s Methodology +1 Standard Deviation',
-			id: 'projected_psd',
-			type: 'line',
-			dashStyle: 'Dot',
-			visible: visible_projected_psd,
-			dataLabels: {
-				enabled: false,
-				align: 'center',
-				format: '{point.y: ,.0f}%',
-				style: {fontSize: '0.8em'}
-			},
-			marker: {radius: 4},
-			data: series_projected_psd
-		},{
+		}, {
 			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_lower'] + '% System Goal',
 			id: 'lowerbound',
 			type: 'line',
+			color: '#0d0', // green
 			dashStyle: 'Solid',
 			visible: visible_lower,
 			dataLabels: {
@@ -456,12 +470,45 @@ $(document).ready(function () {
 			},
 			marker: {radius: 5, symbol: 'circle'},
 			connectNulls: true,
-			zIndex:1,
+			zIndex: 1,
 			data: series_bound_lower
-		},{
+		}, {
+			name: 'Jodie\'s Methodology +1 Standard Deviation',
+			id: 'projected_psd',
+			type: 'line',
+			color: '#00d', // blue
+			dashStyle: 'Dot',
+			visible: visible_projected_psd,
+			dataLabels: {
+				enabled: false,
+				align: 'center',
+				format: '{point.y: ,.0f}%',
+				style: {fontSize: '0.8em'}
+			},
+			marker: {radius: 5, symbol: 'diamond'},
+			data: series_projected_psd
+		}, {
+			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper'] + '% System Goal',
+			id: 'upperbound',
+			type: 'line',
+			color: '#0d0', // green
+			dashStyle: 'Solid',
+			visible: visible_upper,
+			dataLabels: {
+				enabled: false,
+				align: 'center',
+				format: '{point.y: ,.0f}%',
+				style: {fontSize: '0.8em'}
+			},
+			marker: {radius: 5, symbol: 'circle'},
+			connectNulls: true,
+			zIndex: 1,
+			data: series_bound_upper
+		}, {
 			name: 'Jodie\'s Methodology -1 Standard Deviation',
 			id: 'projected_msd',
 			type: 'line',
+			color: '#00d', // blue
 			dashStyle: 'Dot',
 			visible: visible_projected_msd,
 			dataLabels: {
@@ -470,9 +517,29 @@ $(document).ready(function () {
 				format: '{point.y: ,.0f}%',
 				style: {fontSize: '0.8em'}
 			},
-			marker: {radius: 3},
+			marker: {radius: 5, symbol: 'diamond'},
 			data: series_projected_msd
 		}];
+		if (config.grad_year === '4yr') {
+			series.push({
+				name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper2'] + '% System Goal',
+				id: 'upperbound2',
+				type: 'line',
+				color: '#0d0', // green
+				dashStyle: 'Solid',
+				visible: visible_upper2,
+				dataLabels: {
+					enabled: false,
+					align: 'center',
+					format: '{point.y: ,.0f}%',
+					style: {fontSize: '0.8em'}
+				},
+				marker: {radius: 5, symbol: 'circle'},
+				connectNulls: true,
+				zIndex: 1,
+				data: series_bound_upper2
+			});
+		}
 		return series;
 	};
 
@@ -517,18 +584,18 @@ $(document).ready(function () {
 
 			if (match_csu_campus(config.campus, key)) {
 				key = convert_csu_campus_name(key);
-				series[i] = {'name':key, 'y':value, 'color':'#635'};
+				series[i] = {'name': key, 'y': value, 'color': '#635'};
 			} else {
 				key = convert_csu_campus_name(key);
 				key = shorten_peer_name(key);
-				series[i] = {'name':key, 'y':value, 'color':'#159'};
+				series[i] = {'name': key, 'y': value, 'color': '#159'};
 			}
 		});
 
 		// descending sort by y-axis value
 		series = series.sort(function (b, a) {
 			return a.y - b.y;
-		}); 
+		});
 
 		var s0 = series[0];
 		var s1 = series[1];
@@ -542,18 +609,18 @@ $(document).ready(function () {
 	};
 
 	var update_chart_historical_trends = function (config, json_data) { // config is modified
-		var map_years = {'5':-5, '3':-3, '0':0}; // modify to match returned values from control
+		var map_years = {'5': -5, '3': -3, '0': 0}; // modify to match returned values from control
 		var yearkeys = Object.keys(config.yearmap[config.grad_year]);
 		config.years = yearkeys.slice(map_years[config.trends_since]); // config.years used only with historical trends
 		var truncated_peer_subset = truncate_data(filter_out_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since]);
-		
+
 		create_chart_historical_trends(config, truncate_data(filter_off_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since]));
 		create_table_historical_trends(config, truncated_peer_subset);
 
 		// Footnote also changes with change in grad_year, cohort, and campus name
 		$('#trends_footnote').html('*Showing ' + convert_location_to_csu_name(config.campus) +
-			' and its four top performing national peers (based on their ' +
-			config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
+				' and its four top performing national peers (based on their ' +
+				config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
 	};
 
 	/*
@@ -567,35 +634,59 @@ $(document).ready(function () {
 			var trs = [];
 			var tr;
 			var td;
-			for (i = 0; i < ilen; i +=1) {
+			for (i = 0; i < ilen; i += 1) {
 				tr = tbody.children[i];
 				td = tr.children[col].innerText;
-				trs[i] = [td,i,tr.innerHTML,tr.className || ''];
+				trs[i] = [td, i, tr.innerHTML, tr.className || ''];
 			}
 			var frag = document.createDocumentFragment();
 			if (direction === 'ascending') {
 				trs.sort(function (a, b) {
 					var aa = a[0].toUpperCase();
 					var bb = b[0].toUpperCase();
-					aa = aa.indexOf('ds*') !== -1 ? '$0' : aa;
-					bb = bb.indexOf('ds*') !== -1 ? '$0' : bb;
+					aa = aa.indexOf('ds*') !== -1
+						? '$0'
+						: aa;
+					bb = bb.indexOf('ds*') !== -1
+						? '$0'
+						: bb;
 					aa = aa.replace(pattern1, '');
 					bb = bb.replace(pattern1, '');
-					aa = isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
-					bb = isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
-					return aa > bb ? 1 : (aa === bb) ? 0 : -1;
+					aa = isNaN(parseFloat(aa))
+						? aa
+						: parseFloat(aa);
+					bb = isNaN(parseFloat(bb))
+						? bb
+						: parseFloat(bb);
+					return aa > bb
+						? 1
+						: (aa === bb)
+							? 0
+							: -1;
 				});
 			} else {
 				trs.sort(function (b, a) {
 					var aa = a[0].toUpperCase();
 					var bb = b[0].toUpperCase();
-					aa = aa.indexOf('ds*') !== -1 ? '$0' : aa;
-					bb = bb.indexOf('ds*') !== -1 ? '$0' : bb;
+					aa = aa.indexOf('ds*') !== -1
+						? '$0'
+						: aa;
+					bb = bb.indexOf('ds*') !== -1
+						? '$0'
+						: bb;
 					aa = aa.replace(pattern1, '');
 					bb = bb.replace(pattern1, '');
-					aa = isNaN(parseFloat(aa)) ? aa : parseFloat(aa);
-					bb = isNaN(parseFloat(bb)) ? bb : parseFloat(bb);
-					return aa > bb ? 1 : (aa === bb) ? 0 : -1;
+					aa = isNaN(parseFloat(aa))
+						? aa
+						: parseFloat(aa);
+					bb = isNaN(parseFloat(bb))
+						? bb
+						: parseFloat(bb);
+					return aa > bb
+						? 1
+						: (aa === bb)
+							? 0
+							: -1;
 				});
 			}
 			trs.forEach(function (tr) {
@@ -631,14 +722,28 @@ $(document).ready(function () {
 
 	var relabel_table_peers = function (header_item) {
 		var item = header_item; // so as not to reassign header_item
-		item = (item === 'Main') ? 'Campus': item;
-		item = (item === 'Underrepresented Minority 6-Year Grad Rate') ? 'URM&nbsp;6-Year Grad&nbsp;Rate': item;
-		item = (item === '% Pell Recipients Among Freshmen') ? '%&nbsp;Pell Eligible': item;
-		item = (item === '% Underrepresented Minority') ? '%&nbsp;URM': item;
-		item = (item === 'Average High School GPA Among College Freshmen') ? 'Average&nbsp;High School&nbsp;GPA': item;
-		item = (item === 'Estimated Median SAT / ACT') ? 'Average SAT&nbsp;Score': item;
-		item = (item === 'Size (Undergrad FTE)') ? '(Undergrad FTE)&nbsp;Size': item;
-		item = item.replace('Grad Rate','Grad&nbsp;Rate');
+		item = (item === 'Main')
+			? 'Campus'
+			: item;
+		item = (item === 'Underrepresented Minority 6-Year Grad Rate')
+			? 'URM&nbsp;6-Year Grad&nbsp;Rate'
+			: item;
+		item = (item === '% Pell Recipients Among Freshmen')
+			? '%&nbsp;Pell Eligible'
+			: item;
+		item = (item === '% Underrepresented Minority')
+			? '%&nbsp;URM'
+			: item;
+		item = (item === 'Average High School GPA Among College Freshmen')
+			? 'Average&nbsp;High School&nbsp;GPA'
+			: item;
+		item = (item === 'Estimated Median SAT / ACT')
+			? 'Average SAT&nbsp;Score'
+			: item;
+		item = (item === 'Size (Undergrad FTE)')
+			? '(Undergrad FTE)&nbsp;Size'
+			: item;
+		item = item.replace('Grad Rate', 'Grad&nbsp;Rate');
 		return item;
 	};
 
@@ -647,11 +752,13 @@ $(document).ready(function () {
 		var one_or_two;
 		var header_copy = json.headers[0];
 		if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
-			one_or_two = (header_copy[2] === 'Underrepresented Minority 6-Year Grad Rate') ? 2 : 1;
-			header_copy.splice(1,one_or_two,header_copy.splice(-1, 1)[0]); // remove 6yr column(s) and move last column to 2nd column position
+			one_or_two = (header_copy[2] === 'Underrepresented Minority 6-Year Grad Rate')
+				? 2
+				: 1;
+			header_copy.splice(1, one_or_two, header_copy.splice(-1, 1)[0]); // remove 6yr column(s) and move last column to 2nd column position
 			header_copy[1] = config.cohort + '&nbsp;4yr Grad&nbsp;Rate';
 		} else { // 6yr
-			header_copy.splice(-1,1); // simply remove last col
+			header_copy.splice(-1, 1); // simply remove last col
 		}
 		header_copy.forEach(function (item, i) {
 			item = relabel_table_peers(item);
@@ -704,12 +811,14 @@ $(document).ready(function () {
 	};
 
 	var load_table_peers = function (config, callback) {
-		var table_data_src = 'data/GRtables/' + config.campus.replace(pattern2, '_') + '_' + config.cohort + '_briefplus.json' + defeat_cache;
+		var table_data_src_parts = ['data/GRtables/', config.campus.replace(pattern2, '_'), '_', config.cohort, '_briefplus.json', defeat_cache];
 		$.ajax({
-			url: table_data_src,
+			url: table_data_src_parts.join(''),
 			datatype: "json",
 			success: function (result) {
-				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
+				var json_object = (typeof result === 'string')
+					? JSON.parse(result)
+					: result;
 				callback(json_object, config);
 			}
 		});
@@ -722,11 +831,11 @@ $(document).ready(function () {
 		} else {
 			var head = [];
 			json_data.headers[0].forEach(function (cell) {
-					if (cell.length && cell[0] === '"') {
-						head.push(cell);
-					} else {
-						head.push('"' + cell + '"');
-					}
+				if (cell.length && cell[0] === '"') {
+					head.push(cell);
+				} else {
+					head.push('"' + cell + '"');
+				}
 			});
 			output += head.join(',') + '\n';
 			json_data.rows.forEach(function (row) {
@@ -743,7 +852,7 @@ $(document).ready(function () {
 		}
 		// download magic here, instead of returning output, create document that downloads
 		var linkDownload = function (a, filename, content) {
-			var contentType =  'data:application/octet-stream,';
+			var contentType = 'data:application/octet-stream,';
 			var uriContent = contentType + encodeURIComponent(content);
 			a.setAttribute('href', uriContent);
 			a.setAttribute('download', filename);
@@ -765,7 +874,9 @@ $(document).ready(function () {
 			url: chart_data_src,
 			datatype: "json",
 			success: function (result) {
-				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
+				var json_object = (typeof result === 'string')
+					? JSON.parse(result)
+					: result;
 				callback(json_object, config);
 			}
 		});
@@ -775,15 +886,16 @@ $(document).ready(function () {
 	// change of number of years to show does not require fetch
 	// nor does a change of cohort year, as this file also provides data for peer comparisons graph
 	var load_chart_historical_trends = function (config, callback) {
-		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
-		var chart_data_src = 'data/' + config.type + config.grad_year + '/' +
-			config.campus.replace(pattern2, '_') + '_' + config.grad_year + config.type + '.json' + defeat_cache;
+		// build relative url, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
+		var chart_data_src_parts = ['data/', config.type, config.grad_year, '/', config.campus.replace(pattern2, '_'), '_', config.grad_year, config.type, '.json', defeat_cache];
 
 		$.ajax({
-			url: chart_data_src,
+			url: chart_data_src_parts.join(''),
 			datatype: "json",
 			success: function (result) {
-				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
+				var json_object = (typeof result === 'string')
+					? JSON.parse(result)
+					: result;
 				callback(json_object, config);
 			}
 		});
@@ -792,13 +904,15 @@ $(document).ready(function () {
 	var load_chart_projected_trends = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
 		//var chart_data_src = 'data/peer_campus_projection_data_cleaned.json' + defeat_cache;
-		var chart_data_src = 'data/peer_campus_pbdata2.json' + defeat_cache;
+		var chart_data_src = 'data/peer_campus_pbdata3.json' + defeat_cache;
 
 		$.ajax({
 			url: chart_data_src,
 			datatype: "json",
 			success: function (result) {
-				var json_object = (typeof result === 'string') ? JSON.parse(result) : result;
+				var json_object = (typeof result === 'string')
+					? JSON.parse(result)
+					: result;
 				callback(json_object, config);
 			}
 		});
@@ -813,12 +927,12 @@ $(document).ready(function () {
 		$('#campus_selector').on('change', function (e) { // Bakersfield, ..., Stanislaus
 			chart_state.campus = e.target.value;
 			chart_state.notify();
-			load_chart_historical_trends(chart_state,  function (json_data, chart_state) {
+			load_chart_historical_trends(chart_state, function (json_data, chart_state) {
 				retained_json_data = json_data;
 				update_chart_historical_trends(chart_state, retained_json_data);
 				update_chart_peer_comparisons(chart_state, retained_json_data);
 			});
-			
+
 			update_chart_projected_trends(chart_state, retained_projected_json_data);
 			load_table_peers(chart_state, create_table_peers);
 		});
@@ -840,7 +954,7 @@ $(document).ready(function () {
 		$('#year_selector').on('change', function (e) { // 6yr or 4yr
 			chart_state.grad_year = e.target.value;
 			chart_state.notify();
-			load_chart_historical_trends(chart_state,  function (json_data, chart_state) {
+			load_chart_historical_trends(chart_state, function (json_data, chart_state) {
 				retained_json_data = json_data;
 				update_chart_peer_comparisons(chart_state, retained_json_data);
 				update_chart_historical_trends(chart_state, retained_json_data);
@@ -963,6 +1077,11 @@ $(document).ready(function () {
 			chart_state.selected_tab_name = e.target.href.split('#')[1]; // i.e., one of ['chart','table','method','trends','projections']
 			chart_state.notify();
 		});
-		$('.nav-tabs a').each(function (i, el) {if (i===0){$(el).tab('show');}});
+
+		$('.nav-tabs a').each(function (i, el) {
+			if (i === 0) {
+				$(el).tab('show');
+			}
+		});
 	}()); // initialized
 });
