@@ -187,7 +187,8 @@ $(document).ready(function () {
 				spacingLeft: 20,
 				marginRight: 400,
 				reflow: false,
-				marginBottom: 400
+				marginBottom: 400,
+				backgroundColor: 'transparent'
 			},
 			title: {
 				text: 'Graduation Rate Trends for First-Time, Full-Time Freshmen',
@@ -207,7 +208,8 @@ $(document).ready(function () {
 				}]
 			},
 			tooltip: {
-				valueSuffix: '%'
+				valueSuffix: '%',
+				style: {zIndex: 10000}
 			},
 			legend: {
 				title: {style: {'color': '#777'}, text: '(Click to show/hide campuses)'},
