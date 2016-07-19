@@ -886,7 +886,7 @@ $(document).ready(function () {
 	var load_chart_projected_trends = function (config, callback) {
 		// build (relative) source url from parts in config, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
 		//var chart_data_src = 'data/peer_campus_projection_data_cleaned.json' + defeat_cache;
-		var chart_data_src = 'data/peer_campus_pbdata3.json' + defeat_cache;
+		var chart_data_src = 'data/peer_campus_pbdata4.json' + defeat_cache;
 
 		$.ajax({
 			url: chart_data_src,
