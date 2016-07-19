@@ -21,6 +21,7 @@ $(document).ready(function () {
 		},
 		'projected_years': ['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
 		'projected_campuses': 'default',
+		'historical_default_count': 5,
 		'notify': null,
 		'palette': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
 	};
@@ -237,6 +238,7 @@ $(document).ready(function () {
 				itemset.zIndex = item.zIndex;
 				itemset.visible = item.visible;
 				itemset.connectNulls = false;
+				/*
 				if (item.hasOwnProperty('zones')) {
 					itemset.zoneAxis = item.zoneAxis;
 					itemset.zones = item.zones;
@@ -244,6 +246,7 @@ $(document).ready(function () {
 					itemset.id = item.id;
 					itemset.color = item.color;
 				}
+				*/
 				out.push(itemset);
 			}
 		});
@@ -283,23 +286,10 @@ $(document).ready(function () {
 		return out_data;
 	};
 
-	var filter_out_peer_series = function (config, series_data) {
-		var out_data_subset = series_data.slice(1, config.peer_count);
-		out_data_subset.sort(function (a, b) { // sort by name the few chosen
-			return a.name > b.name
-				? 1
-				: (a.name === b.name)
-					? 0
-					: -1;
-		});
-		out_data_subset.unshift(series_data[0]); // but place selected campus in first position
-		return out_data_subset;
-	};
-
 	var filter_off_peer_series = function (config, series_data) {
 		var out_data_subset = series_data.slice(1).map(function (item, i) {
 			if (config.projected_campuses === 'default') {
-				item.visible = (i < 4);
+				item.visible = (i < config.peer_count - 1);
 			} else {
 				item.visible = true;
 			}
@@ -312,6 +302,7 @@ $(document).ready(function () {
 					? 0
 					: -1;
 		});
+		series_data[0].visible = true;
 		out_data_subset.unshift(series_data[0]); // but place selected campus in first position
 		return out_data_subset;
 	};
@@ -548,24 +539,26 @@ $(document).ready(function () {
 		peer_subset.forEach(function (item) {
 			var line;
 			var avg;
-			if (!item.data || item.data.slice(-1)[0] === null || item.data[0] === null || item.data.length <= 1) {
-				line = trend_table_row_template.replace('{name}', item.name).replace('{avg}', 'n/a');
-			} else {
-				if (item.data && item.data.length > 1) { // (len - 1) !== 0,  avoid divide by zero
-					avg = '' + Math.round(10.0 * (item.data.slice(-1)[0] - item.data[0]) / (item.data.length - 1)) / 10.0;
+			if (item.visible) {
+				if (!item.data || item.data.slice(-1)[0] === null || item.data[0] === null || item.data.length <= 1) {
+					line = trend_table_row_template.replace('{name}', item.name).replace('{avg}', 'n/a');
+				} else {
+					if (item.data && item.data.length > 1) { // (len - 1) !== 0,  avoid divide by zero
+						avg = '' + Math.round(10.0 * (item.data.slice(-1)[0] - item.data[0]) / (item.data.length - 1)) / 10.0;
+					}
+					if (avg.split('.').length === 1) { // formatting
+						avg += '.0';
+					}
+					line = trend_table_row_template.replace('{name}', item.name).replace('{avg}', avg + ' % points');
 				}
-				if (avg.split('.').length === 1) { // formatting
-					avg += '.0';
-				}
-				line = trend_table_row_template.replace('{name}', item.name).replace('{avg}', avg + ' % points');
+				detail += line;
 			}
-			detail += line;
 		});
 		detail += '</tbody></table>';
 		$('#text_panel_0').html('<h3>' + heading + '</h3>' + detail);
 	};
 
-	var update_chart_projected_trends = function (config, json_data) { // config is modified
+	var update_chart_projected_trends = function (config, json_data) {
 		create_chart_projections(config, build_projected_series(config, json_data));
 	};
 
@@ -607,9 +600,9 @@ $(document).ready(function () {
 		var map_years = {'5': -5, '3': -3, '0': 0}; // modify to match returned values from control
 		var yearkeys = Object.keys(config.yearmap[config.grad_year]);
 		config.years = yearkeys.slice(map_years[config.trends_since]); // config.years used only with historical trends
-		var truncated_peer_subset = truncate_data(filter_out_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since]);
+		var truncated_peer_subset = truncate_data(filter_off_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since]);
 
-		create_chart_historical_trends(config, truncate_data(filter_off_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since]));
+		create_chart_historical_trends(config, truncated_peer_subset);
 		create_table_historical_trends(config, truncated_peer_subset);
 
 		// Footnote also changes with change in grad_year, cohort, and campus name
