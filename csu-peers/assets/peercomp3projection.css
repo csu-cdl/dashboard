@@ -146,7 +146,7 @@ tbody tr td.nowrap {
 	width: 700px;
 	height: 30px;
 	position: relative;
-	top: -400px;
+	top: -355px;
 	left: 332px;
 }
 
@@ -180,9 +180,9 @@ tbody tr td.nowrap {
 	left: 976px;
 }
 
- #trends_footnote {
+ #trends .footnote {
 	position:relative;
-	top:-200px;
+	top:-280px;
 }
 
 #explanation {

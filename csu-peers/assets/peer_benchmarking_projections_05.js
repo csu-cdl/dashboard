@@ -2,10 +2,6 @@ $(document).ready(function () {
 	'use strict';
 	var defeat_cache = '?v=35'; // stable and cache ok
 
-	/*
-	  * Page level support functions and general settings, defaults
-	  */
-
 	// single place for server to establish defaults, year range and map of years to data columns, etc.
 	var chart_state = {
 		'selected_tab_name': 'projections',
@@ -32,6 +28,10 @@ $(document).ready(function () {
 		$('.control').trigger('state_change', [chart_state]);
 	};
 
+	/*
+	  * Page level support functions and general settings, defaults
+	  */
+
 	Highcharts.setOptions({
 		colors: chart_state.palette
 	});
@@ -42,8 +42,8 @@ $(document).ready(function () {
 	var retained_json_data;
 	var retained_projected_json_data;
 	var peer_campus_urls; // saves having to reload data
-	var save_visible_upper2 = false; // hack to handle asymetry of 4yr/6yr chart data
-
+	var prior_grad_year; // supports detection of need to reset some charts
+	//var save_visible_upper2 = false; // hack to handle asymetry of 4yr/6yr chart data
 
 	// one place to consistently convert to shorter csu name
 	var convert_csu_campus_name = function (campus_name) {
@@ -317,6 +317,11 @@ $(document).ready(function () {
 	};
 
 	var build_projected_series = function (config, json_data) {
+		var reset_legend = false;
+		if (config.grad_year !== prior_grad_year) {
+			prior_grad_year = config.grad_year;
+			reset_legend = true;
+		}
 		var selected_campus_data = json_data[config.campus.replace(pattern2, '_')][config.grad_year];
 		var years_actual = [];
 		var years_projected = [];
@@ -392,36 +397,26 @@ $(document).ready(function () {
 			}
 		});
 
-		var pchart = $('#projections_chart_container').highcharts();
 		// make legend state sticky when changing campus or grad_year
-		var visible_lower = pchart
-			? pchart.get('lowerbound').visible
-			: true;
-		var visible_upper = pchart
-			? pchart.get('upperbound').visible
-			: true;
-		var visible_upper2; // not available for 6yr
-		try {
-			visible_upper2 = pchart
-			? pchart.get('upperbound2').visible
-			: true;
-			save_visible_upper2 = visible_upper2;
-		} catch (e) {
-			visible_upper2 = save_visible_upper2;
-			// silence - can't be sticky when previous was 6yr which does not have upperbound2
+		var visible_actual = true;
+		var visible_projected_prj = true;
+		var visible_projected_msd = true;
+		var visible_projected_psd = true;
+		var visible_lower = true;
+		var visible_upper = true;
+		var visible_upper2 = true;
+		var pchart = $('#projections_chart_container').highcharts();
+		if (pchart && !reset_legend) {
+			visible_actual = pchart.get('actual').visible;
+			visible_projected_prj = pchart.get('projected_prj').visible;
+			visible_projected_msd = pchart.get('projected_msd').visible;
+			visible_projected_psd = pchart.get('projected_psd').visible;
+			visible_lower = pchart.get('lowerbound').visible;
+			visible_upper = pchart.get('upperbound').visible;
+			if (config.grad_year === '4yr') {
+				visible_upper2 = pchart.get('upperbound2').visible;
+			}
 		}
-		var visible_projected_prj = pchart
-			? pchart.get('projected_prj').visible
-			: true;
-		var visible_projected_msd = pchart
-			? pchart.get('projected_msd').visible
-			: true;
-		var visible_projected_psd = pchart
-			? pchart.get('projected_psd').visible
-			: true;
-		var visible_actual = pchart
-			? pchart.get('actual').visible
-			: true;
 
 		var series = [{
 			name: 'Historical Graduation Rates',
