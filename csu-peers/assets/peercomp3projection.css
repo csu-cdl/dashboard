@@ -132,7 +132,7 @@ tbody tr td.nowrap {
 	z-index: 10;
 }
 
-#explanation {
+#explanation, #methodology {
 	font-family:"Trebuchet MS", Helvetica, sans-serif;
 	font-size:16px;
 	font-weight: 400;
@@ -151,4 +151,32 @@ tbody tr td.nowrap {
 }
 #explanation li {
 	margin:0.5em;
+}
+
+#methodology h2{
+	font-size:1.1em;
+	font-weight: 600;
+}
+#methodology h3{
+	font-size:1em;
+	font-weight: 400;
+}
+
+.formula {
+width:100%;
+}
+.numerator, .denominator {
+display:block;
+width:120px;
+margin:0 auto;
+font-style: italic;
+}
+.division_line {
+display:block;
+width:120px;
+margin:-10px auto;
+font-style: italic;
+}
+#model_methods {
+
 }

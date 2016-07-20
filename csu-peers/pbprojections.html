@@ -174,36 +174,77 @@
 </div><!--./table-->
 
 <div id="method" class="tab-pane fade">
-	<img src="assets/logo_cro.jpg" style="float:right;margin:5px 10px 8px 22px;"/>
-	<p>
-The national peer institutions selected for this dashboard come from College Results Online (CRO). 
-CRO applies an algorithm comparing the chosen school to all other public and private not-for-profit institutions in the CRO database. 
-Each comparison receives a "similarity score", ranging from 0 (least similar) to 1000 (identical), 
-based on how similar the two schools are in terms of 12 institutional and student characteristics. 
-The 12 selected characteristics are statistically correlated with overall six-year graduation rates 
-for institutions in the public and private not-for-profit sectors (see Table 1). 
-Once the baseline similarity score is calculated, CRO applies additional "filters" to exclude an institution from possible comparison 
-if it greatly deviates from the chosen institution on any one of a number of factors 
-(<a href="http://collegeresults.org/aboutthedata.aspx#section-5" target="_blank">see CRO Website</a> for list of filters). 
-This prevents, for example, an institution with 2,500 undergraduates from being compared to an institution with 25,000 undergraduates, 
-even if they are otherwise very similar.
-	</p>
-	<h3>Table 1: Public and Private not-for-profit Sector Weights</h3>
+<div id="methodology">
+<h2>Identifying Peer Campuses</h2>
+<img src="assets/logo_cro.jpg" style="float:right;margin:5px 10px 8px 22px;"/>
+<p>The national peer institutions selected for this dashboard come from College Results Online (CRO). CRO applies an algorithm comparing the chosen school to all other public and private not-for-profit institutions in the CRO database. Each comparison receives a "similarity score", ranging from 0 (least similar) to 1000 (identical), based on how similar the two schools are in terms of 12 institutional and student characteristics. The 12 selected characteristics are statistically correlated with overall six-year graduation rates for institutions in the public and private not-for-profit sectors (see Table 1). Once the baseline similarity score is calculated, CRO applies additional "filters" to exclude an institution from possible comparison if it greatly deviates from the chosen institution on any one of a number of factors 
+(<a href="http://collegeresults.org/aboutthedata.aspx#section-5" target="_blank">see CRO Website</a> for list of filters).  This prevents, for example, an institution with 2,500 undergraduates from being compared to an institution with 25,000 undergraduates, even if they are otherwise very similar.</p>
 
-	<table class="table table-striped"><tbody>
-		<tr><td>Estimated median SAT or ACT equivalent of freshman class</td><td>211 points</td></tr>
-		<tr><td>Percent of full-time, first-time degree/certificate-seeking undergraduate students who received federal Pell Grants</td><td>171 points</td></tr>
-		<tr><td>Number of full-time equivalent undergraduates</td><td>110 points</td></tr>
-		<tr><td>Sector (Public vs. Private)</td><td>84 points</td></tr>
-		<tr><td>Student-related expenditures per full-time equivalent undergraduate</td><td>68 points</td></tr>
-		<tr><td>Status as a commuter campus</td><td>67 points</td></tr>
-		<tr><td>Average high school GPA among college freshmen</td><td>64 points</td></tr>
-		<tr><td>Percent of undergraduate students age 25 and over</td><td>62 points</td></tr>
-		<tr><td>Admissions selectivity, per <em>Barron's Profiles of American Colleges</em></td><td>54 points</td></tr>
-		<tr><td>Percent of undergraduates who are enrolled part-time</td><td>51 points</td></tr>
-		<tr><td>Percent of degrees awarded in Science, Technology, Engineering, and Mathematics</td><td>30 points</td></tr>
-		<tr><td>Historically Black College or University</td><td>27 points</td></tr>
-	</tbody></table>
+<h3>Table 1: Public and Private not-for-profit Sector Weights</h3>
+
+<table class="table table-striped"><tbody>
+<tr><td>Estimated median SAT or ACT equivalent of freshman class</td><td>211 points</td></tr>
+<tr><td>Percent of full-time, first-time degree/certificate-seeking undergraduate students who received federal Pell Grants</td><td>171 points</td></tr>
+<tr><td>Number of full-time equivalent undergraduates</td><td>110 points</td></tr>
+<tr><td>Sector (Public vs. Private)</td><td>84 points</td></tr>
+<tr><td>Student-related expenditures per full-time equivalent undergraduate</td><td>68 points</td></tr>
+<tr><td>Status as a commuter campus</td><td>67 points</td></tr>
+<tr><td>Average high school GPA among college freshmen</td><td>64 points</td></tr>
+<tr><td>Percent of undergraduate students age 25 and over</td><td>62 points</td></tr>
+<tr><td>Admissions selectivity, per <em>Barron's Profiles of American Colleges</em></td><td>54 points</td></tr>
+<tr><td>Percent of undergraduates who are enrolled part-time</td><td>51 points</td></tr>
+<tr><td>Percent of degrees awarded in Science, Technology, Engineering, and Mathematics</td><td>30 points</td></tr>
+<tr><td>Historically Black College or University</td><td>27 points</td></tr>
+</tbody></table>
+
+
+<h2>Average Annual Change</h2>
+<p>The average annual improvement rates reported in the table to the right of the Historical Trends line chart, were calculated using the formula below:</p>
+<p class="formula"><span class="numerator">G<sub>2</sub> &#8212; G<sub>1</sub></span><span class="division_line">&#9135;&#9135;&#9135;&#9135;&#9135;&#9135;&#9135;</span><span class="denominator">Y<sub>2</sub> &#8212; Y<sub>1</sub> </span></p>
+<p>where <em>G</em><sub>2</sub> is the most recent year's graduation rate, <em>G</em><sub>1</sub> is the graduation rate of the earliest year in the selected time frame, <em>Y</em><sub>2</sub> is the most recent year, and <em>Y</em><sub>1</sub> is the earliest year in the selected time frame.</p>
+
+<h2>Projected Trends</h2>
+<p>Two methodologies are presented for projecting graduation rates for CSU campuses: "Jodie's Methodology" and "Linear Model". </p>
+
+<h3>Jodie's Methodology</h3>
+<p>This methodology calculates a central projection along with related upper and lower bounds. The central projection is generated by first calculating the average 2008 graduation rate for the selected campus' top five peers. This value is presented as the 2008 value for the three "Jodie's Methodology" projections. (Note that the "top five peers" can include the campus itself if it is among the top five performing institutions among its CRO peers.) For the central projection, subsequent values incrementally increase (or decrease) the 2008 value by cumulatively adding the average rate of change observed over the past 5 years for the top five peer institutions. Upper and lower projections are also based on the 2008 average graduation rate for the top five peers. These values are incremented by cumulatively adding the average rate of change observed over the past 5 years for the top five peer institutions plus the standard deviation of this average change (for the upper bound) or minus the standard deviation of this average change (for the lower bound).</p>
+
+<h3>Linear Model (Linear Programming Model)</h3>
+<p>The linear programming (or linear optimization model) generates potential campus graduation rate targets by working backwards from specific pre-determined constraints. This includes specific System-wide graduation rate targets (30, 35, or 40% for 4-year graduation rate goals, and 65 or 70% for 6-year graduation rate goals), as well as closing URM and Pell achievement gaps at every campus. It provides an alternate approach for goal-setting compared to trend and/or benchmarking approaches. 
+Campus graduation rates are broken down by Pell and URM status, resulting in 92 different graduation rate groups that comprise the whole System (23 campuses X URM/Non-URM groups X Pell Eligible/Non-Eligible groups).</p>
+
+<p>Campus rates are derived based on optimizing an objective function by varying graduation rates across the groups that minimizes the variance in the percentage point change in graduation rates across all groups. Using this as the objective, all groups should improve by similar rates. This will necessarily diverge with the additional constraints of meeting all of the Graduation Initiative objectives, including closing achievement gaps. Rates are based on the latest cohort for which final Pell grant awards are available, which corresponds to the Fall 2014 cohort.</p>
+
+<p>Models were run for target rates (4-year/6-year first-time, full-time freshmen), using the following System targets. </p>
+
+<table id="model_methods"  class="table table-striped"><thead>
+<th>Goal</th>
+<th>Cohort Group</th>
+<th>Current Rate</th>
+<th>System Target 1</th>
+<th>System Target 2</th>
+<th>System Target 3</th>
+</thead><tbody>
+<tr>
+<td>4-Year Graduation Rate Goal (2021 Cohort)</td>
+<td>First-time, Full-Time Freshmen</td>
+<td>19.1%</td>
+<td>30.0%</td>
+<td>35.0%</td>
+<td>40.0%</td>
+</tr><tr>
+<td>6-Year Graduation Rate Goal (2019 Cohort)</td>
+<td>First-time, Full-Time Freshmen</td>
+<td>57.0%</td>
+<td>65.0%</td>
+<td>75.0%</td>
+<td>N/A</td>
+</tr>
+</tbody></table>
+
+<p>The model assumes a target System-wide graduation rate along with some other constraints. The individual rate for any subgroup (by campus/Pell/URM must be greater than or equal to the most recent available rate (2009 cohort for 6 year and 2011 cohort for 4 year). Additional constraints are imposed within the models that bounds the percentage point change for any single campus. Targets 1 and 2 use an upper bound of a 20 percentage point increase for campus 4yr rates. Target 3 uses a 25 percentage point upper bound and 10 percentage point lower bound for growth for each campus. The models also enforce a Pell and URM achievement gap that is less than or equal to zero.</p>
+
+</div>
 </div><!--./method-->
 
 <div id="trends" class="tab-pane fade" style="height:640px;overflow:hidden;">
