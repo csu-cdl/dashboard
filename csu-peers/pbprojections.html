@@ -111,6 +111,7 @@
 
 <div id="explanations" class="tab-pane fade">
 <div id="explanation">
+<h1>CSU Peer Benchmarking Methodologies</h1>
 <h2>What data am I looking at?</h2>
 <p>The historical data in these charts are downloaded from the College Results Online (CRO) website (<a href="//collegeresults.org" target="_blank">collegeresults.org</a>). They reflect 4 and 6 year graduation rates as reported by each institution to the Integrated Postsecondary Education Data System (IPEDS), which is the federal government&rsquo;s annual survey of higher education institutions. 
 </p>
@@ -122,7 +123,6 @@
 <li>The Projected Trends chart shows the selected campus&rsquo; historical data along with several different graduation rate projections, each using different methodologies (see the &ldquo;Projected Trends line chart&rdquo; section under &ldquo;How do I interact with this page?&rdquo; below for brief description or see the Methodology tab for detailed explanation).
 </li>
 </ul>
-
 <h2>How were the peer campuses selected?</h2>
 <p><a href="//www.collegeresults.org/" target="_blank">College Results Online (CRO)</a>, which is a web tool provided by the Education Trust (<a href="//edtrust.org" target="_blank">edtrust.org</a>), uses 12 variables that they have found to significantly correlate to 6-year graduation rates, in order to identify a small set of institutional peers from a data set of over 1,450 institutions. They collect their data from multiple sources including the Integrated Postsecondary Education Data System (IPEDS), other Department of Education databases; Barron&rsquo;s Profile of American Colleges; College Board; Peterson&rsquo;s Databases; and the National Association of State Student Grant and Aid Programs. Details on their methodology can be found under the Methodology tab on this page. Further details can be found here: <a href="//collegeresults.org/aboutthedata.aspx#section-5" target="_blank">http://collegeresults.org/aboutthedata.aspx#section-5</a>. 
 </p>
@@ -146,8 +146,6 @@
 </li>
 </ul>
 </li>
-<li>Hover over any data point in this chart to see the institution&rsquo;s graduation rate (if using a smart phone or tablet, tap the data point to see its data value).
-</li>
 <li>In the figure legend, click on any campus to hide or show its trend line in the chart above.
 </li></ul>
 
@@ -155,13 +153,20 @@
 <ul>
 <li>At the top of the page, use the drop-down menus to choose the type of graduation rate (4-year or 6-year graduation rates), the CSU campus, and the Projection methodology that you want to view. You can choose between two basic methodologies:
 <ul>
-<li><strong>Jodie&rsquo;s Methodology</strong> shows three projections &#8212; Each begins with the average 2008 graduation rate and average rate of change over the past five years of the selected campus&rsquo; top five peers. (The &ldquo;top five peers&rdquo; may include the campus itself if it is among the top 5 performing institutions among its CRO peers.) The middle projection uses these values to create a linear projection of graduation rates. The upper projection adds the standard deviation of the top five peers&rsquo; rate of change over the past 5 years to this projection. The lower projection subtracts the standard deviation of the top five peers&rsquo; rate of change over the past 5 years to this projection.
-</li>
-<li><strong>Linear Model</strong> employs a linear optimization methodology to set campus goals that sum up to meet System-wide graduation goals, while simultaneously closing each campuses&rsquo; URM and Pell eligible achievement gaps. Two System-wide graduation goals were used for the 4-year graduation time frame (35 and 40% graduation rates), and two system-wide goals were used for the 6-year graduation time frame (65% and 70%). 
+
+<li><strong>Jodie&rsquo;s Methodology</strong> shows three projections.  Each approach begins with the average 2008 graduation rate and the average rate of change over the past five years for the selected campus' top five peers. (The &ldquo;top five peers&rdquo; may include the campus itself if it is among the top five performing institutions within its peer group.) The middle projection uses these values to create a linear projection of graduation rates through 2025. The upper projection adds the standard deviation of the top five peers&rsquo; rate of change over the past five years to this projection. The lower projection subtracts the standard deviation of the top five peers&rsquo; rate of change to this projection.</li>
+
+<li>The <strong>Linear Model</strong> employs a linear optimization methodology to set campus goals that sum up to meet the systemwide graduation rate targets, while simultaneously closing each campuses&rsquo; URM and Pell eligible achievement gaps. Two systemwide graduation goals were used for the 4-year graduation rate (35% and 40%), and two system-wide goals were used for the 6-year graduation rate (65% and 70%).</li>
 </ul></li>
-<li>Note that the years shown in the x-axis reflect the year that the students entered as freshmen.  If, for example, you select &ldquo;6-Year Graduation Rates&rdquo; the data points for the year 2008 are for students who began as first-time, full-time freshmen in the fall of 2008 and graduated by or before the end of summer 2014.
-</li><li>Hover over any data point in this chart to see the institution&rsquo;s graduation rate (if using a smart phone or tablet, tap the data point to see its data value).
-</li></ul>
+
+</ul>
+
+<h2>Notes:</h2>
+<ul>
+<li>The years shown in the x-axis reflect the year that students entered as freshmen. If, for example, you select &ldquo;6-Year Graduation Rates&rdquo; the data points for the year 2008 are for students who began as first-time, full-time freshmen in the fall of 2008 and graduated by or before the end of summer 2014.</li>
+<li>The latest publicly available four-year graduation rate data for peer institutions is shown for the 2008 cohort graduating in 2012.  For CSU campuses, more current data is available, including the 2009, 2010, and 2011 cohorts.</li>
+<li>Hover over any data point in this chart to see the institution&rsquo;s graduation rate.</li>
+</ul>
 </div>
 </div><!--./chart-->
 
@@ -182,8 +187,8 @@
 
 <h3>Table 1: Public and Private not-for-profit Sector Weights</h3>
 
-<table class="table table-striped"><tbody>
-<tr><td>Estimated median SAT or ACT equivalent of freshman class</td><td>211 points</td></tr>
+<table id="sector_weights" class="table table-striped"><tbody>
+<tr><td>Estimated median SAT or ACT equivalent of freshman class</td><td width=110>211 points</td></tr>
 <tr><td>Percent of full-time, first-time degree/certificate-seeking undergraduate students who received federal Pell Grants</td><td>171 points</td></tr>
 <tr><td>Number of full-time equivalent undergraduates</td><td>110 points</td></tr>
 <tr><td>Sector (Public vs. Private)</td><td>84 points</td></tr>
@@ -210,7 +215,7 @@
 <p>This methodology calculates a central projection along with related upper and lower bounds. The central projection is generated by first calculating the average 2008 graduation rate for the selected campus' top five peers. This value is presented as the 2008 value for the three "Jodie's Methodology" projections. (Note that the "top five peers" can include the campus itself if it is among the top five performing institutions among its CRO peers.) For the central projection, subsequent values incrementally increase (or decrease) the 2008 value by cumulatively adding the average rate of change observed over the past 5 years for the top five peer institutions. Upper and lower projections are also based on the 2008 average graduation rate for the top five peers. These values are incremented by cumulatively adding the average rate of change observed over the past 5 years for the top five peer institutions plus the standard deviation of this average change (for the upper bound) or minus the standard deviation of this average change (for the lower bound).</p>
 
 <h3>Linear Model (Linear Programming Model)</h3>
-<p>The linear programming (or linear optimization model) generates potential campus graduation rate targets by working backwards from specific pre-determined constraints. This includes specific System-wide graduation rate targets (30, 35, or 40% for 4-year graduation rate goals, and 65 or 70% for 6-year graduation rate goals), as well as closing URM and Pell achievement gaps at every campus. It provides an alternate approach for goal-setting compared to trend and/or benchmarking approaches. 
+<p>The linear programming (or linear optimization model) generates potential campus graduation rate targets by working backwards from specific pre-determined constraints. This includes specific System-wide graduation rate targets (35 or 40% for 4-year graduation rate goals, and 65 or 70% for 6-year graduation rate goals), as well as closing URM and Pell achievement gaps at every campus. It provides an alternate approach for goal-setting compared to trend and/or benchmarking approaches. 
 Campus graduation rates are broken down by Pell and URM status, resulting in 92 different graduation rate groups that comprise the whole System (23 campuses X URM/Non-URM groups X Pell Eligible/Non-Eligible groups).</p>
 
 <p>Campus rates are derived based on optimizing an objective function by varying graduation rates across the groups that minimizes the variance in the percentage point change in graduation rates across all groups. Using this as the objective, all groups should improve by similar rates. This will necessarily diverge with the additional constraints of meeting all of the Graduation Initiative objectives, including closing achievement gaps. Rates are based on the latest cohort for which final Pell grant awards are available, which corresponds to the Fall 2014 cohort.</p>
@@ -223,13 +228,11 @@ Campus graduation rates are broken down by Pell and URM status, resulting in 92 
 <th>Current Rate</th>
 <th>System Target 1</th>
 <th>System Target 2</th>
-<th>System Target 3</th>
 </thead><tbody>
 <tr>
 <td>4-Year Graduation Rate Goal (2021 Cohort)</td>
 <td>First-time, Full-Time Freshmen</td>
 <td>19.1%</td>
-<td>30.0%</td>
 <td>35.0%</td>
 <td>40.0%</td>
 </tr><tr>
@@ -238,7 +241,6 @@ Campus graduation rates are broken down by Pell and URM status, resulting in 92 
 <td>57.0%</td>
 <td>65.0%</td>
 <td>75.0%</td>
-<td>N/A</td>
 </tr>
 </tbody></table>
 

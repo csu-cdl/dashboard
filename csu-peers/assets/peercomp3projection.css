@@ -148,6 +148,7 @@ tbody tr td.nowrap {
 #explanation h3{
 	font-size:1em;
 	font-weight: 400;
+	text-decoration:underline;
 }
 #explanation li {
 	margin:0.5em;
@@ -160,6 +161,7 @@ tbody tr td.nowrap {
 #methodology h3{
 	font-size:1em;
 	font-weight: 400;
+	text-decoration:underline;
 }
 
 .formula {
@@ -177,6 +179,7 @@ width:120px;
 margin:-10px auto;
 font-style: italic;
 }
-#model_methods {
-
+#sector_weights tr td+td {
+width:100px;
+text-align:right;
 }
