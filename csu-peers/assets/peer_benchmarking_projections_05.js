@@ -378,6 +378,7 @@ $(document).ready(function () {
 			}
 		});
 
+		var jeff_hack_23 = (config.grad_year === '4yr');
 		// make legend state sticky when changing campus or grad_year
 		var visible_actual = true;
 		var visible_projected_prj = true;
@@ -392,13 +393,20 @@ $(document).ready(function () {
 			visible_projected_prj = pchart.get('projected_prj').visible;
 			visible_projected_msd = pchart.get('projected_msd').visible;
 			visible_projected_psd = pchart.get('projected_psd').visible;
-			visible_lower = pchart.get('lowerbound').visible;
-			visible_upper = pchart.get('upperbound').visible;
 			if (config.grad_year === '4yr') {
-				visible_upper2 = pchart.get('upperbound2').visible;
+				if (jeff_hack_23) {
+					visible_lower = pchart.get('lowerbound').visible;
+					visible_upper = pchart.get('upperbound').visible;
+				} else {
+					visible_lower = pchart.get('lowerbound').visible;
+					visible_upper = pchart.get('upperbound').visible;
+					visible_upper2 = pchart.get('upperbound2').visible;
+				}
+			} else {
+				visible_lower = pchart.get('lowerbound').visible;
+				visible_upper = pchart.get('upperbound').visible;
 			}
 		}
-
 		var series = [{
 			name: 'Historical Graduation Rates',
 			id: 'actual',
@@ -432,7 +440,9 @@ $(document).ready(function () {
 			marker: {radius: 4, symbol: 'square'},
 			data: series_projected_prj
 		}, {
-			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_lower'] + '% System Goal',
+			name: jeff_hack_23
+				? 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper'] + '% System Goal'
+				: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_lower'] + '% System Goal',
 			id: 'lowerbound',
 			type: 'line',
 			color: '#0d0', // green
@@ -447,7 +457,8 @@ $(document).ready(function () {
 			marker: {radius: 5, symbol: 'circle'},
 			connectNulls: true,
 			zIndex: 1,
-			data: series_bound_lower
+			//data: series_bound_lower
+			data: jeff_hack_23 ? series_bound_upper : series_bound_lower
 		}, {
 			name: 'Jodie\'s Methodology +1 Standard Deviation',
 			id: 'projected_psd',
@@ -464,7 +475,9 @@ $(document).ready(function () {
 			marker: {radius: 5, symbol: 'diamond'},
 			data: series_projected_psd
 		}, {
-			name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper'] + '% System Goal',
+			name: jeff_hack_23
+				? 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper2'] + '% System Goal'
+				: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper'] + '% System Goal',
 			id: 'upperbound',
 			type: 'line',
 			color: '#0d0', // green
@@ -479,7 +492,8 @@ $(document).ready(function () {
 			marker: {radius: 5, symbol: 'circle'},
 			connectNulls: true,
 			zIndex: 1,
-			data: series_bound_upper
+			//data: series_bound_upper
+			data: jeff_hack_23 ? series_bound_upper2 : series_bound_upper
 		}, {
 			name: 'Jodie\'s Methodology -1 Standard Deviation',
 			id: 'projected_msd',
@@ -496,6 +510,7 @@ $(document).ready(function () {
 			marker: {radius: 5, symbol: 'diamond'},
 			data: series_projected_msd
 		}];
+		/*
 		if (config.grad_year === '4yr') {
 			series.push({
 				name: 'Linear Model - Contribution to ' + config.system_goals[config.grad_year + '_upper2'] + '% System Goal',
@@ -516,6 +531,7 @@ $(document).ready(function () {
 				data: series_bound_upper2
 			});
 		}
+		*/
 		return series;
 	};
 
