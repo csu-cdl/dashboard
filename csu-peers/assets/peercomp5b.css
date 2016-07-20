@@ -1,0 +1,193 @@
+
+.footnote {
+	margin:1em;
+}
+
+p.footnote {
+	font-family:sans-serif;
+	font-size:13px;
+}
+
+#desctable {
+	font-size: 12px;
+}
+
+#desctable tr th {
+	text-align: right;
+	padding-right: 5px;
+	width: 5%;
+}
+
+#desctable tr td {
+	text-align: right;
+	padding-right: 5px;
+	width: 5%;
+}
+
+#desctable tr .col_campus {
+	text-align: left;
+	min-width: 27%;
+	width: 27%;
+}
+
+#tb1 .col_campus a {
+	text-decoration: underline;
+	color: #111;
+}
+
+#tb1 .highlight {
+	font-weight: 600; 
+	color: #c03;
+}
+
+#tb1 .highlight a {
+	font-weight:600; 
+	color: #c03;
+}
+
+#text_panel_0 {
+	font-size: 12px;
+}
+
+#text_panel_0 td {
+	padding: 5px 10px;
+}
+
+#text_panel_0 h3 {
+	font-size: 18px;
+	background: #00bcd4;
+	color: #fff;
+	padding: 5px;
+	font-weight: normal;
+	text-align: center;
+}
+
+#text_panel_1 {
+	font-size: 12px;
+}
+
+#text_panel_1 td {
+	padding: 5px 10px;
+}
+
+#text_panel_1 h3 {
+	font-size: 18px;
+	background: #00bcd4;
+	color: #fff;
+	padding: 5px;
+	font-weight: normal;
+	text-align: center;
+}
+
+select {
+	margin: 0 10px;
+}
+
+tbody tr td.nowrap {
+	min-width:3em;
+	text-align:right;
+}
+
+#historical_legend_all {
+	width: 700px;
+	height: 30px;
+	position: relative;
+	top: -395px;
+	left: 400px;
+}
+
+#historical_legend_all button {
+	border: none;
+	font-family: sans-serif;
+	font-size: 0.833em;
+	font-weight: 600;
+	color:#777;
+	width:80px;
+	background:inherit;
+	text-align:left;
+	text-decoration:underline;
+	outline:none;
+}
+
+#download_historical_csv {
+	border: none;
+	font-family: sans-serif;
+	font-size: 0.833em;
+	font-weight: 600;
+	color:#777;
+	width:120px;
+	height:30px;
+	background:inherit;
+	text-align:right;
+	text-decoration:underline;
+	outline:none;
+	position: relative;
+	top: -538px;
+	left: 976px;
+}
+
+ #trends .footnote {
+	position:relative;
+	top:-264px;
+	z-index: 10;
+}
+
+#explanation, #methodology {
+	font-family:"Trebuchet MS", Helvetica, sans-serif;
+	font-size:16px;
+	font-weight: 400;
+	line-height:1.4em;
+	color: #111;
+	margin:10px auto;
+	width:750px;
+}
+#explanation h1 {
+	font-size:1.5em;
+	font-weight: 600;
+}
+#explanation h2 {
+	font-size:1.1em;
+	font-weight: 600;
+}
+#explanation h3 {
+	font-size:1em;
+	font-weight: 400;
+	text-decoration:underline;
+}
+#explanation li {
+	margin:0.5em;
+}
+
+#methodology h1 {
+	font-size:1.5em;
+	font-weight: 600;
+}
+#methodology h2 {
+	font-size:1.1em;
+	font-weight: 600;
+}
+#methodology h3 {
+	font-size:1em;
+	font-weight: 400;
+	text-decoration:underline;
+}
+
+.formula {
+width:100%;
+}
+.numerator, .denominator {
+display:block;
+width:120px;
+margin:0 auto;
+font-style: italic;
+}
+.division_line {
+display:block;
+width:120px;
+margin:-10px auto;
+font-style: italic;
+}
+#sector_weights tr td+td {
+width:100px;
+text-align:right;
+}
