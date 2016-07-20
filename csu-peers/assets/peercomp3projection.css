@@ -141,11 +141,15 @@ tbody tr td.nowrap {
 	margin:10px auto;
 	width:750px;
 }
-#explanation h2{
+#explanation h1 {
+	font-size:1.5em;
+	font-weight: 600;
+}
+#explanation h2 {
 	font-size:1.1em;
 	font-weight: 600;
 }
-#explanation h3{
+#explanation h3 {
 	font-size:1em;
 	font-weight: 400;
 	text-decoration:underline;
@@ -154,11 +158,15 @@ tbody tr td.nowrap {
 	margin:0.5em;
 }
 
-#methodology h2{
+#methodology h1 {
+	font-size:1.5em;
+	font-weight: 600;
+}
+#methodology h2 {
 	font-size:1.1em;
 	font-weight: 600;
 }
-#methodology h3{
+#methodology h3 {
 	font-size:1em;
 	font-weight: 400;
 	text-decoration:underline;
