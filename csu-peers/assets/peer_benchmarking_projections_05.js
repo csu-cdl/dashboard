@@ -425,7 +425,7 @@ $(document).ready(function () {
 			zIndex: 10,
 			data: series_actual
 		}, {
-			name: 'Jodie\'s Methodology',
+			name: 'Peer Benchmarking Methodology',
 			id: 'projected_prj',
 			type: 'line',
 			color: '#00d', // blue
@@ -460,7 +460,7 @@ $(document).ready(function () {
 			//data: series_bound_lower
 			data: jeff_hack_23 ? series_bound_upper : series_bound_lower
 		}, {
-			name: 'Jodie\'s Methodology +1 Standard Deviation',
+			name: 'Peer Benchmarking Methodology +1 Standard Deviation',
 			id: 'projected_psd',
 			type: 'line',
 			color: '#00d', // blue
@@ -495,7 +495,7 @@ $(document).ready(function () {
 			//data: series_bound_upper
 			data: jeff_hack_23 ? series_bound_upper2 : series_bound_upper
 		}, {
-			name: 'Jodie\'s Methodology -1 Standard Deviation',
+			name: 'Peer Benchmarking Methodology -1 Standard Deviation',
 			id: 'projected_msd',
 			type: 'line',
 			color: '#00d', // blue
@@ -701,21 +701,27 @@ $(document).ready(function () {
 
 		var sort_toggle_state = {}; // for toggling sort direction
 		var cols = [];
+		var column_text;
 		header.forEach(function (item, i) { // not interested in the header text, only its position
 			var ord = 'ord' + i;
 			cols.push('#col_' + i);
 			$(cols[i]).on('click', function () {
+				column_text = $('#col_0').text().slice(1);
+				console.log(column_text);
 				if (!sort_toggle_state[ord] || sort_toggle_state[ord] !== 'ascending') { // toggle
 					sort_toggle_state[ord] = 'ascending';
+					$('#col_0').html('&#9650;' + column_text);
 				} else {
 					sort_toggle_state[ord] = 'descending';
+					$('#col_0').html('&#9660;' + column_text);
 				}
 				sortcol(tbody, i, sort_toggle_state[ord]);
 			});
-			if (item === 'never @*%&!ng used') { // idiocy for the sake of the linter obsessed
-				return;
-			}
 		});
+		// always sort descending on second column
+		column_text = $('#col_0').text();
+		$('#col_0').html('&#9660;' + column_text);
+		sortcol(tbody, 1, 'descending');
 	};
 
 	var relabel_table_peers = function (header_item) {
