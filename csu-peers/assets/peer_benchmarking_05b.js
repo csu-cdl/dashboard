@@ -407,21 +407,26 @@ $(document).ready(function () {
 
 		var sort_toggle_state = {}; // for toggling sort direction
 		var cols = [];
+		var column_text;
 		header.forEach(function (item, i) { // not interested in the header text, only its position
 			var ord = 'ord' + i;
 			cols.push('#col_' + i);
 			$(cols[i]).on('click', function () {
+				column_text = $('#col_0').text().slice(1);
 				if (!sort_toggle_state[ord] || sort_toggle_state[ord] !== 'ascending') { // toggle
 					sort_toggle_state[ord] = 'ascending';
+					$('#col_0').html('&#9650;' + column_text);
 				} else {
 					sort_toggle_state[ord] = 'descending';
+					$('#col_0').html('&#9660;' + column_text);
 				}
 				sortcol(tbody, i, sort_toggle_state[ord]);
 			});
-			if (item === 'never @*%&!ng used') { // idiocy for the sake of the linter obsessed
-				return;
-			}
 		});
+		// always sort descending on second column
+		column_text = $('#col_0').text();
+		$('#col_0').html('&#9660;' + column_text);
+		sortcol(tbody, 1, 'descending');
 	};
 
 	var relabel_table_peers = function (header_item) {

@@ -707,7 +707,6 @@ $(document).ready(function () {
 			cols.push('#col_' + i);
 			$(cols[i]).on('click', function () {
 				column_text = $('#col_0').text().slice(1);
-				console.log(column_text);
 				if (!sort_toggle_state[ord] || sort_toggle_state[ord] !== 'ascending') { // toggle
 					sort_toggle_state[ord] = 'ascending';
 					$('#col_0').html('&#9650;' + column_text);
