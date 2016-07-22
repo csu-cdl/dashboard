@@ -694,7 +694,7 @@ $(document).ready(function () {
 		  */
 
 		$('#label_year_selector').on('state_change', function () {
-			var pertinent_tabs = ['chart', 'trends', 'table', 'projections'];
+			var pertinent_tabs = ['chart', 'trends', 'table'];
 			if (pertinent_tabs.indexOf(chart_state.selected_tab_name) !== -1) {
 				$('#label_year_selector').show();
 			} else {
@@ -702,7 +702,7 @@ $(document).ready(function () {
 			}
 		});
 		$('#label_campus_selector').on('state_change', function () {
-			var pertinent_tabs = ['chart', 'trends', 'table', 'projections'];
+			var pertinent_tabs = ['chart', 'trends', 'table'];
 			if (pertinent_tabs.indexOf(chart_state.selected_tab_name) !== -1) {
 				$('#label_campus_selector').show();
 			} else {
