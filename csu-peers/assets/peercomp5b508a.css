@@ -67,14 +67,15 @@ p.footnote {
 	float: right;
 	margin: 5px 10px 8px 22px;
 }
+
+
+
 #desctable {
 	font-size: 12px;
 }
-
 #desctable tr th.col_campus {
 	padding-left:1.5em;
 }
-
 #desctable tr th {
 	text-align: right;
 	padding: 5px;
@@ -83,18 +84,53 @@ p.footnote {
 	margin-left:2em;
 	border-left:1px solid #ddd;
 }
-
 #desctable tr td {
 	text-align: right;
 	padding: 5px;
 	width: 5%;
 }
-
 #desctable tr .col_campus {
 	text-align: left;
 	min-width: 27%;
 	width: 27%;
 }
+
+
+#desctable2 {
+	font-size: 12px;
+}
+#desctable2 tr th.col_campus {
+	padding-left:1.5em;
+}
+#desctable2 tr th {
+	text-align: right;
+	padding: 5px;
+	width: 5%;
+	position:relative;
+	margin-left:2em;
+	border-left:1px solid #ddd;
+}
+#desctable2 tr td {
+	text-align: right;
+	padding: 5px;
+	width: 5%;
+}
+#desctable2 tr .col_campus {
+	text-align: left;
+	min-width: 27%;
+	width: 27%;
+}
+
+
+
+.table_panel {
+	position:relative;
+	width:100%;
+	max-height:600px;
+	margin:30px auto 30px;
+	overflow:auto;
+}
+
 
 #tb1 .col_campus a {
 	text-decoration: underline;

@@ -331,7 +331,7 @@ $(document).ready(function () {
 	  * Functions related to 'Data Tables' tab
 	  */
 
-	var activate_table_sort = function (tbody, header) { // tbody is modified
+	var activate_table_sort = function (tbody, header, namespace) { // tbody is modified
 		var sortcol = function (tbody, col, direction) {
 			var i;
 			var ilen = tbody.children.length;
@@ -455,8 +455,8 @@ $(document).ready(function () {
 		var cols = [];
 		var remove_colsort = function (header) {
 			header.forEach(function (item, i) {
-				$('#col_' + i + ' .sortdir').hide();
-				$('#col_' + i).attr('aria-sort', 'none');
+				$('#' + namespace + 'col_' + i + ' .sortdir').hide();
+				$('#' + namespace + 'col_' + i).attr('aria-sort', 'none');
 			});
 		};
 		var dosort = function (ord, header, sortdir, tbody, i) {
@@ -464,17 +464,17 @@ $(document).ready(function () {
 			if (!sort_toggle_state[ord] || sort_toggle_state[ord] !== 'ascending') { // toggle
 				sort_toggle_state[ord] = 'ascending';
 				$(sortdir).html('&#9650;').show();
-				$('#col_' + i).attr('aria-sort', 'ascending');
+				$('#' + namespace + 'col_' + i).attr('aria-sort', 'ascending');
 			} else {
 				sort_toggle_state[ord] = 'descending';
 				$(sortdir).html('&#9660;').show();
-				$('#col_' + i).attr('aria-sort', 'descending');
+				$('#' + namespace + 'col_' + i).attr('aria-sort', 'descending');
 			}
 			sortcol(tbody, i, sort_toggle_state[ord]);
 		};
 		header.forEach(function (item, i) { // not interested in the header text, only its position
 			var ord = 'ord' + i;
-			cols.push('#col_' + i);
+			cols.push('#' + namespace + 'col_' + i);
 			$(cols[i]).on('click', function () {
 				var sortdir = $(this).find('.sortdir');
 				dosort(ord, header, sortdir, tbody, i);
@@ -490,7 +490,7 @@ $(document).ready(function () {
 		});
 		// always sort descending on second column
 		remove_colsort(header);
-		$('#col_1 .sortdir').html('&#9660;').show();
+		$('#' + namespace + 'col_1 .sortdir').html('&#9660;').show();
 		sortcol(tbody, 1, 'descending');
 	};
 
@@ -580,8 +580,73 @@ $(document).ready(function () {
 		});
 		tbody_html += '</tbody>';
 		$('#desctable').html(thead_html + tbody_html); // write table to DOM
-		activate_table_sort($('#tb1')[0], json.headers[0]); // make its columns sortable
+		activate_table_sort($('#tb1')[0], json.headers[0], ''); // make its columns sortable
+		create_table_peers2(json, config);
 	};
+
+	
+	var create_table_peers2 = function (json, config) {
+		var thead_html = '<thead><tr>';
+		var one_or_two;
+		var header_copy = json.headers[0];
+		if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
+			one_or_two = (header_copy[2] === 'Underrepresented Minority 6-Year Grad Rate')
+				? 2
+				: 1;
+			header_copy.splice(1, one_or_two, header_copy.splice(-1, 1)[0]); // remove 6yr column(s) and move last column to 2nd column position
+			header_copy[1] = config.cohort + '&nbsp;4yr Grad&nbsp;Rate';
+		} else { // 6yr
+			header_copy.splice(-1, 1); // simply remove last col
+		}
+		header_copy.forEach(function (item, i) {
+			item = relabel_table_peers(item);
+			if (i === 0) {
+				thead_html += '<th id="v2col_' + i + '" class="col_campus" tabindex="0" aria-sort="none"><span class="sortdir">&#8597;</span>' + item + '</th>';
+			} else {
+				thead_html += '<th id="v2col_' + i + '" tabindex="0"><span class="sortdir" aria-sort="none">&#8597;</span>' + item + '</th>';
+			}
+		});
+		thead_html += '</tr></thead>';
+		var tbody_html = '<tbody id="v2tb1">';
+		json.rows.forEach(function (row) {
+			var row_copy = row.slice();
+			if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
+				row_copy.splice(1, one_or_two, row_copy.splice(-1, 1)[0]); // remove 6yr column(s) and move last column to 2nd column position
+			} else { // 6yr
+				row_copy.splice(-1, 1); // simply remove last col
+			}
+			row_copy.forEach(function (item, i) {
+				var name;
+				var link;
+				var campus_column_template = '<td class="col_campus"><a href="{link}">{name}</a></td>';
+				if (item === '-') {
+					item = 'ds*'; // per spec, replace dash in source with 'ds*' indicating data suppressed
+				}
+				// Exception handling for campus name matching (enables highlighting of selected campus)
+				if (i === 0) { // campus name column
+					name = item;
+					link = '#';
+					if (peer_campus_urls.hasOwnProperty(name)) {
+						link = peer_campus_urls[name];
+					}
+					if (match_csu_campus(config.campus, name)) {
+						tbody_html += '<tr class="highlight">'; // row to highlight matches csu campus selected
+					} else {
+						tbody_html += '<tr>';
+					}
+					name = shorten_peer_name(name);
+					tbody_html += campus_column_template.replace('{link}', link).replace('{name}', convert_csu_campus_name(name));
+				} else {
+					tbody_html += '<td>' + item + '</td>';
+				}
+			});
+			tbody_html += '</tr>';
+		});
+		tbody_html += '</tbody>';
+		$('#desctable2').html(thead_html + tbody_html); // write table to DOM
+		activate_table_sort($('#v2tb1')[0], json.headers[0], 'v2'); // make its columns sortable
+	};
+
 
 	var load_table_peers = function (config, callback) {
 		var table_data_src_parts = ['data/GRtables/', config.campus.replace(pattern2, '_'), '_', config.cohort, '_briefplus.json', defeat_cache];
@@ -826,6 +891,7 @@ $(document).ready(function () {
 		});
 
 		// default tab and controls selected on page load
+		var hash = $(location).attr('hash');
 		$('.nav-tabs a').each(function (i, el) {
 			$(el).on('keypress', function (e) {console.log(e);});
 			var hash = $(location).attr('hash');
@@ -834,14 +900,20 @@ $(document).ready(function () {
 			if (hash) {
 				tabnum = tablist.indexOf(hash);
 				if (i === tabnum) {
+					chart_state.selected_tab_name = hash.slice(1);
 					$(el).tab('show');
 				}
 			} else {
 				if (i === 0) {
+					chart_state.selected_tab_name = tablist[0].slice(1);
 					$(el).tab('show');
 				}
 			}
 		});
+		if (hash === '#maincontent') {
+			hash = '#chart'
+		}
+		chart_state.selected_tab_name = hash.slice(1);
 		chart_state.notify();
 	}()); // initialized
 });
