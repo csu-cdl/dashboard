@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!--meta name="viewport" content="width=device-width, initial-scale=1"-->
+<meta name="viewport" content="width=1170">
+<title>CSU Peer Benchmarking</title>
+
+<link href="assets/csyoufavicon.ico" rel="icon" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="../global/css/style.css">
+<link rel="stylesheet" type="text/css" href="assets/peercomp5b508a.css?v=2">
+
+<script type="text/javascript" src="assets/vendor/jquery.min.js"></script>
+<script src="assets/vendor/highcharts.js"></script>
+<script src="../global/js/bootstrap.min.js"></script>
+
+<style type="text/css">${demo.css}</style> <!-- has dependencies on jquery and highcharts -->
+</head><body>
+<!--template-->
+<header id="top" class="banner" role="banner">
+	<a class="offscreen" href="#maincontent">Skip to main content</a>
+	<img src="../global/img/branding.png" alt="CSU Student Success Dashboard"/>
+ </header>
+
+<div id="maincontent" class="container" role="main">
+
+<!--template-->
+<div class="title-bar">      
+	<h1>CSU Peer Benchmarking</h1>
+</div>
+
+<fieldset class="controls"><legend class="offscreen">Dataset Filters</legend>
+
+<label id="label_year_selector"><span class="offscreen">N-Year Graduation Rates:</span><select id="year_selector" class="control" autocomplete="off">
+	<option value="4yr">4-Year Graduation Rates</option>
+	<option value="6yr" selected>6-Year Graduation Rates</option>
+</select></label>
+
+<label id="label_campus_selector" for="campus_selector"> for <span class="offscreen">Campus:</span><select id="campus_selector" class="control" autocomplete="off">
+	<option value="Bakersfield" selected>Bakersfield</option>
+	<option value="Channel Islands">Channel Islands</option>
+	<option value="Chico">Chico</option>
+	<option value="Dominguez Hills">Dominguez Hills</option>
+	<option value="East Bay">East Bay</option>
+	<option value="Fresno">Fresno</option>
+	<option value="Fullerton">Fullerton</option>
+	<option value="Humboldt">Humboldt</option>
+	<option value="Long Beach">Long Beach</option>
+	<option value="Los Angeles">Los Angeles</option>
+	<option value="Maritime Academy">Maritime Academy</option>
+	<option value="Monterey Bay">Monterey Bay</option>
+	<option value="Northridge">Northridge</option>
+	<option value="Pomona">Pomona</option>
+	<option value="Sacramento">Sacramento</option>
+	<option value="San Bernardino">San Bernardino</option>
+	<option value="San Diego">San Diego</option>
+	<option value="San Francisco">San Francisco</option>
+	<option value="San Jose">San Jose</option>
+	<option value="San Luis Obispo">San Luis Obispo</option>
+	<option value="San Marcos">San Marcos</option>
+	<option value="Sonoma">Sonoma</option>
+	<option value="Stanislaus">Stanislaus</option>
+</select></label>
+
+<label id="label_cohort_selector" for="cohort_selector_4yr"><span class="offscreen">4-Year Freshman Cohort Year of Graduation:</span><select id="cohort_selector_4yr" class="control" autocomplete="off">
+	<option value="2008" selected>2008</option>
+	<option value="2007">2007</option>
+	<option value="2006">2006</option>
+	<option value="2005">2005</option>
+	<option value="2004">2004</option>
+	<option value="2003">2003</option>
+	<option value="2002">2002</option>
+	<option value="2001">2001</option>
+	<option value="2000">2000</option>
+</select><label id="label_cohort_selector" for="cohort_selector_6yr"><span class="offscreen">6-Year Freshman Cohort Year of Graduation:</span><select id="cohort_selector_6yr" class="control" autocomplete="off">
+	<option value="2008" selected>2008</option>
+	<option value="2007">2007</option>
+	<option value="2006">2006</option>
+	<option value="2005">2005</option>
+	<option value="2004">2004</option>
+	<option value="2003">2003</option>
+	<option value="2002">2002</option>
+	<option value="2001">2001</option>
+	<option value="2000">2000</option>
+</select><span>entering freshman cohort</span> </label>
+
+<label id="label_year_span_selector" for="year_span_selector"><span class="offscreen">Years to Include:</span><select id="year_span_selector" class="control" autocomplete="off">
+	<option value="3">Past Three Years</option>
+	<option value="5">Past Five Years</option>
+	<option value="0" selected>Since 2000</option>
+</select></label>
+</fieldset>
+
+<nav id="tablist0">
+<ul class="nav nav-tabs" role="tablist">
+	<li class="active"><a href="#chart" role="tab" tabindex="0">CSU Peer Comparisons</a></li>
+	<li><a href="#trends" role="tab" tabindex="0">Historical Trends</a></li>
+	<li><a href="#explanations" role="tab" tabindex="0">Chart Explanations</a></li>
+	<li><a href="#table" role="tab" tabindex="0">Data Tables</a></li>
+	<li><a href="#method" role="tab" tabindex="0">Methodology</a></li>
+</ul>
+</nav>
+
+<div class="tab-content">
+<div id="chart" class="tab-pane fade in active">
+	<div id="container" style="width: 1080px"></div>
+	<p class="footnote">Peer institutions are selected based on the methodology developed by <a href="http://collegeresults.org/aboutthedata.aspx#section-5">College Results Online</a>.
+	</p>
+</div><!--./chart-->
+
+<div id="explanations" class="tab-pane fade">
+<div id="explanation">
+<h1>National Peers Chart Explanations</h1>
+<h2>What data am I looking at?</h2>
+<p>The historical data in these charts are downloaded from the College Results Online (CRO) website (<a href="http://collegeresults.org/">collegeresults.org</a>). They reflect 4 and 6 year graduation rates as reported by each institution to the Integrated Postsecondary Education Data System (IPEDS), which is the federal government's annual survey of higher education institutions.</p>
+<ul>
+<li>The CSU Peers Comparison bar chart shows the selected campus and all of its CRO identified peers.</li>
+<li>The default view for the Historical Trends chart shows the selected campus and its top four institutional peers as measured by its most recent year's (4-year or 6-year) graduation rate. Note that the years shown in the x-axis reflect the year that the students entered as freshmen. If, for example, you select "6-Year Graduation Rates" the data points for the year 2008 are for students who began as first-time, full-time freshmen in the fall of 2008 and graduated by or before the end of summer 2014.</li>
+</ul>
+<h2>How were the peer campuses selected?</h2>
+<p><a href="http://www.collegeresults.org/">College Results Online (CRO)</a>, which is a web tool provided by the Education Trust (<a href="http://edtrust.org/">edtrust.org</a>), uses 12 variables that they have found to significantly correlate to 6-year graduation rates, in order to identify a small set of institutional peers from a data set of over 1,450 institutions. They collect their data from multiple sources including the Integrated Postsecondary Education Data System (IPEDS), other Department of Education databases; Barron's Profile of American Colleges; College Board; Peterson's Databases; and the National Association of State Student Grant and Aid Programs. Details on their methodology can be found under the Methodology tab on this page. Further details can be found here: <a href="http://collegeresults.org/aboutthedata.aspx#section-5">http://collegeresults.org/aboutthedata.aspx#section-5</a>.</p>
+<h2>How do I interact with this page?</h2>
+<h3>CSU Peer Comparisons bar chart:</h3>
+<p>At the top of the page, use the drop-down menus to choose the type of graduation rate you'd like to see (4-year or 6-year graduation rates), the CSU campus that you want to compare to its national peers, and the entering freshmen cohort year. If, for example, you select "6-Year Graduation Rates" and "2008" as your entering freshmen cohort, this corresponds to students who started as first-time, full-time freshmen in the fall of 2008 and graduated by or before the end of summer 2014.</p>
+<h3>Historical Trends line chart:</h3>
+<p>At the top of the page, use the drop-down menus to choose the type of graduation rate you'd like to see (4-year or 6-year graduation rates), the CSU campus that you want to compare to its national peers, and the timespan over which you'd like to view the outcome trend data.</p>
+<ul>
+<li>Three choices are offered for timespan selections "Since 2000", shows graduation rates for freshmen entering the selected CSU campus as far back as the year 2000. The other time span options, "Past Five Years" and "Past Three Years", shows graduation rates for freshmen entering in the most recent 5 years (or 3 years) for which we have data.</li>
+<li>In the figure legend, click on any campus to hide or show its trend line in the chart above.</li>
+</ul>
+<h3>Both Charts</h3>
+<ul>
+<li>Hover over any bar in the bar chart, or data point in the line graph, to see the institution's graduation rate (if using a smart phone or tablet, tap a bar or data point to see its data value).</li>
+</ul>
+<h2>Also note:</h2>
+<ul>
+<li>The latest publicly available four-year graduation rate data for peer institutions is shown for the 2008 cohort graduating in 2012. For CSU campuses, more current data is available, including the 2009, 2010, and 2011 cohorts.</li>
+</ul>
+</div>
+</div><!--./explanations-->
+
+<div id="table" class="tab-pane fade">
+	<table class="table table-striped" id="desctable"><caption>4-Year or 6-Year graduation rates for a given CSU campus and its national peers for a given year of entering freshman cohort.
+	The first column lists the peer college campuses as links to their associated profile at college results online. Other columns in order from left to right, where available, consist of values for: 
+	the 6-Year or 4-Year Grad Rate, URM Grad Rage, % Pell Eligible, % URM, Average High School GPA, Average SAT Score, State, (Undergrad FTE) Size, and Sector (Public or otherwise).
+	</caption></table>
+	<p class="footnote">*Data are suppressed where student counts (N) is less than 30.
+	</p>
+	<p class="footnote">Peer institutions are selected based on the methodology developed by <a href="http://collegeresults.org/aboutthedata.aspx#section-5">College Results Online</a>.
+	</p>
+</div><!--./table-->
+
+<div id="method" class="tab-pane fade">
+<div id="methodology">
+<h1>National Peers Methodology</h1>
+<h2>Identifying Peer Campuses</h2>
+<p><img src="assets/logo_cro.jpg" alt="Logo for College Results Online (CRO)"/></p>
+<p>The national peer institutions selected for this dashboard come from College Results Online (CRO). CRO applies an algorithm comparing the chosen school to all other public and private not-for-profit institutions in the CRO database. Each comparison receives a "similarity score", ranging from 0 (least similar) to 1000 (identical), based on how similar the two schools are in terms of 12 institutional and student characteristics. The 12 selected characteristics are statistically correlated with overall six-year graduation rates for institutions in the public and private not-for-profit sectors (see Table 1). Once the baseline similarity score is calculated, CRO applies additional "filters" to exclude an institution from possible comparison if it greatly deviates from the chosen institution on any one of a number of factors (<a href="http://collegeresults.org/aboutthedata.aspx#section-5" target="_blank">see CRO Website</a> for list of filters). This prevents, for example, an institution with 2,500 undergraduates from being compared to an institution with 25,000 undergraduates, even if they are otherwise very similar.</p>
+<h3>Table 1: Public and Private not-for-profit Sector Weights</h3>
+<table id="sector_weights" class="table table-striped">
+<tbody>
+<tr>
+<td>Estimated median SAT or ACT equivalent of freshman class</td>
+<td>211 points</td>
+</tr>
+<tr>
+<td>Percent of full-time, first-time degree/certificate-seeking undergraduate students who received federal Pell Grants</td>
+<td>171 points</td>
+</tr>
+<tr>
+<td>Number of full-time equivalent undergraduates</td>
+<td>110 points</td>
+</tr>
+<tr>
+<td>Sector (Public vs. Private)</td>
+<td>84 points</td>
+</tr>
+<tr>
+<td>Student-related expenditures per full-time equivalent undergraduate</td>
+<td>68 points</td>
+</tr>
+<tr>
+<td>Status as a commuter campus</td>
+<td>67 points</td>
+</tr>
+<tr>
+<td>Average high school GPA among college freshmen</td>
+<td>64 points</td>
+</tr>
+<tr>
+<td>Percent of undergraduate students age 25 and over</td>
+<td>62 points</td>
+</tr>
+<tr>
+<td>Admissions selectivity, per <em>Barron's Profiles of American Colleges</em></td>
+<td>54 points</td>
+</tr>
+<tr>
+<td>Percent of undergraduates who are enrolled part-time</td>
+<td>51 points</td>
+</tr>
+<tr>
+<td>Percent of degrees awarded in Science, Technology, Engineering, and Mathematics</td>
+<td>30 points</td>
+</tr>
+<tr>
+<td>Historically Black College or University</td>
+<td>27 points</td>
+</tr>
+</tbody>
+</table>
+<h2>Average Annual Change</h2>
+<p>The average annual improvement rates reported in the table to the right of the Historical Trends line chart, were calculated using the formula below:</p>
+<p class="formula"><span class="numerator">G<sub>2</sub> &mdash; G<sub>1</sub></span><span class="division_line">&#9135;&#9135;&#9135;&#9135;&#9135;&#9135;&#9135;</span><span class="denominator">Y<sub>2</sub> &mdash; Y<sub>1</sub> </span></p>
+<p>where <em>G</em><sub>2</sub> is the most recent year's graduation rate, <em>G</em><sub>1</sub> is the graduation rate of the earliest year in the selected time frame, <em>Y</em><sub>2</sub> is the most recent year, and <em>Y</em><sub>1</sub> is the earliest year in the selected time frame.</p>
+</div>
+</div><!--./method-->
+
+<div id="trends" class="tab-pane fade">
+	<div class="row">
+		<div class="col-md-8">
+			<div id="trends_chart_container"></div>
+			<button id="download_historical_csv" class="downloadbtn" tabindex="0"><img alt="" src="assets/icon_excel.png">Download CSV</button>
+			<fieldset class="select_legend"><legend class="offscreen">Bulk select and reset</legend><button id="historical_all">Select All</button><button id="historical_reset">Reset</button></fieldset>
+		</div><!--/.col1-->
+	
+		<div class="col-md-4">
+			<div id="text_panel_0"></div>
+		</div><!--/.col2-->
+	</div><!--./row-->
+	<p class="footnote" id="trends_footnote"></p>
+	<p class="footnote">Peer institutions are selected based on the methodology developed by <a href="http://collegeresults.org/aboutthedata.aspx#section-5">College Results Online</a>.
+	</p>
+</div><!--./trends-->
+
+</div><!--./tab-content-->
+ 
+<!--template-->
+</div><!--./container-->
+
+<script type="text/javascript" src="assets/peer_benchmarking_05b508a.js"></script>
+<!-- place analytics below this line -->
+<!-- <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-55596229-2', 'auto');
+ga('send', 'pageview');</script> -->
+</body></html>

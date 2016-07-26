@@ -1,0 +1,277 @@
+
+.footnote {
+	margin:1em;
+}
+
+p.footnote {
+	font-family:sans-serif;
+	font-size:13px;
+}
+.controls {
+	display:block;
+	height:55px;
+	max-height:55px;
+	padding:10px 0;
+}
+.downloadbtn {
+	border:none;
+	background:transparent;
+	padding:0;
+	position:relative;
+	color:#333;
+	z-index:20;
+	line-height:14px;
+}
+.downloadbtn img {
+	max-height:18px;
+	vertical-align:bottom;
+	margin-right:3px;
+	background:#3b6;
+}
+.offscreen {
+	position:absolute;
+	left:-9999px;
+	max-height:1px;
+	max-width:1px;
+}
+
+.nav-tabs li a {
+    border: 2px solid #d0d3d7;
+    background-color: #d0d3d7;
+    color: #677;
+}
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+	border: 2px solid #03a0c0;
+	border-bottom-color: transparent;
+	background-color: #03a0c0;
+	color: #fff;
+}
+
+#skiptomain {
+	position:absolute;
+	left:-9999px;
+	height:1px;
+	padding:0;
+	margin:0;
+}
+#sector_weights tbody tr td:nth-child(2) {
+	width:110px;
+	text-align:right;
+}
+#trends {
+	height:640px;
+	overflow:hidden;
+}
+#desctable tr th .sortdir {
+	display:inline-block;
+	position:absolute;
+	bottom:5px;
+	left:2px;
+	width:80%;
+	text-align:left;
+}
+#methodology p img {
+	float: right;
+	margin: 5px 10px 8px 22px;
+}
+#desctable {
+	font-size: 12px;
+}
+
+#desctable tr th.col_campus {
+	padding-left:1.5em;
+}
+
+#desctable tr th {
+	text-align: right;
+	padding: 5px;
+	width: 5%;
+	position:relative;
+	margin-left:2em;
+	border-left:1px solid #ddd;
+}
+
+#desctable tr td {
+	text-align: right;
+	padding: 5px;
+	width: 5%;
+}
+
+#desctable tr .col_campus {
+	text-align: left;
+	min-width: 27%;
+	width: 27%;
+}
+
+#tb1 .col_campus a {
+	text-decoration: underline;
+	color: #111;
+}
+
+#tb1 .highlight {
+	font-weight: 600; 
+	color: #c03;
+}
+
+#tb1 .highlight a {
+	font-weight:600; 
+	color: #c03;
+}
+
+#text_panel_0 {
+	font-size: 12px;
+}
+
+#text_panel_0 th {
+	padding: 5px 10px;
+}
+
+#text_panel_0 th:nth-child(2) {
+	text-align:right;
+}
+
+#text_panel_0 td {
+	padding: 5px 10px;
+}
+
+#text_panel_0 h2 {
+	font-size: 18px;
+	font-weight: 600;
+	color:#fff;
+	background:#00a0c0;
+	text-align: center;
+	padding:5px;
+}
+
+#text_panel_0 h3 {
+	font-size: 18px;
+	background: #00a0c0;
+	color: #fff;
+	padding: 5px;
+	font-weight: normal;
+	text-align: center;
+}
+
+#text_panel_1 {
+	font-size: 12px;
+}
+
+#text_panel_1 td {
+	padding: 5px 10px;
+}
+
+#text_panel_1 h2 {
+	font-size: 18px;
+	background: #00bcd4;
+	color: #fff;
+	padding: 5px;
+	font-weight: normal;
+	text-align: center;
+}
+
+#text_panel_1 h3 {
+	font-size: 18px;
+	background: #00bcd4;
+	color: #fff;
+	padding: 5px;
+	font-weight: normal;
+	text-align: center;
+}
+
+select {
+	margin: 0 10px;
+}
+
+tbody tr td.nowrap {
+	min-width:3em;
+	text-align:right;
+}
+
+.select_legend button {
+	border:none;
+	font-family: sans-serif;
+	font-size: 0.833em;
+	font-weight: 600;
+	color:#777;
+	width:80px;
+	background:inherit;
+	text-align:left;
+	text-decoration:underline;
+}
+
+#trends .select_legend {
+	width: 700px;
+	height: 30px;
+	position: relative;
+	top: -438px;
+	left: 400px;
+}
+
+#trends .downloadbtn {
+	left:974px;
+	top:-750px;
+}
+
+ #trends .footnote {
+	position:relative;
+	top:-264px;
+	z-index: 10;
+}
+
+#explanation, #methodology {
+	font-family:"Trebuchet MS", Helvetica, sans-serif;
+	font-size:16px;
+	font-weight: 400;
+	line-height:1.4em;
+	color: #111;
+	margin:10px auto;
+	width:750px;
+}
+#explanation h1 {
+	font-size:1.5em;
+	font-weight: 600;
+}
+#explanation h2 {
+	font-size:1.1em;
+	font-weight: 600;
+}
+#explanation h3 {
+	font-size:1em;
+	font-weight: 400;
+	text-decoration:underline;
+}
+#explanation li {
+	margin:0.5em;
+}
+
+#methodology h1 {
+	font-size:1.5em;
+	font-weight: 600;
+}
+#methodology h2 {
+	font-size:1.1em;
+	font-weight: 600;
+}
+#methodology h3 {
+	font-size:1em;
+	font-weight: 400;
+	text-decoration:underline;
+}
+
+.formula {
+width:100%;
+}
+
+.numerator, .denominator {
+display:block;
+width:120px;
+margin:0 auto;
+font-style: italic;
+}
+
+.division_line {
+display:block;
+width:120px;
+margin:-10px auto;
+font-style: italic;
+}
