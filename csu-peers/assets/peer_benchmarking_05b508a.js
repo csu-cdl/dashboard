@@ -333,7 +333,7 @@ $(document).ready(function () {
 	  * Functions related to 'Data Tables' tab
 	  */
 
-	var activate_table_sort = function (tbody, header, namespace) { // tbody is modified
+	var activate_table_sort = function (tbody, header, namespace, sort_column, direction) { // tbody is modified
 		var sortcol = function (tbody, col, direction) {
 			var i;
 			var ilen = tbody.children.length;
@@ -490,10 +490,10 @@ $(document).ready(function () {
 				}
 			});
 		});
-		// always sort descending on second column
+		// always sort direction on sort_column
 		remove_colsort(header);
-		$('#' + namespace + 'col_1 .sortdir').html('&#9660;').show();
-		sortcol(tbody, 1, 'descending');
+		$('#' + namespace + 'col_' + sort_column + ' .sortdir').html('&#9660;').show();
+		sortcol(tbody, sort_column, direction);
 	};
 
 	var relabel_table_peers = function (header_item) {
@@ -524,6 +524,7 @@ $(document).ready(function () {
 	};
 
 	var create_table_peers = function (json, config) {
+		var caption = '<caption>CSU Peer Comparison</caption>';
 		var thead_html = '<thead><tr>';
 		var one_or_two;
 		var header_copy = json.headers[0];
@@ -581,12 +582,13 @@ $(document).ready(function () {
 			tbody_html += '</tr>';
 		});
 		tbody_html += '</tbody>';
-		$('#desctable').html(thead_html + tbody_html); // write table to DOM
-		activate_table_sort($('#tb1')[0], json.headers[0], ''); // make its columns sortable
+		$('#desctable').html(caption + thead_html + tbody_html); // write table to DOM
+		activate_table_sort($('#tb1')[0], json.headers[0], '', 1, 'descending'); // make its columns sortable
 	};
 
 	
 	var create_table_peers2 = function (json, config, namespace) {
+		var caption = '<caption>CSU Peer Graduation Rate Historical Trends</caption>';
 		var thead_html = '<thead><tr>';
 		var header_copy = json.headers[0];
 		header_copy.forEach(function (item, i) {
@@ -629,8 +631,12 @@ $(document).ready(function () {
 			tbody_html += '</tr>';
 		});
 		tbody_html += '</tbody>';
-		$('#desctable2').html(thead_html + tbody_html); // write table to DOM
-		activate_table_sort($('#' + namespace + 'tb1')[0], json.headers[0], namespace); // make its columns sortable
+		$('#desctable2').html(caption + thead_html + tbody_html); // write table to DOM
+		if (config.grad_year === '4yr') {
+			activate_table_sort($('#' + namespace + 'tb1')[0], json.headers[0], namespace, 11, 'descending'); // make its columns sortable
+		} else {
+			activate_table_sort($('#' + namespace + 'tb1')[0], json.headers[0], namespace, 9, 'descending'); // make its columns sortable
+		}
 	};
 
 
