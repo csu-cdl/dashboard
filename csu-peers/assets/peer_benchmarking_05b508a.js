@@ -325,6 +325,8 @@ $(document).ready(function () {
 		$('#trends_footnote').html('*Showing ' + convert_location_to_csu_name(config.campus) +
 				' and its four top performing national peers (based on their ' +
 				config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
+		
+		create_table_peers2(json_data, config, 'v2');
 	};
 
 	/*
@@ -581,40 +583,24 @@ $(document).ready(function () {
 		tbody_html += '</tbody>';
 		$('#desctable').html(thead_html + tbody_html); // write table to DOM
 		activate_table_sort($('#tb1')[0], json.headers[0], ''); // make its columns sortable
-		create_table_peers2(json, config);
 	};
 
 	
-	var create_table_peers2 = function (json, config) {
+	var create_table_peers2 = function (json, config, namespace) {
 		var thead_html = '<thead><tr>';
-		var one_or_two;
 		var header_copy = json.headers[0];
-		if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
-			one_or_two = (header_copy[2] === 'Underrepresented Minority 6-Year Grad Rate')
-				? 2
-				: 1;
-			header_copy.splice(1, one_or_two, header_copy.splice(-1, 1)[0]); // remove 6yr column(s) and move last column to 2nd column position
-			header_copy[1] = config.cohort + '&nbsp;4yr Grad&nbsp;Rate';
-		} else { // 6yr
-			header_copy.splice(-1, 1); // simply remove last col
-		}
 		header_copy.forEach(function (item, i) {
-			item = relabel_table_peers(item);
 			if (i === 0) {
-				thead_html += '<th id="v2col_' + i + '" class="col_campus" tabindex="0" aria-sort="none"><span class="sortdir">&#8597;</span>' + item + '</th>';
+				thead_html += '<th id="' + namespace + 'col_' + i + '" class="col_campus" tabindex="0" aria-sort="none"><span class="sortdir">&#8597;</span>' + 'Campus' + '</th>';
 			} else {
-				thead_html += '<th id="v2col_' + i + '" tabindex="0"><span class="sortdir" aria-sort="none">&#8597;</span>' + item + '</th>';
+				thead_html += '<th id="' + namespace + 'col_' + i + '" tabindex="0"><span class="sortdir" aria-sort="none">&#8597;</span>' + item.slice(-4) + '</th>';
 			}
 		});
 		thead_html += '</tr></thead>';
-		var tbody_html = '<tbody id="v2tb1">';
+
+		var tbody_html = '<tbody id="' + namespace + 'tb1">';
 		json.rows.forEach(function (row) {
 			var row_copy = row.slice();
-			if (config.grad_year === '4yr') { // remove 2nd and possibly 3rd column, insert last column
-				row_copy.splice(1, one_or_two, row_copy.splice(-1, 1)[0]); // remove 6yr column(s) and move last column to 2nd column position
-			} else { // 6yr
-				row_copy.splice(-1, 1); // simply remove last col
-			}
 			row_copy.forEach(function (item, i) {
 				var name;
 				var link;
@@ -644,7 +630,7 @@ $(document).ready(function () {
 		});
 		tbody_html += '</tbody>';
 		$('#desctable2').html(thead_html + tbody_html); // write table to DOM
-		activate_table_sort($('#v2tb1')[0], json.headers[0], 'v2'); // make its columns sortable
+		activate_table_sort($('#' + namespace + 'tb1')[0], json.headers[0], namespace); // make its columns sortable
 	};
 
 

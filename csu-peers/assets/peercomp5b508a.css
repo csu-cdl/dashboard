@@ -68,7 +68,9 @@ p.footnote {
 	margin: 5px 10px 8px 22px;
 }
 
-
+#table h2 {
+	font-size:1.5em;
+}
 
 #desctable {
 	font-size: 12px;
@@ -93,6 +95,18 @@ p.footnote {
 	text-align: left;
 	min-width: 27%;
 	width: 27%;
+}
+#desctable .col_campus a {
+	text-decoration: underline;
+	color: #111;
+}
+#desctable .highlight {
+	font-weight: 600; 
+	color: #c03;
+}
+#desctable .highlight a {
+	font-weight:600; 
+	color: #c03;
 }
 
 
@@ -120,6 +134,18 @@ p.footnote {
 	min-width: 27%;
 	width: 27%;
 }
+#desctable2 .col_campus a {
+	text-decoration: underline;
+	color: #111;
+}
+#desctable2 .highlight {
+	font-weight: 600; 
+	color: #c03;
+}
+#desctable2 .highlight a {
+	font-weight:600; 
+	color: #c03;
+}
 
 
 
@@ -132,20 +158,6 @@ p.footnote {
 }
 
 
-#tb1 .col_campus a {
-	text-decoration: underline;
-	color: #111;
-}
-
-#tb1 .highlight {
-	font-weight: 600; 
-	color: #c03;
-}
-
-#tb1 .highlight a {
-	font-weight:600; 
-	color: #c03;
-}
 
 #text_panel_0 {
 	font-size: 12px;
