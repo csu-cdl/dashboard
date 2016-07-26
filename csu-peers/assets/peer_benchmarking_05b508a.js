@@ -344,53 +344,99 @@ $(document).ready(function () {
 				trs[i] = [td, i, tr.innerHTML, tr.className || ''];
 			}
 			var frag = document.createDocumentFragment();
+			var aa;
+			var bb;
 			if (direction === 'ascending') {
 				trs.sort(function (a, b) {
-					var aa = a[0].toUpperCase();
-					var bb = b[0].toUpperCase();
-					aa = aa.indexOf('ds*') !== -1
-						? '$0'
-						: aa;
-					bb = bb.indexOf('ds*') !== -1
-						? '$0'
-						: bb;
-					aa = aa.replace(pattern1, '');
-					bb = bb.replace(pattern1, '');
-					aa = isNaN(parseFloat(aa))
-						? aa
-						: parseFloat(aa);
-					bb = isNaN(parseFloat(bb))
-						? bb
-						: parseFloat(bb);
-					return aa > bb
-						? 1
-						: (aa === bb)
-							? 0
-							: -1;
+					if (typeof(a[0]) === 'string') {
+						aa = a[0].toLowerCase();
+						aa = aa.replace(pattern1, '');
+						aa = aa.indexOf('ds*') !== -1
+							? -9999999999999.999
+							: aa;
+					}
+						aa = isNaN(parseFloat(aa))
+							? aa
+							: parseFloat(aa);
+					if (typeof(b[0]) === 'string') {
+						bb = b[0].toLowerCase();
+						bb = bb.replace(pattern1, '');
+						bb = bb.indexOf('ds*') !== -1
+							?  -9999999999999.999
+							: bb;
+					}
+						bb = isNaN(parseFloat(bb))
+							? bb
+							: parseFloat(bb);
+					if (typeof(aa) === 'number' && typeof(bb) === 'number') {
+						return (aa > bb
+							? 1 
+							: (aa === bb
+								? (a[1] > b[1]
+									? 1
+									: (a[1] === b[1]
+										? 0 
+										: -1)) : -1));
+					} else if (typeof(aa) === 'number' && typeof(bb) === 'string') {
+						return -1;
+					} else if (typeof(aa) === 'string' && typeof(bb) === 'number') {
+						return 1;
+					} else if (typeof(aa) === 'string' && typeof(bb) === 'string') {
+						return (aa > bb
+							? 1 
+							: (aa === bb
+								? (a[1] > b[1]
+									? 1
+									: (a[1] === b[1]
+										? 0 
+										: -1)) : -1));
+				}
 				});
 			} else {
 				trs.sort(function (b, a) {
-					var aa = a[0].toUpperCase();
-					var bb = b[0].toUpperCase();
-					aa = aa.indexOf('ds*') !== -1
-						? '$0'
-						: aa;
-					bb = bb.indexOf('ds*') !== -1
-						? '$0'
-						: bb;
-					aa = aa.replace(pattern1, '');
-					bb = bb.replace(pattern1, '');
-					aa = isNaN(parseFloat(aa))
-						? aa
-						: parseFloat(aa);
-					bb = isNaN(parseFloat(bb))
-						? bb
-						: parseFloat(bb);
-					return aa > bb
-						? 1
-						: (aa === bb)
-							? 0
-							: -1;
+					if (typeof(a[0]) === 'string') {
+						aa = a[0].toLowerCase();
+						aa = aa.replace(pattern1, '');
+						aa = aa.indexOf('ds*') !== -1
+							? -9999999999999.999
+							: aa;
+					}
+						aa = isNaN(parseFloat(aa))
+							? aa
+							: parseFloat(aa);
+					if (typeof(b[0]) === 'string') {
+						bb = b[0].toLowerCase();
+						bb = bb.replace(pattern1, '');
+						bb = bb.indexOf('ds*') !== -1
+							?  -9999999999999.999
+							: bb;
+					}
+						bb = isNaN(parseFloat(bb))
+							? bb
+							: parseFloat(bb);
+					if (typeof(aa) === 'number' && typeof(bb) === 'number') {
+						return (aa > bb
+							? 1 
+							: (aa === bb
+								? (a[1] > b[1]
+									? 1
+									: (a[1] === b[1]
+										? 0 
+										: -1)) : -1));
+					} else if (typeof(aa) === 'number' && typeof(bb) === 'string') {
+						return -1;
+					} else if (typeof(aa) === 'string' && typeof(bb) === 'number') {
+						return 1;
+					} else if (typeof(aa) === 'string' && typeof(bb) === 'string') {
+						return (aa > bb
+							? 1 
+							: (aa === bb
+								? (a[1] > b[1]
+									? 1
+									: (a[1] === b[1]
+										? 0 
+										: -1)) : -1));
+					}
 				});
 			}
 			trs.forEach(function (tr) {
