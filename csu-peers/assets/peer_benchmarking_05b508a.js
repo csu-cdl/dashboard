@@ -224,7 +224,7 @@ $(document).ready(function () {
 		return out_data;
 	};
 
-	var filter_off_peer_series = function (config, series_data) {
+	var filter_peer_series = function (config, series_data) {
 		var out_data_subset = series_data.slice(1).map(function (item, i) {
 			if (config.projected_campuses === 'default') {
 				item.visible = (i < config.peer_count - 1);
@@ -312,13 +312,13 @@ $(document).ready(function () {
 		var map_years = {'5': -5, '3': -3, '0': 0}; // modify to match returned values from control
 		var yearkeys = Object.keys(config.yearmap[config.grad_year]);
 		config.years = yearkeys.slice(map_years[config.trends_since]); // config.years used only with historical trends
-		var truncated_peer_subset = truncate_data(filter_off_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since]);
+		var truncated_peer_subset = truncate_data(filter_peer_series(config, extract_peers(config, json_data)), map_years[config.trends_since]);
 
 		create_chart_historical_trends(config, truncated_peer_subset);
-		create_table_historical_trends(config, truncated_peer_subset);
+		create_table_historical_trends(config, truncated_peer_subset); // this table is displayed alongside the chart showing same selected peer campuses
 		$('#trends_chart_container').off('click');
 		$('#trends_chart_container').on('click', function () {
-			create_table_historical_trends(config, truncated_peer_subset);
+			create_table_historical_trends(config, truncated_peer_subset); // what to display has changed
 		});
 
 		// Footnote also changes with change in grad_year, cohort, and campus name
@@ -326,12 +326,61 @@ $(document).ready(function () {
 				' and its four top performing national peers (based on their ' +
 				config.years.slice(-1)[0] + ' cohort ' + config.grad_year[0] + '-Year graduation rates).');
 		
-		create_table_peers2(json_data, config, 'v2');
+		create_table_peers2(json_data, config, 'v2'); // this table is simply another view of the same dataset displayed in the chart
 	};
 
 	/*
 	  * Functions related to 'Data Tables' tab
 	  */
+
+	var enhanced_sort = function (a, b) {
+		var aa;
+		var bb;
+		var minusinfinity = -9999999999999.999;
+		if (typeof(a[0]) === 'string') {
+			aa = a[0].toLowerCase();
+			aa = aa.replace(pattern1, '');
+			aa = aa.indexOf('ds*') !== -1
+				? minusinfinity
+				: aa;
+		}
+			aa = isNaN(parseFloat(aa))
+				? aa
+				: parseFloat(aa);
+		if (typeof(b[0]) === 'string') {
+			bb = b[0].toLowerCase();
+			bb = bb.replace(pattern1, '');
+			bb = bb.indexOf('ds*') !== -1
+				?  minusinfinity
+				: bb;
+		}
+			bb = isNaN(parseFloat(bb))
+				? bb
+				: parseFloat(bb);
+		if (typeof(aa) === 'number' && typeof(bb) === 'number') {
+			return (aa > bb
+				? 1 
+				: (aa === bb
+					? (a[1] > b[1]
+						? 1
+						: (a[1] === b[1]
+							? 0 
+							: -1)) : -1));
+		} else if (typeof(aa) === 'number' && typeof(bb) === 'string') {
+			return -1;
+		} else if (typeof(aa) === 'string' && typeof(bb) === 'number') {
+			return 1;
+		} else if (typeof(aa) === 'string' && typeof(bb) === 'string') {
+			return (aa > bb
+				? 1 
+				: (aa === bb
+					? (a[1] > b[1]
+						? 1
+						: (a[1] === b[1]
+							? 0 
+							: -1)) : -1));
+		}
+	};
 
 	var activate_table_sort = function (tbody, header, namespace, sort_column, direction) { // tbody is modified
 		var sortcol = function (tbody, col, direction) {
@@ -346,100 +395,11 @@ $(document).ready(function () {
 				trs[i] = [td, i, tr.innerHTML, tr.className || ''];
 			}
 			var frag = document.createDocumentFragment();
-			var aa;
-			var bb;
 			if (direction === 'ascending') {
-				trs.sort(function (a, b) {
-					if (typeof(a[0]) === 'string') {
-						aa = a[0].toLowerCase();
-						aa = aa.replace(pattern1, '');
-						aa = aa.indexOf('ds*') !== -1
-							? -9999999999999.999
-							: aa;
-					}
-						aa = isNaN(parseFloat(aa))
-							? aa
-							: parseFloat(aa);
-					if (typeof(b[0]) === 'string') {
-						bb = b[0].toLowerCase();
-						bb = bb.replace(pattern1, '');
-						bb = bb.indexOf('ds*') !== -1
-							?  -9999999999999.999
-							: bb;
-					}
-						bb = isNaN(parseFloat(bb))
-							? bb
-							: parseFloat(bb);
-					if (typeof(aa) === 'number' && typeof(bb) === 'number') {
-						return (aa > bb
-							? 1 
-							: (aa === bb
-								? (a[1] > b[1]
-									? 1
-									: (a[1] === b[1]
-										? 0 
-										: -1)) : -1));
-					} else if (typeof(aa) === 'number' && typeof(bb) === 'string') {
-						return -1;
-					} else if (typeof(aa) === 'string' && typeof(bb) === 'number') {
-						return 1;
-					} else if (typeof(aa) === 'string' && typeof(bb) === 'string') {
-						return (aa > bb
-							? 1 
-							: (aa === bb
-								? (a[1] > b[1]
-									? 1
-									: (a[1] === b[1]
-										? 0 
-										: -1)) : -1));
-				}
-				});
+				trs.sort(enhanced_sort);
 			} else {
-				trs.sort(function (b, a) {
-					if (typeof(a[0]) === 'string') {
-						aa = a[0].toLowerCase();
-						aa = aa.replace(pattern1, '');
-						aa = aa.indexOf('ds*') !== -1
-							? -9999999999999.999
-							: aa;
-					}
-						aa = isNaN(parseFloat(aa))
-							? aa
-							: parseFloat(aa);
-					if (typeof(b[0]) === 'string') {
-						bb = b[0].toLowerCase();
-						bb = bb.replace(pattern1, '');
-						bb = bb.indexOf('ds*') !== -1
-							?  -9999999999999.999
-							: bb;
-					}
-						bb = isNaN(parseFloat(bb))
-							? bb
-							: parseFloat(bb);
-					if (typeof(aa) === 'number' && typeof(bb) === 'number') {
-						return (aa > bb
-							? 1 
-							: (aa === bb
-								? (a[1] > b[1]
-									? 1
-									: (a[1] === b[1]
-										? 0 
-										: -1)) : -1));
-					} else if (typeof(aa) === 'number' && typeof(bb) === 'string') {
-						return -1;
-					} else if (typeof(aa) === 'string' && typeof(bb) === 'number') {
-						return 1;
-					} else if (typeof(aa) === 'string' && typeof(bb) === 'string') {
-						return (aa > bb
-							? 1 
-							: (aa === bb
-								? (a[1] > b[1]
-									? 1
-									: (a[1] === b[1]
-										? 0 
-										: -1)) : -1));
-					}
-				});
+				trs.sort(enhanced_sort);
+				trs.reverse();
 			}
 			trs.forEach(function (tr) {
 				var row = document.createElement('tr');
@@ -656,52 +616,8 @@ $(document).ready(function () {
 		});
 	};
 
-	var download_series_as_csv = function (config, json_data, transform_function) {
-		var output = '';
-		if (transform_function && typeof transform_function === 'function') {
-			output = transform_function(json_data);
-		} else {
-			var head = [];
-			json_data.headers[0].forEach(function (cell) {
-				if (cell.length && cell[0] === '"') {
-					head.push(cell);
-				} else {
-					head.push('"' + cell + '"');
-				}
-			});
-			output += head.join(',') + '\n';
-			json_data.rows.forEach(function (row) {
-				var line = [];
-				row.forEach(function (cell) {
-					if (cell.length && cell[0] === '"') {
-						line.push(cell);
-					} else {
-						line.push('"' + cell + '"');
-					}
-				});
-				output += line.join(',') + '\n';
-			});
-		}
-		// download magic here, instead of returning output, create document that downloads
-		var linkDownload = function (a, filename, content) {
-			var contentType = 'data:application/octet-stream,';
-			var uriContent = contentType + encodeURIComponent(content);
-			a.setAttribute('href', uriContent);
-			a.setAttribute('download', filename);
-		};
-		var download = function (filename, content) {
-			var a = document.createElement('a');
-			linkDownload(a, filename, content);
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-		};
-		download('Projected_Trends_' + config.grad_year + '_for_' + config.campus + '.csv', output);
-	};
-
 	var load_peer_campus_urls = function (config, callback) {
 		var chart_data_src = 'data/peer_campus_urls.json' + defeat_cache;
-
 		$.ajax({
 			url: chart_data_src,
 			datatype: "json",
@@ -720,7 +636,6 @@ $(document).ready(function () {
 	var load_chart_historical_trends = function (config, callback) {
 		// build relative url, e.g. 'data/GR6yr/San_Luis_Obispo_6yrGR.json'
 		var chart_data_src_parts = ['data/', config.type, config.grad_year, '/', config.campus.replace(pattern2, '_'), '_', config.grad_year, config.type, '.json', defeat_cache];
-
 		$.ajax({
 			url: chart_data_src_parts.join(''),
 			datatype: "json",
@@ -785,17 +700,17 @@ $(document).ready(function () {
 		  * Initialize charts and tables with default settings, load initial data
 		  */
 
-		load_peer_campus_urls(chart_state, function (json_data, chart_state) {
-			peer_campus_urls = json_data;
-			// only table_peers needs the urls and the list needs loading only once
-			// but should be loaded before creating table
-			load_table_peers(chart_state, create_table_peers);
-		});
 
 		load_chart_historical_trends(chart_state, function (json_data, chart_state) {
 			retained_json_data = json_data;
 			update_chart_peer_comparisons(chart_state, retained_json_data);
-			update_chart_historical_trends(chart_state, retained_json_data);
+			load_peer_campus_urls(chart_state, function (json_data, chart_state) {
+				peer_campus_urls = json_data;
+				// only table_peers needs the urls and the list needs loading only once
+				// but should be loaded before creating table
+				load_table_peers(chart_state, create_table_peers);
+				update_chart_historical_trends(chart_state, retained_json_data); // needs both loads prior
+			});
 
 			$('#historical_all').on('click', function () {
 				if (chart_state.projected_campuses !== 'all') { // only if changed
@@ -806,9 +721,6 @@ $(document).ready(function () {
 			$('#historical_reset').on('click', function () {
 				chart_state.projected_campuses = 'default';
 				update_chart_historical_trends(chart_state, retained_json_data);
-			});
-			$('#download_historical_csv').on('click', function () {
-				download_series_as_csv(chart_state, retained_json_data);
 			});
 		});
 
