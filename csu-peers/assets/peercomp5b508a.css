@@ -7,12 +7,14 @@ p.footnote {
 	font-family:sans-serif;
 	font-size:13px;
 }
+
 .controls {
 	display:block;
 	height:55px;
 	max-height:55px;
 	padding:10px 0;
 }
+
 .downloadbtn {
 	border:none;
 	background:transparent;
@@ -22,12 +24,14 @@ p.footnote {
 	z-index:20;
 	line-height:14px;
 }
+
 .downloadbtn img {
 	max-height:18px;
 	vertical-align:bottom;
 	margin-right:3px;
 	background:#3b6;
 }
+
 .offscreen {
 	position:absolute;
 	left:-9999px;
@@ -40,6 +44,7 @@ p.footnote {
     background-color: #d0d3d7;
     color: #677;
 }
+
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
 	border: 2px solid #03a0c0;
 	border-bottom-color: transparent;
@@ -51,10 +56,12 @@ p.footnote {
 	width:110px;
 	text-align:right;
 }
+
 #trends {
 	height:640px;
 	overflow:hidden;
 }
+
 #desctable tr th .sortdir {
 	display:inline-block;
 	position:absolute;
@@ -109,7 +116,6 @@ p.footnote {
 	color: #c03;
 }
 
-
 #desctable2 {
 	font-size: 12px;
 }
@@ -147,8 +153,6 @@ p.footnote {
 	color: #c03;
 }
 
-
-
 .table_panel {
 	position:relative;
 	width:100%;
@@ -156,8 +160,6 @@ p.footnote {
 	margin:30px auto 30px;
 	overflow:auto;
 }
-
-
 
 #text_panel_0 {
 	font-size: 12px;
@@ -278,8 +280,7 @@ tbody tr td.nowrap {
 }
 #explanation h3 {
 	font-size:1em;
-	font-weight: 400;
-	text-decoration:underline;
+	font-weight: 600;
 }
 #explanation li {
 	margin:0.5em;
@@ -295,8 +296,7 @@ tbody tr td.nowrap {
 }
 #methodology h3 {
 	font-size:1em;
-	font-weight: 400;
-	text-decoration:underline;
+	font-weight: 600;
 }
 
 .formula {

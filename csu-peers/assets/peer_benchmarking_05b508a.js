@@ -524,7 +524,8 @@ $(document).ready(function () {
 	};
 
 	var create_table_peers = function (json, config) {
-		var caption = '<caption>CSU Peer Comparison</caption>';
+		var caption = '<caption>{campus} Peer Descriptive Statistics</caption>';
+		caption = caption.replace('{campus}', convert_location_to_csu_name(config.campus));
 		var thead_html = '<thead><tr>';
 		var one_or_two;
 		var header_copy = json.headers[0];
@@ -588,7 +589,8 @@ $(document).ready(function () {
 
 	
 	var create_table_peers2 = function (json, config, namespace) {
-		var caption = '<caption>CSU Peer Graduation Rate Historical Trends</caption>';
+		var caption = '<caption>{campus} Peer Comparison and Historical Trends</caption>';
+		caption = caption.replace('{campus}', convert_location_to_csu_name(config.campus));
 		var thead_html = '<thead><tr>';
 		var header_copy = json.headers[0];
 		header_copy.forEach(function (item, i) {
@@ -875,7 +877,6 @@ $(document).ready(function () {
 		  */
 
 		//chart_state.notify(); // default tab and controls selected on page load
-
 		$(".nav-tabs a").on('click', function (e) { // what to do when a tab is selected
 			$(e.target).tab('show');
 			chart_state.selected_tab_name = e.target.href.split('#')[1]; // i.e., one of ['chart','table','method','trends','projections']
