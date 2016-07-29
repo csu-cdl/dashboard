@@ -815,7 +815,7 @@ $(document).ready(function () {
 				}
 			}
 		});
-		if (hash === '#maincontent') {
+		if (hash === '#maincontent' || hash === '') {
 			hash = '#chart'
 		}
 		chart_state.selected_tab_name = hash.slice(1);
