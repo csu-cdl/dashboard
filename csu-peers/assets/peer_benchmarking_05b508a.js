@@ -797,10 +797,11 @@ $(document).ready(function () {
 
 		// default tab and controls selected on page load
 		var hash = $(location).attr('hash');
+		var tablist = ['#chart', '#trends', '#explanations', '#table', '#methodology'];
 		$('.nav-tabs a').each(function (i, el) {
 			$(el).on('keypress', function (e) {console.log(e);});
 			var hash = $(location).attr('hash');
-			var tablist = ['#chart', '#trends', '#explanations', '#table', '#methodology'];
+			//var tablist = ['#chart', '#trends', '#explanations', '#table', '#methodology'];
 			var tabnum;
 			if (hash) {
 				tabnum = tablist.indexOf(hash);
@@ -815,7 +816,7 @@ $(document).ready(function () {
 				}
 			}
 		});
-		if (hash === '#maincontent' || hash === '') {
+		if (tablist.indexOf(hash) === -1) { // default tab for anything else
 			hash = '#chart'
 		}
 		chart_state.selected_tab_name = hash.slice(1);

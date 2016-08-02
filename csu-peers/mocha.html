@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)http://bl.ocks.org/keboice/raw/037f7ac2089bbe455e86140d24bdefc9/ -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Motion Chart</title>
+<link rel="stylesheet" type="text/css" href="assets/mocha.css">
+<link rel="stylesheet" type="text/css" href="assets/bubble1.css">
+</head><body>
+<h1>2000-2007 CSU Comparisons: Graduation Rate, Achievement Gap, and % Pell</h1>
+<p id="chart"></p>
+<div class="controls">
+  <button name="play" id="play">Play</button>  
+  <div><input autocomplete="off" id="slider" type="range" min="2000" max="2007" value="2000" step="1"></div>
+</div>
+<div id="controls">
+  <div id="color_flyout"></div>
+  <div id="size_flyout"></div> 
+  <div id="x_flyout"></div> 
+  <div id="y_flyout"></div> 
+  <div id="campus_selector"></div>
+</div>
+
+<script src="assets/vendor/d3.v3.min.js"></script>
+<script src="assets/vendor/html5slider.js"></script>
+<script src="assets/vendor/jquery.min.js"></script>
+<script src="assets/mocha.js"></script>
+<!-- <script src="test/test.js"></script> -->
+
+<div class="tooltip" style="position: absolute; z-index: 10; visibility: hidden;"></div>
+</body></html>
