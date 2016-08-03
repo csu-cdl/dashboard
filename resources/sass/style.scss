@@ -10,6 +10,10 @@ body {
 	padding-bottom: 20px;
 }
 
+.tab-content a {
+	text-decoration: underline;
+}
+
 .container {
 	width: 1170px;
 }
@@ -21,7 +25,7 @@ body {
 
 .tab-content .tab-pane {
     border: 1px solid #CFD8DC;
-    border-top: 2px solid #00BCD4;
+    border-top: 2px solid #03a0c0;
     box-shadow: 3px 3px 3px #888888;
    
 	padding: 20px;
@@ -32,25 +36,23 @@ body {
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-    border: 2px solid #00BCD4;
+    border: 2px solid #03a0c0;
     border-bottom-color: transparent;
-    background-color: #00BCD4;
+    background-color: #03a0c0;
     color: #FFF;
     outline: none;
 	
 }
 
 .nav-tabs li a {
-    border: 2px solid #CFD8DC;
-    background-color: #CFD8DC;
-    color: #8EA2AC;
+    border: 2px solid #d0d3d7;
+    background-color: #d0d3d7;
+    color: #677;
 }
-
-
 
 .nav-tabs li a:hover {
 	background: #b2ebf2; 
-	color: #00bcd4;
+	color: #03a0c0;
 	border: 2px solid #b2ebf2;}
 	
 .controls {

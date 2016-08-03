@@ -29,7 +29,7 @@ p.footnote {
 	background:transparent;
 	padding:0;
 	position:relative;
-	color:#333;
+	color:#4527a0;
 	z-index:20;
 	line-height:14px;
 }
@@ -46,19 +46,6 @@ p.footnote {
 	left:-9999px;
 	max-height:1px;
 	max-width:1px;
-}
-
-.nav-tabs li a {
-    border: 2px solid #d0d3d7;
-    background-color: #d0d3d7;
-    color: #677;
-}
-
-.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-	border: 2px solid #03a0c0;
-	border-bottom-color: transparent;
-	background-color: #03a0c0;
-	color: #fff;
 }
 
 #sector_weights tbody tr td:nth-child(2) {
@@ -126,7 +113,7 @@ p.footnote {
 }
 #desctable .col_campus a, #desctable2 .col_campus a {
 	text-decoration: underline;
-	color: #00a;
+	color: #4527a0;
 	width:330px;
 }
 #desctable .highlight, #desctable2 .highlight {
