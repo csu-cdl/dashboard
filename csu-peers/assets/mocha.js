@@ -429,8 +429,7 @@ $(document).ready(function()	{
 				}
 				size_dimension = {"metric":item[2],"domain":[item[3],item[4]]};
 				if (size_dimension.metric === 'same') {
-					console.log('same [30,30]');
-					radiusScale = d3.scale.sqrt().domain([0,20]).range([0, 10]);
+					radiusScale = d3.scale.sqrt().domain([0,30]).range([0, 10]);
 				} else {
 					radiusScale = d3.scale.sqrt().domain(size_dimension.domain).range([0, 33]);
 				}
