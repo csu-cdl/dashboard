@@ -1,6 +1,7 @@
 
 #controls {
 	position:absolute;
+	z-index:100;
 	top:10px;
 	margin:0;
 	padding:0;
@@ -146,16 +147,14 @@ ul.flyout_menu {
 }
 
 
-div.campus_widget {position:absolute;top:-480px;left:690px;width:200px;font-family:sans-serif;font-size:10px;}
+div.campus_widget {position:absolute;top:-480px;left:690px;width:225px;font-family:sans-serif;font-size:10px;}
 div.campus_widget p {text-align:left;width:180px;}
 div.campus_widget a {margin-left:10px; visibility:visible;}
 div.campus_widget a+a {margin-left:20px;visibility:visible;}
 ul.campus_selection {
-	width:170px;
+	width:124px;
 	line-height:1.23em;
 	list-style-type:none;list-style-position:inside;
-	/*border:1px solid #111;
-	height:110px;overflow:auto;*/
 	position:absolute;top:1.7em;left:5px;
 	padding:0;
 }

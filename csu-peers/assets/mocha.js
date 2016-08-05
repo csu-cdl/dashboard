@@ -184,8 +184,8 @@ $(document).ready(function()	{
 		
 
 	// Chart dimensions.
-	var margin = {top: 19.5, right: 230, bottom: 49.5, left: 69.5};
-	var width = 860 - margin.right;
+	var margin = {top: 19.5, right: 220, bottom: 49.5, left: 69.5};
+	var width = 900 - margin.right - margin.left;
 	var height = 400 - margin.top - margin.bottom;
 	// Various scales. These domains make assumptions of data, naturally.
 	var xScale = d3.scale.linear().domain([10, 80]).range([0, width]);
@@ -471,7 +471,6 @@ $(document).ready(function()	{
 				yAxis = d3.svg.axis().orient("left").scale(yScale)
 					.tickFormat(function(d,ii) {
 						if (ii === 0) {
-							console.log('y origin' + ' ' + parseInt(d,10) + '%')
 							return parseInt(d,10) + "%"
 						}
 						return parseInt(d, 10) + "%";
@@ -495,7 +494,6 @@ $(document).ready(function()	{
 					.ticks(12)
 					.tickFormat(function(d,ii) {
 						if (ii === 0) {
-							console.log('x origin' + ' ' + parseInt(d,10) + '%')
 							return '' + parseInt(d,10) + "%"
 						}
 						return parseInt(d, 10) + "%"; 
@@ -523,7 +521,6 @@ $(document).ready(function()	{
 						selected_campuses[id] = true;
 						return 1;
 					});
-					console.log(JSON.stringify(selected_campuses));
 				})
 				.text('Select All');
 			var desel = label.append("a")
@@ -536,7 +533,6 @@ $(document).ready(function()	{
 						selected_campuses[id] = false;
 						return 0;
 					});
-					console.log(JSON.stringify(selected_campuses));
 				})
 				.text('Deselect All');
 			var list = widget.append("ul")
@@ -562,7 +558,6 @@ $(document).ready(function()	{
 								return this.style.opacity;
 							}
 						});
-						console.log(JSON.stringify(selected_campuses));
 					});
 			});
 			// start with all selected
@@ -571,7 +566,6 @@ $(document).ready(function()	{
 				selected_campuses[id] = true;
 				return 1;
 			});
-			console.log(JSON.stringify(selected_campuses));
 		};
 		create_campus_selector(
 			d3.select("#campus_selector"),
