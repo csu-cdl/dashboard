@@ -67,18 +67,19 @@
 	var load_data = function (config, callback) {
 		if (cs.retained_data) {
 			callback(cs.retained_data, config);
+		} else {
+			$.ajax({
+				url: 'data/mocha_campus.json',
+				datatype: "json",
+				success: function (result) {
+					var json_object = (typeof result === 'string')
+						? JSON.parse(result)
+						: result;
+					cs.retained_data = json_object;
+					callback(cs.retained_data, config);
+				}
+			});
 		}
-		$.ajax({
-			url: 'data/mocha_campus.json',
-			datatype: "json",
-			success: function (result) {
-				var json_object = (typeof result === 'string')
-					? JSON.parse(result)
-					: result;
-				cs.retained_data = json_object;
-				callback(json_object, config);
-			}
-		});
 	};
 
 	var update_series = function (mode) {
