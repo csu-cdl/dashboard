@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Line Chart</title>
+<!-- <link rel="stylesheet" type="text/css" href="assets/mocha.css"> -->
+<link rel="stylesheet" type="text/css" href="assets/line1.css" />
+<link rel="stylesheet" type="text/css" href="assets/mocha1.css" />
+
+<script src="assets/vendor/d3.v3.min.js"></script>
+<script src="assets/vendor/html5slider.js"></script>
+<script src="assets/vendor/jquery.min.js"></script>
+<script src="assets/vendor/highcharts.js"></script>
+</head><body>
+
+<section id="main">
+<div class="tab">
+<ul class="tabtab">
+<li id="bubble"><a href="#">Bubble</a></li>
+<li id="line"><a href="#">Line</a></li>
+</ul>
+
+<div id="panel0" class="container">
+
+<div class="chart-controls"><form><fieldset style=""><legend></legend>
+<select id="yvalue_selector">
+<option value="pell">% Pell</option>
+<option value="gradrate">% Grad Rate</option>
+<option value="gap" selected>Acheivement Gap</option>
+</select>
+</fieldset></form></div>
+
+<div id="chart0"></div>
+</div> <!-- /panel0 -->
+
+<div id="panel1" class="container">
+<div id="chart1">
+<div id="chart1-plotarea"></div>
+<div class="controls">
+  <button name="play" id="play">Play</button>  
+  <div><input autocomplete="off" id="slider" type="range" min="2000" max="2007" value="2000" step="1"></div>
+</div>
+</div>
+</div> <!-- /panel1 -->
+
+</div> <!-- /tab -->
+</section> <!-- /main -->
+<script>
+	window.cs = { // chart_state
+		dimension_map: {'x': ['gradrate', 10, 80], 'y': ['gap', -15, 25], 'radius': ['pell', 0, 75], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
+		margin: {top: 20, right: 200, bottom: 40, left: 60},
+		width: 900,
+		height: 360,
+		radius: 25,
+		scale: {'x': 0, 'y': 0, 'radius': 0, 'color': 0},
+		fmt_percent: d3.format('.0%'),
+		label: {'gradrate': 'Graduation Rate', 'gap': 'Achievement Gap', 'year': '2000', 'pell': 'Pell'},
+		year_start: 2000,
+		year_end: 2007,
+		duration: 6000,
+		templates: {
+			tooltip: 'Achievement Gap: \u00A0\u00A0{gap}%\nGraduation Rate: \u00A0\u00A0{gradrate}%\nTotal FTF Freshmen: \u00A0\u00A0{ftf}\nPercent Pell: \u00A0\u00A0{pell}%\n'
+		},
+		data_url: 'data/mocha_campus.json',
+		campuses: {
+			'Bakersfield': {selected: false},
+			'Channel Islands': {selected: false},
+			'Chico': {},
+			'Dominguez Hills': {selected: false},
+			'East Bay': {selected: false},
+			'Fresno': {selected: false},
+			'Fullerton': {selected: false},
+			'Humboldt': {selected: false},
+			'Long Beach': {selected: false},
+			'Los Angeles': {selected: false},
+			'Monterey Bay': {selected: false},
+			'Northridge': {selected: false},
+			'Pomona': {selected: false},
+			'Sacramento': {selected: false},
+			'San Bernardino': {selected: false},
+			'San Diego': {selected: false},
+			'San Francisco': {selected: false},
+			'San Jose': {selected: false},
+			'San Luis Obispo': {selected: false},
+			'San Marcos': {selected: false},
+			'Sonoma': {selected: false},
+			'Stanislaus': {selected: false}
+		},
+		retained_data: null
+	};
+</script>
+<script type="text/javascript" src="assets/line1.js"></script>
+<script type="text/javascript" src="assets/mocha1.js"></script>
+</body><html>

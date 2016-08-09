@@ -1,188 +1,7 @@
-html {
-	text-align: center;
-}
-
-body {
-	padding: 0 20px 20px 20px;
-	background: #fcfcfa;
-  color: #333;
+#chart1 {
   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin: 1em auto 4em auto;
-  position: relative;
- 
-	
 }
-
-h1 {
-	text-align: left;
-	font-weight: normal;
-font-size: 22px;
-}
-
-p.note {
-	text-align: left;
-	margin-top: -10px;
-	font-size: 14px;
-}
-	
-#chart {
-	width: 960px;
-  height: 406px;
-  margin-left: -40px;  
-}
-
-
-.label{
-	font: 14pt sans-serif;
-}
-
-text {
-  font: 11px sans-serif;
-}
-
-.dot {
-  fill-opacity: .7;
-  transition: opacity 0.3s;
-  
-}
-
-.dot:hover {
-	fill-opacity: 1;
-	transition: opacity 0.3s;
-}
-
-.active {
-  fill-opacity: 1;
-  stroke-width: 1;
-  stroke-opacity: 1;
-}
-
-.legend {
-	opacity: .7;
-	transition: opacity 0.3s;
-}
-
-.axis path {
-	display: none;
-}
-
-.axis line {
-  stroke-width:1px;
-  stroke: #ccc;
-  stroke-dasharray: 2px 2px;
-}
-
-.label {
-  fill: #666;
-}
-
-.year.label {
-  font: 500 100px "Helvetica Neue"; 
-  fill: #ddd;
-}
-
-.year.label.active {
-  fill: #aaa;
-}
-
-.overlay {
-  fill: none;
-  pointer-events: all;
-  cursor: ew-resize;
-}
-
-input[type=range] {
-  -webkit-appearance: none;
-  margin: 10px 0;
-  width: 100%;
-}
-input[type=range]:focus {
-  outline: none;
-}
-input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 10px;
-  cursor: pointer;
-  animate: 0.2s;
-  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-  background: #ddd;
-  border-radius: 25px;
-  border: 0px solid #000101;
-}
-input[type=range]::-webkit-slider-thumb {
-  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-  border: 0px solid #000000;
-  height: 20px;
-  width: 20px;
-  border-radius: 7px;
-  background: #337ab7;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -4.6px;
-}
-input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #ddd;
-}
-input[type=range]::-moz-range-track {
-  width: 100%;
-  height: 10px;
-  cursor: pointer;
-  animate: 0.2s;
-  box-shadow: 0px 0px 0px #ccc, 0px 0px 0px #ccc;
-  background: #ddd;
-  border-radius: 25px;
-  border: 1px solid #ccc;
-}
-input[type=range]::-moz-range-thumb {
-  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-  border: 0px solid #2e6da4;
-  height: 20px;
-  width: 20px;
-  border-radius: 7px;
-  background: #337ab7;
-  cursor: pointer;
-}
-input[type=range]::-ms-track {
-  width: 100%;
-  height: 10px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: transparent;
-  border-color: transparent;
-  border-width: 39px 0;
-  color: transparent;
-  float: right;
-}
-input[type=range]::-ms-fill-lower {
-  background: #ddd;
-  border: 0px solid #000101;
-  border-radius: 50px;
-  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-}
-input[type=range]::-ms-fill-upper {
-  background: #ddd;
-  border: 0px solid #000101;
-  border-radius: 50px;
-  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-}
-input[type=range]::-ms-thumb {
-  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-  border: 0px solid #000000;
-  height: 20px;
-  width: 20px;
-  border-radius: 7px;
-  background: #337ab7;
-  cursor: pointer;
-}
-input[type=range]:focus::-ms-fill-lower {
-  background: #ddd;
-}
-
-input[type=range]:focus::-ms-fill-upper {
-  background: #ddd;
-}
-
-button {
+#chart1 button {
 	background-color: rgb(53, 135, 212);
 	padding: 3px 9px;
 	font-size: 14px;
@@ -196,9 +15,9 @@ button {
 	background: #337ab7;
 	border: 1px solid #2e6da4;
 	border-radius: 4px;
-	}
+}
 
-.controls {
+#chart1 .controls {
 	width: 700px;
 	display: block;
 	float: left;
@@ -207,7 +26,7 @@ button {
 	height: 25px;
 }
 
-.controls div {
+#chart1 .controls div {
 	display: inline-block;
 	float: right;
 	margin-left: 10px;
@@ -216,7 +35,158 @@ button {
 	height: 25px;
 }
 
-.tooltip {
+#chart1 .label{
+	font: 14pt sans-serif;
+}
+
+#chart1 text {
+  font: 11px sans-serif;
+}
+
+#chart1 .dot {
+  fill-opacity: .7;
+  transition: opacity 0.3s;
+  
+}
+
+#chart1 .dot:hover {
+	fill-opacity: 1;
+	transition: opacity 0.3s;
+}
+
+#chart1 .active {
+  fill-opacity: 1;
+  stroke-width: 1;
+  stroke-opacity: 1;
+}
+
+#chart1 .legend {
+	opacity: .7;
+	transition: opacity 0.3s;
+}
+
+#chart1 .axis path {
+	display: none;
+}
+
+#chart1 .axis line {
+  stroke-width:1px;
+  stroke: #ccc;
+  stroke-dasharray: 2px 2px;
+}
+
+#chart1 .label {
+  fill: #666;
+}
+
+#chart1 .year.label {
+  font: 500 100px "Helvetica Neue"; 
+  fill: #ddd;
+}
+
+#chart1 .year.label.active {
+  fill: #aaa;
+}
+
+#chart1 .overlay {
+  fill: none;
+  pointer-events: all;
+  cursor: ew-resize;
+}
+
+#chart1 input[type=range] {
+  -webkit-appearance: none;
+  margin: 10px 0;
+  width: 100%;
+}
+#chart1 input[type=range]:focus {
+  outline: none;
+}
+#chart1 input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  background: #ddd;
+  border-radius: 25px;
+  border: 0px solid #000101;
+}
+#chart1 input[type=range]::-webkit-slider-thumb {
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  border: 0px solid #000000;
+  height: 20px;
+  width: 20px;
+  border-radius: 7px;
+  background: #337ab7;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -4.6px;
+}
+#chart1 input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #ddd;
+}
+#chart1 input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: 0px 0px 0px #ccc, 0px 0px 0px #ccc;
+  background: #ddd;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+}
+#chart1 input[type=range]::-moz-range-thumb {
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  border: 0px solid #2e6da4;
+  height: 20px;
+  width: 20px;
+  border-radius: 7px;
+  background: #337ab7;
+  cursor: pointer;
+}
+#chart1 input[type=range]::-ms-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  border-width: 39px 0;
+  color: transparent;
+  float: right;
+}
+#chart1 input[type=range]::-ms-fill-lower {
+  background: #ddd;
+  border: 0px solid #000101;
+  border-radius: 50px;
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+}
+#chart1 input[type=range]::-ms-fill-upper {
+  background: #ddd;
+  border: 0px solid #000101;
+  border-radius: 50px;
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+}
+#chart1 input[type=range]::-ms-thumb {
+  box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+  border: 0px solid #000000;
+  height: 20px;
+  width: 20px;
+  border-radius: 7px;
+  background: #337ab7;
+  cursor: pointer;
+}
+#chart1 input[type=range]:focus::-ms-fill-lower {
+  background: #ddd;
+}
+
+#chart1 input[type=range]:focus::-ms-fill-upper {
+  background: #ddd;
+}
+
+
+#chart1 .tooltip {
     background-color: #f7f7f7;
     padding: 3px 12px;
     font-family: sans-serif;
@@ -224,7 +194,7 @@ button {
     box-shadow: 1px 1px 4px #bbbbbb;
   }
   
-.tooltip_title {
+#chart1 .tooltip_title {
     font-weight: bold;
     font-size: 14px;
     margin: 5px 0;
@@ -235,12 +205,12 @@ button {
 	color: #fff;
   }
   
-  pre {
+#chart1  pre {
 	  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
 	  font-size: 12px;
   }
   
-  .tooltip_body {
+#chart1  .tooltip_body {
     font-weight: normal;
     margin: 5px 0;
 	text-align: left;

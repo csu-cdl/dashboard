@@ -1,0 +1,59 @@
+* {
+	margin:0;
+	padding:0;
+}
+body {
+	font-size:16px;
+}
+.tab {
+	margin:80px auto 0;
+	position:relative;
+	width:90%;
+	min-height:600px;
+}
+.container {
+	width:90%;
+	margin:30px auto 0;
+	position:relative;
+	padding:40px 20px 20px;
+	clear:both;
+}
+.chart-controls {
+	height:60px;
+	background:#eee;
+	position:relative;
+	margin:0 0 30px;
+}
+.chart-controls fieldset {
+	border:none;
+}
+.chart-controls fieldset select {
+	height:40px;
+	width:180px;
+	line-height:1.2em;
+	margin:10px auto;
+	position:relative;
+	display:block;
+	padding:5px;
+}
+.tabtab {
+	position:relative;
+	display:block;
+	list-style:none;
+	margin:0 auto;
+	width:90%;
+}
+.tabtab li {
+	float:left;
+	width:100px;
+	height:40px;
+	line-height:30px;
+	background:#777;
+	text-align: center;
+	font-weight:600;
+	color:#fff;
+	margin:5px;
+}
+.tabtab li a {
+	color:#fff;
+}
