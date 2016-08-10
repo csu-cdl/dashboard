@@ -73,7 +73,6 @@ body {
 }
 
 #chart0 {
-	background:#faeaea;
 	position:relative;
 	height:500px;
 	width:100%;
@@ -122,13 +121,13 @@ body {
 }
 
 #chart1 .dot {
-	fill-opacity: .7;
-	transition: opacity 0.3s;
+	fill-opacity: .85;
+	transition: opacity 0.2s;
 }
 
 #chart1 .dot:hover {
 	fill-opacity: 1;
-	transition: opacity 0.3s;
+	transition: opacity 0.2s;
 }
 
 #chart1 .active {
@@ -138,8 +137,8 @@ body {
 }
 
 #chart1 .legend {
-	opacity: .7;
-	transition: opacity 0.3s;
+	opacity: .85;
+	transition: opacity 0.2s;
 }
 
 #chart1 .axis path {
@@ -148,17 +147,17 @@ body {
 
 #chart1 .axis line {
 	stroke-width:1px;
-	stroke: #ccc;
+	stroke: #bbb;
 	stroke-dasharray: 2px 2px;
 }
 
 #chart1 .label {
-	fill: #666;
+	fill: #555;
 }
 
 #chart1 .year.label {
 	font: 500 100px "Helvetica Neue"; 
-	fill: #ddd;
+	fill: #ccc;
 }
 
 #chart1 .year.label.active {
@@ -296,6 +295,10 @@ body {
 #chart1  pre {
 	  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
 	  font-size: 12px;
+}
+
+#chart1 .legend .highlighted {
+  font-weight: 600;
 }
 
 #chart1  .tooltip_body {

@@ -124,6 +124,17 @@
 			.style('visibility', 'hidden');
 		return tooltip;
 	};
+
+	var select_dots = function () {
+		Object.keys(cs.campuses).forEach(function (el) {
+			if (cs.campuses[el].selected) {
+				d3.selectAll('#' + maketag(el)).style('opacity', 1);
+			} else {
+				d3.selectAll('#' + maketag(el)).style('opacity', 0.1);
+			}
+		});
+	};
+
 	var plot_update;
 	var plot_data = function (svg, data) {
 		var tooltip = create_tooltip();
@@ -192,7 +203,7 @@
 			var bb = cs.campuses[b.campus].selected ? 1000 : 2000;
 			return radius(b) + bb - radius(a) - aa;
 		};
-
+		
 		// Add a dot per item. Initialize the data and set the colors.
 		var dot = svg.append('g')
 			.attr('class', 'dots')
@@ -258,14 +269,7 @@
 			svg.transition().duration(0);
 			displayYear($('#slider').val());
 		});
-
-		Object.keys(cs.campuses).forEach(function (el) {
-			if (cs.campuses[el].selected) {
-				d3.selectAll('#' + maketag(el)).style('opacity', 1);
-			} else {
-				d3.selectAll('#' + maketag(el)).style('opacity', 0.08);
-			}
-		});
+		select_dots();
 		plot_update = function () {update(true);};
 	};
 
@@ -291,36 +295,36 @@
 
 		legend.on('mouseover', function (d) {
 			d3.selectAll('.legend')
-				.style('opacity', 0.1);
+				.style('opacity', 0.25);
 			d3.select(this)
 				.style('opacity', 1);
 			d3.selectAll('.dot')
-				.style('opacity', 0.1);
+				.style('opacity', function (d) {
+					if (cs.campuses[d.campus].selected) {
+						return .9
+					} else {
+						return .2
+					}
+				});
 			d3.selectAll('#' + maketag(d.campus))
 				.style('opacity', 1);
 		})
 		.on('click', function (d, i) {
 				if (!cs.campuses[d.campus].selected) {
 					cs.campuses[d.campus].selected = true;
-					d3.select(this).attr('fill', '#f00');
+					d3.select(this).attr('fill', '#c00').classed('highlighted', true);
 				} else {
 					cs.campuses[d.campus].selected = false;
-					d3.select(this).attr('fill', '#000');
+					d3.select(this).attr('fill', '#111').classed('highlighted', true);
 				}
 				plot_update();
 		})
 		.on('mouseout', function(type) {
 				d3.selectAll('.legend')
-					.style('opacity', .7);
+					.style('opacity', .9);
 				d3.selectAll('.dot')
 					.style('opacity', 1);
-				Object.keys(cs.campuses).forEach(function (el) {
-					if (cs.campuses[el].selected) {
-						d3.selectAll('#' + maketag(el)).style('opacity', 1);
-					} else {
-						d3.selectAll('#' + maketag(el)).style('opacity', 0.09);
-					}
-				});
+				select_dots();
 		});
 	};
 
@@ -329,7 +333,7 @@
 			if (cs.campuses[el].selected) {
 				d3.selectAll('#' + maketag(el)).style('opacity', 1);
 			} else {
-				d3.selectAll('#' + maketag(el)).style('opacity', 0.08);
+				d3.selectAll('#' + maketag(el)).style('opacity', 0.1);
 			}
 			d3.selectAll('.legend').attr('fill', function (d) {var color = '#000'; if (cs.campuses[d.campus].selected) {color = '#f00'} return color;});
 		});
@@ -348,7 +352,7 @@
 	};
 
 	var svg;
-	var init_bubble = function () {
+	var init_bubble = function (callback) {
 		cs.width = $(window).width() * 0.85 - 200;
 		cs.scale.x = d3.scale.linear().domain(cs.dimension_map.x.slice(1)).range([0, cs.width]);
 		cs.scale.y = d3.scale.linear().domain(cs.dimension_map.y.slice(1)).range([cs.height, 0]);
@@ -360,6 +364,7 @@
 			svg = build_chart();
 			plot_data(svg, data);
 			create_legend(svg, data);
+			callback();
 		});
 	};
 
@@ -435,7 +440,7 @@
 			callback(cs.retained_data, config);
 		} else {
 			$.ajax({
-				url: 'data/mocha_campus.json',
+				url: cs.data_url,
 				datatype: "json",
 				success: function (result) {
 					var json_object = (typeof result === 'string')
@@ -451,24 +456,24 @@
 	var update_series = function (mode) {
 		var pchart = $('#chart0').highcharts();
 		if (pchart) {
-			pchart.series.forEach(function (e) {
-				var attributes = e.userOptions;
-				if (attributes.zIndex === 2) {
-					if (!mode) {
-						// get selected
-						if (cs.campuses[e.userOptions.name].selected) {
-							series_state[e.userOptions.name] = true;
-							e.userOptions.visible = true;
-						} else {
-							series_state[e.userOptions.name] = false;
-							e.userOptions.visible = false;
-						}
-					} else {
-						// set selected
-						cs.campuses[e.userOptions.name].selected = e.userOptions.visible;
+			if (mode) {
+				pchart.series.forEach(function (e) {
+					var attributes = e.userOptions;
+					if (attributes.zIndex === 2) {
+						cs.campuses[attributes.name].selected = attributes.visible; // set selected
 					}
-				}
-			});
+				});
+			} else {
+				pchart.series.forEach(function (e) {
+					var attributes = e.userOptions;
+					var tf;
+					if (attributes.zIndex === 2) {
+						tf = (cs.campuses[attributes.name].selected || false); // get selected
+						series_state[attributes.name] = tf;
+						e.userOptions.visible = tf;
+					}
+				});
+			}
 		}
 		return series_state;
 	};
@@ -491,8 +496,8 @@
 						null_series.push(null);
 					}
 				});
-				multiseries.push({'name': campus, 'data': series.slice(), 'zIndex':2, 'lineWidth':2, 'visible':series_state[campus]||false});
-				multigray.push({'name': campus, 'data': series.slice(), 'linkedTo': 'gray', 'color': '#dedede', 'zIndex':1, 'lineWidth':1});
+				multiseries.push({'name': campus, 'data': series.slice(), 'zIndex': 2, 'lineWidth': 2, 'visible': series_state[campus] || false});
+				multigray.push({'name': campus, 'data': series.slice(), 'linkedTo': 'gray', 'color': '#dedede', 'zIndex': 1, 'lineWidth': 1});
 			});
 			multiseries.push({'name': 'all', 'id': 'gray', 'data': null_series, 'color': 'transparent'});
 			create_chart(config, multiseries.concat(multigray));
@@ -501,10 +506,12 @@
 
 	var init = function () {
 		var config = {axis_y_title: '% Achievement Gap', tooltip_label: 'Gap'};
+		update_chart(config); // get selected
 		$('.tabtab li').on('click', function (e) {
 			var tabid = e.target.nodeName === 'LI' ? e.target.id : e.target.parentNode.id;
 			if (tabid === 'line') {
 				update_chart(config); // get selected
+				update_series(); // get selected
 				$('#panel0').show();
 				$('#panel1').hide();
 				if ($('#chart0').highcharts()) {
@@ -530,8 +537,9 @@
 		$('#panel1').show();
 	};
 	$(document).ready(function () {
-		init();
-		init_bubble();
+		init_bubble(function () {
+			init(); // give bubble a chance to load data first, eliminating duplicate download
+		});
 	});
 
 }());
