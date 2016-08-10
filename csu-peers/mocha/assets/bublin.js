@@ -1,6 +1,11 @@
 (function () {
 	'use strict';
 
+	var chart_state ={
+		'yvalue': 'gap',
+		'palette': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
+	};
+
 	var cs = { // chart_state
 		dimension_map: {'x': ['gradrate', 10, 80], 'y': ['gap', -15, 25], 'radius': ['pell', 0, 75], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
 		margin: {top: 20, right: 200, bottom: 40, left: 60},
@@ -18,29 +23,31 @@
 		},
 		data_url: 'data/mocha_campus.json',
 		campuses: {
-			'Bakersfield': {selected: false},
-			'Channel Islands': {selected: false},
-			'Chico': {},
-			'Dominguez Hills': {selected: false},
-			'East Bay': {selected: false},
-			'Fresno': {selected: false},
-			'Fullerton': {selected: false},
-			'Humboldt': {selected: false},
-			'Long Beach': {selected: false},
-			'Los Angeles': {selected: false},
-			'Monterey Bay': {selected: false},
-			'Northridge': {selected: false},
-			'Pomona': {selected: false},
-			'Sacramento': {selected: false},
-			'San Bernardino': {selected: false},
-			'San Diego': {selected: false},
-			'San Francisco': {selected: false},
-			'San Jose': {selected: false},
-			'San Luis Obispo': {selected: false},
-			'San Marcos': {selected: false},
-			'Sonoma': {selected: false},
-			'Stanislaus': {selected: false}
+			'Bakersfield': {selected: false, ord: 1},
+			'Channel Islands': {selected: false, ord: 2},
+			'Chico': {selected: false, ord: 3},
+			'Dominguez Hills': {selected: false, ord: 4},
+			'East Bay': {selected: false, ord: 5},
+			'Fresno': {selected: false, ord: 6},
+			'Fullerton': {selected: false, ord: 7},
+			'Humboldt': {selected: false, ord: 8},
+			'Long Beach': {selected: false, ord: 9},
+			'Los Angeles': {selected: false, ord: 10},
+			'Maritime Academy': {selected: false, ord: 11},
+			'Monterey Bay': {selected: false, ord: 12},
+			'Northridge': {selected: false, ord: 13},
+			'Pomona': {selected: false, ord: 14},
+			'Sacramento': {selected: false, ord: 15},
+			'San Bernardino': {selected: false, ord: 16},
+			'San Diego': {selected: false, ord: 17},
+			'San Francisco': {selected: false, ord: 18},
+			'San Jose': {selected: false, ord: 19},
+			'San Luis Obispo': {selected: false, ord: 20},
+			'San Marcos': {selected: false, ord: 21},
+			'Sonoma': {selected: false, ord: 22},
+			'Stanislaus': {selected: false, ord: 23}
 		},
+		selected_color: '#c00',
 		retained_data: null
 	};
 
@@ -54,7 +61,7 @@
 	var radius = function (d) {
 		return d[cs.dimension_map.radius[0]];
 	};
-	var color = function (d) {
+	var xcolor = function (d) {
 		return d[cs.dimension_map.color[0]];
 	};
 	var key = function (d) {
@@ -128,14 +135,34 @@
 	var select_dots = function () {
 		Object.keys(cs.campuses).forEach(function (el) {
 			if (cs.campuses[el].selected) {
-				d3.selectAll('#' + maketag(el)).style('opacity', 1);
+				d3.selectAll('#' + maketag(el)).style('opacity', 1).style('stroke-width', 1).style('stroke', '#111');
 			} else {
-				d3.selectAll('#' + maketag(el)).style('opacity', 0.1);
+				d3.selectAll('#' + maketag(el)).style('opacity', 0.1).style('stroke-width', 1).style('stroke', 'transparent');
 			}
 		});
 	};
 
-	var plot_update;
+	// Positions the dots based on data.
+	var position = function (dot) {
+		 dot .attr('cx', function (d) { return cs.scale.x(x(d)); })
+			.attr('cy', function (d) { return cs.scale.y(y(d)); })
+			.attr('r', function (d) { return Math.abs(cs.scale.radius(radius(d))); }); // can't have negative radius
+	};
+
+	// Defines a sort order so that the smallest dots are drawn on top.
+	var order = function (a, b) {
+		var aa = cs.campuses[a.campus].selected ? 1000 : 2000; // force selected campus dots to rise to top of z-order
+		var bb = cs.campuses[b.campus].selected ? 1000 : 2000;
+		return radius(b) + bb - radius(a) - aa;
+	};
+
+	var reposition = function () {
+		// Add a dot per item. Initialize the data and set the colors.
+		d3.selectAll('.dot')
+		.call(position)
+		.sort(order);
+	};
+
 	var plot_data = function (svg, data) {
 		var tooltip = create_tooltip();
 
@@ -165,12 +192,12 @@
 		// Interpolates the dataset for the given (fractional) year.
 		var interpolateData = function (year) {
 			return data.map(function (d) {
-			return {
-				campus: d.campus,
-				pell: interpolateValues(d.pell, year),
-				gradrate: interpolateValues(d.gradrate, year),
-				gap: interpolateValues(d.gap, year),
-				total: interpolateValues(d.total, year),
+				return {
+					campus: d.campus,
+					pell: interpolateValues(d.pell, year),
+					gradrate: interpolateValues(d.gradrate, year),
+					gap: interpolateValues(d.gap, year),
+					total: interpolateValues(d.total, year),
 				};
 			});
 		};
@@ -190,20 +217,6 @@
 			return a[1];
 		};
 
-		// Positions the dots based on data.
-		var position = function (dot) {
-			 dot .attr('cx', function (d) { return cs.scale.x(x(d)); })
-				.attr('cy', function (d) { return cs.scale.y(y(d)); })
-				.attr('r', function (d) { return Math.abs(cs.scale.radius(radius(d))); }); // can't have negative radius
-		};
-
-		// Defines a sort order so that the smallest dots are drawn on top.
-		var order = function (a, b) {
-			var aa = cs.campuses[a.campus].selected ? 1000 : 2000; // force selected campus dots to rise to top of z-order
-			var bb = cs.campuses[b.campus].selected ? 1000 : 2000;
-			return radius(b) + bb - radius(a) - aa;
-		};
-		
 		// Add a dot per item. Initialize the data and set the colors.
 		var dot = svg.append('g')
 			.attr('class', 'dots')
@@ -211,15 +224,15 @@
 			.data(interpolateData(cs.year_start))
 			.enter().append('circle')
 			.attr('class', 'dot')
-			.attr('id', function (d) {return maketag(d.campus);})
-			.style('fill', function (d) { return cs.scale.color(color(d)); })
-			.style('stroke', function (d) { return cs.scale.color(color(d)); })
+			.attr('id', function (d) {return maketag(d.campus); })
+			.style('fill', function (d) { return cs.scale.color(xcolor(d)); })
+			.style('stroke', function (d) { return cs.scale.color(xcolor(d)); })
 			.call(position)
 			.sort(order)
 			.on('mouseover', function (d) {
 				tooltip.html('');
 				tooltip.append('h3').attr('class', 'tooltip_title')
-				.style('background-color', cs.scale.color(color(d)))
+				.style('background-color', cs.scale.color(xcolor(d)))
 				tooltip.append('pre').attr('class', 'tooltip_body');
 				tooltip.select('.tooltip_title')
 				.text(d.campus);
@@ -242,23 +255,19 @@
 					return tooltip.style('visibility', 'hidden');
 				});
 
-		var update = function (mode) {  
-			// Add a dot per item. Initialize the data and set the colors.
-			d3.selectAll('.dot')
-			.call(position)
-			.sort(order);
+		var update = function () {  
+			reposition();
 
 			// Add a title.
 			dot.append('title')
 				.text(function (d) { return d.campus; });
 
-			if (!mode) {
-				// Start a transition that interpolates the data based on year.
-				svg.transition()
-					.duration(cs.duration)
-					.ease('linear')
-					.tween('year', tweenYear)
-			}
+			// Start a transition that interpolates the data based on year.
+			svg.transition()
+				.duration(cs.duration)
+				.ease('linear')
+				.tween('year', tweenYear)
+
 		}; //update function
 
 		$('button').on('click', function () {
@@ -270,7 +279,6 @@
 			displayYear($('#slider').val());
 		});
 		select_dots();
-		plot_update = function () {update(true);};
 	};
 
 	var create_legend = function (svg, data) {
@@ -284,7 +292,7 @@
 			.attr('x', cs.width)
 			.attr('width', 12)
 			.attr('height', 12)
-			.style('fill', function(d) { return cs.scale.color(color(d)); });
+			.style('fill', function(d) { return cs.scale.color(xcolor(d)); });
 
 		legend.append('text')
 			.attr('x', cs.width + 16)
@@ -301,9 +309,9 @@
 			d3.selectAll('.dot')
 				.style('opacity', function (d) {
 					if (cs.campuses[d.campus].selected) {
-						return .9
+						return 1
 					} else {
-						return .2
+						return .1
 					}
 				});
 			d3.selectAll('#' + maketag(d.campus))
@@ -312,30 +320,30 @@
 		.on('click', function (d, i) {
 				if (!cs.campuses[d.campus].selected) {
 					cs.campuses[d.campus].selected = true;
-					d3.select(this).attr('fill', '#c00').classed('highlighted', true);
+					d3.select(this).attr('fill', cs.selected_color).classed('highlighted', true);
 				} else {
 					cs.campuses[d.campus].selected = false;
 					d3.select(this).attr('fill', '#111').classed('highlighted', true);
 				}
-				plot_update();
+				reposition();
 		})
 		.on('mouseout', function(type) {
 				d3.selectAll('.legend')
 					.style('opacity', .9);
 				d3.selectAll('.dot')
-					.style('opacity', 1);
+					.style('opacity', .9);
 				select_dots();
 		});
 	};
 
-	var set_selection = function (svg) {
+	var set_selection = function (svg) { // applies selected campuses to legend
+		select_dots();
 		Object.keys(cs.campuses).forEach(function (el) {
-			if (cs.campuses[el].selected) {
-				d3.selectAll('#' + maketag(el)).style('opacity', 1);
-			} else {
-				d3.selectAll('#' + maketag(el)).style('opacity', 0.1);
-			}
-			d3.selectAll('.legend').attr('fill', function (d) {var color = '#000'; if (cs.campuses[d.campus].selected) {color = '#f00'} return color;});
+			d3.selectAll('.legend').attr('fill', function (d) {
+				return (cs.campuses[d.campus].selected
+					? cs.selected_color
+					: '#111');
+			});
 		});
 	};
 
@@ -357,7 +365,8 @@
 		cs.scale.x = d3.scale.linear().domain(cs.dimension_map.x.slice(1)).range([0, cs.width]);
 		cs.scale.y = d3.scale.linear().domain(cs.dimension_map.y.slice(1)).range([cs.height, 0]);
 		cs.scale.radius = d3.scale.sqrt().domain(cs.dimension_map.radius.slice(1)).range([0, cs.radius]);
-		cs.scale.color = d3.scale.category20();
+		cs.scale.color = function (d) {return chart_state.palette[cs.campuses[d].ord - 1];};
+		// above function returns color mapped to campus, formerly d3.scale.category20()
 
 		// once the data is completely loaded, plot data points and generate legend
 		load_data(cs.data_url, function (data) {
@@ -372,10 +381,6 @@
 	 * Begin Line Chart
 	 */
 
-	var chart_state ={
-		'yvalue': 'gap',
-		'palette': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
-	};
 	Highcharts.setOptions({
 		colors: chart_state.palette
 	});
@@ -520,7 +525,7 @@
 			} else { // bubble
 				update_series(1); // set selected
 				set_selection(svg);
-				plot_update();
+				reposition();
 				$('#panel1').show();
 				$('#panel0').hide();
 			}

@@ -95,7 +95,7 @@ body {
 }
 
 #panel1 .controls {
-	width: 700px;
+	width: 770px;
 	display: block;
 	float: left;
 	padding: 0;
@@ -103,17 +103,17 @@ body {
 	height: 25px;
 }
 
-#chart1 .controls div {
+#panel1 .controls div {
 	display: inline-block;
 	float: right;
 	margin-left: 10px;
-	width: 635px;
+	width: 700px;
 	padding: 0;
 	height: 25px;
 }
 
 #chart1 .label{
-	font: 14pt sans-serif;
+	font: 12pt sans-serif;
 }
 
 #chart1 text {
@@ -272,7 +272,6 @@ body {
 	background: #ddd;
 }
 
-
 #chart1 .tooltip {
 	background-color: #f7f7f7;
 	padding: 3px 12px;
@@ -292,17 +291,13 @@ body {
 	color: #fff;
 }
 
-#chart1  pre {
-	  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
-	  font-size: 12px;
-}
-
-#chart1 .legend .highlighted {
-  font-weight: 600;
-}
-
 #chart1  .tooltip_body {
 	font-weight: normal;
 	margin: 5px 0;
 	text-align: left;
+}
+
+#chart1  pre {
+	  font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	  font-size: 12px;
 }
