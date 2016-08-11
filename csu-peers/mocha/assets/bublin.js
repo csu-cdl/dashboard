@@ -9,6 +9,7 @@
 	var cs = { // chart_state
 		dimension_map: {'x': ['gradrate', 10, 80], 'y': ['gap', -15, 25], 'radius': ['pell', 0, 75], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
 		margin: {top: 20, right: 200, bottom: 40, left: 60},
+		min_width: 300,
 		width: 900, // is recalculated 
 		height: 360,
 		radius: 25,
@@ -81,7 +82,8 @@
 			.attr('transform', 'translate(' + cs.margin.left + ',' + cs.margin.top + ')');
 
 		// Create the Axes
-		var xAxis = d3.svg.axis().orient('bottom').scale(cs.scale.x).ticks(12).tickFormat(function (d) {
+		var xTicks = cs.width < 600 ? 6 : 12;
+		var xAxis = d3.svg.axis().orient('bottom').scale(cs.scale.x).ticks(xTicks).tickFormat(function (d) {
 			return parseInt(d, 10) + '%';
 		}).tickSize(-cs.height - 6);
 		
@@ -366,7 +368,7 @@
 
 	var svg;
 	var init_bubble = function (callback) {
-		cs.width = $(window).width() * 0.85 - 200;
+		cs.width = Math.max($(window).width() * 0.85 - 200, cs.min_width);
 		cs.scale.x = d3.scale.linear().domain(cs.dimension_map.x.slice(1)).range([0, cs.width]);
 		cs.scale.y = d3.scale.linear().domain(cs.dimension_map.y.slice(1)).range([cs.height, 0]);
 		cs.scale.radius = d3.scale.sqrt().domain(cs.dimension_map.radius.slice(1)).range([0, cs.radius]);
