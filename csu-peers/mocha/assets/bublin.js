@@ -426,9 +426,6 @@
 					text: txt1
 				}
 			},
-			legend: {
-				enabled: false
-			},
 			tooltip: {
 				pointFormat: fmt1
 			},
