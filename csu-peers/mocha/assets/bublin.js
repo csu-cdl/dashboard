@@ -172,7 +172,7 @@
 			if (cs.campuses[el].selected) {
 				d3.selectAll('#' + maketag(el)).style('opacity', 1).style('stroke-width', 1).style('stroke', '#111');
 			} else {
-				d3.selectAll('#' + maketag(el)).style('opacity', 0.1).style('stroke', 'none');
+				d3.selectAll('#' + maketag(el)).style('opacity', 0.15).style('stroke', 'none');
 			}
 		});
 		
@@ -194,7 +194,7 @@
 		// For the interpolated data, the dots and label are redrawn.
 		var tweenYear = function () {
 			var year = d3.interpolateNumber(cs.year_start, cs.year_end);
-			return function(t) { displayYear(year(t)); };
+			return function(t) {displayYear(year(t)); };
 		};
 
 		// Updates the display to show the specified year.
@@ -202,7 +202,7 @@
 			dot.data(interpolateData(year), key).call(position).sort(order);
 			label.text(Math.round(year));
 			$('#slider').val(Math.round(year));
-			$('.tooltip_title').text(Math.round(year));
+			//$('.tooltip_title .tyear').text(Math.round(year)); // avoid having year hide campus name in title
 		};
 
 		// Interpolates the dataset for the given (fractional) year.
@@ -250,7 +250,8 @@
 				tooltip.append('h3').attr('class', 'tooltip_title')
 					.style('background-color', cs.scale.color(xcolor(d)));
 				tooltip.append('pre').attr('class', 'tooltip_body');
-				tooltip.select('.tooltip_title').text(d.campus);
+				tooltip.select('.tooltip_title').html('<span class="ttitle"><span class="tcampus">' + d.campus + '</span><span>');
+				//removed <span class="tyear"></span></span>');
 				
 				tooltip.select('.tooltip_body')
 					.text(cs.templates.tooltip
