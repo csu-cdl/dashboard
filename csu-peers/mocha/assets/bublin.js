@@ -9,7 +9,7 @@
 	var cs = { // chart_state
 		dimension_map: {'x': ['gradrate', 10, 80], 'y': ['gap', -15, 25], 'radius': ['pell', 0, 75], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
 		margin: {top: 20, right: 200, bottom: 40, left: 60},
-		width: 900,
+		width: 900, // is recalculated 
 		height: 360,
 		radius: 25,
 		scale: {'x': 0, 'y': 0, 'radius': 0, 'color': 0},
@@ -548,6 +548,17 @@
 	$(document).ready(function () {
 		init_bubble(function () {
 			init(); // give bubble a chance to load data first, eliminating duplicate download
+			var isResizing;
+			window.addEventListener('resize', function () {
+				if (!isResizing) {
+					isResizing = true;
+					window.setTimeout(function () { // reduce number of intermediate resizes
+						$('#chart1-plotarea').empty(); // remove old svg before recreating at different size
+						init_bubble(function () {}); // make at new size
+						isResizing = false;
+					}, 600);
+				}
+			}, false);
 		});
 	});
 
