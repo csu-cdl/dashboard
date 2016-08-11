@@ -82,7 +82,7 @@
 			.attr('transform', 'translate(' + cs.margin.left + ',' + cs.margin.top + ')');
 
 		// Create the Axes
-		var xTicks = cs.width < 600 ? 6 : 12;
+		var xTicks = cs.width < 400 ? 6 : 12;
 		var xAxis = d3.svg.axis().orient('bottom').scale(cs.scale.x).ticks(xTicks).tickFormat(function (d) {
 			return parseInt(d, 10) + '%';
 		}).tickSize(-cs.height - 6);
@@ -136,9 +136,10 @@
 
 	// Positions the dots based on data.
 	var position = function (dot) {
+		var rfit = cs.width < 400 ? 0.75 : 1.0;
 		 dot .attr('cx', function (d) { return cs.scale.x(x(d)); })
 			.attr('cy', function (d) { return cs.scale.y(y(d)); })
-			.attr('r', function (d) { return Math.abs(cs.scale.radius(radius(d))); }); // can't have negative radius
+			.attr('r', function (d) { return Math.abs(cs.scale.radius(radius(d))) * rfit; }); // can't have negative radius
 	};
 
 	// Defines a sort order so that the smallest dots are drawn on top.
