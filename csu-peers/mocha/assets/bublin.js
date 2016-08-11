@@ -155,18 +155,14 @@
 		.call(position)
 		.sort(order);
 	};
-	
+
 	var apply_selection = function () {
 		// sync legend
 		d3.selectAll('.legend')
-			.attr('fill', function (d) {
-				if (cs.campuses[d.campus].selected) {
-					return cs.selected_color;
-				} else {
-					return '#111';
-				}
-			})
-			.classed('highlighted', function (d) {return cs.campuses[d.campus].selected;});
+			.classed('highlighted', function (d) {return cs.campuses[d.campus].selected});
+		d3.selectAll('.legendrect')
+			.style('stroke', function (d) {return (cs.campuses[d.campus].selected ? '#000' : 'none');});
+			//.classed('highlighted', function (d) {return cs.campuses[d.campus].selected;});
 		// sync dots
 		Object.keys(cs.campuses).forEach(function (el) {
 			if (cs.campuses[el].selected) {
@@ -175,7 +171,7 @@
 				d3.selectAll('#' + maketag(el)).style('opacity', 0.15).style('stroke', 'none');
 			}
 		});
-		
+
 		reposition();
 	};
 
@@ -251,7 +247,6 @@
 					.style('background-color', cs.scale.color(xcolor(d)));
 				tooltip.append('pre').attr('class', 'tooltip_body');
 				tooltip.select('.tooltip_title').html('<span class="ttitle"><span class="tcampus">' + d.campus + '</span><span>');
-				//removed <span class="tyear"></span></span>');
 				
 				tooltip.select('.tooltip_body')
 					.text(cs.templates.tooltip
@@ -282,10 +277,6 @@
 			.call(position)
 			.sort(order);
 
-			// Add a title.
-			//dot.append('title')
-			//	.text(function (d) { return d.campus; });
-
 			// Start a transition that interpolates the data based on year.
 			svg.transition()
 				.duration(cs.duration)
@@ -310,19 +301,22 @@
 			.data(data)
 			.enter().append('g')
 			.attr('class', 'legend')
-			.attr('transform', function (d, i) { return 'translate(20,' + i * 17 + ')'; });
+			.attr('transform', function (d, i) { return 'translate(20,' + i * 17.7 + ')'; });
 
 		legend.append('rect')
+			.attr('class', 'legendrect')
 			.attr('x', cs.width)
 			.attr('width', 12)
 			.attr('height', 12)
+			.style('stroke', 'none')
+			.style('stroke-width', 0.7)
 			.style('fill', function(d) { return cs.scale.color(xcolor(d)); });
 
 		legend.append('text')
 			.attr('x', cs.width + 16)
 			.attr('y', 5)
 			.attr('dy', '.4em')
-			.style('text-anchor', 'start')
+			.style('font-size','13px')
 			.text(function (d) { return d.campus; });
 
 		legend.on('mouseover', function (d) {
@@ -383,6 +377,7 @@
 			svg = build_chart();
 			plot_data(svg, data);
 			create_legend(svg, data);
+			apply_selection();
 			callback();
 		});
 	};
@@ -508,7 +503,7 @@
 						null_series.push(null);
 					}
 				});
-				multiseries.push({'name': campus, 'data': series.slice(), 'zIndex': 2, 'lineWidth': 2, 'visible': series_state[campus] || false});
+				multiseries.push({'name': campus, 'data': series.slice(), 'zIndex': 2, 'color':chart_state.palette[cs.campuses[campus].ord - 1], 'lineWidth': 2, 'visible': series_state[campus] || false});
 				multigray.push({'name': campus, 'data': series.slice(), 'linkedTo': 'gray', 'color': '#dedede', 'zIndex': 1, 'lineWidth': 1});
 			});
 			multiseries.push({'name': 'all', 'id': 'gray', 'data': null_series, 'color': 'transparent'});

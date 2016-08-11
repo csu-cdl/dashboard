@@ -290,6 +290,16 @@ body {
 	line-height:1.5em;
 }
 
+.highlighted {
+	stroke: #000;
+	stroke-width:0.71;
+	fill: #000;
+}
+.legendrectx {
+	stroke: #fff;
+	stroke-width:1;
+}
+
 .tooltip_title {
 	font-weight: bold;
 	font-size: 14px;
