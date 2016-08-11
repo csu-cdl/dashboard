@@ -17,7 +17,7 @@
 		label: {'gradrate': 'Graduation Rate', 'gap': 'Achievement Gap', 'year': '2000', 'pell': 'Pell'},
 		year_start: 2000,
 		year_end: 2007,
-		duration: 6000,
+		duration: 7200,
 		templates: {
 			tooltip: 'Achievement Gap: \u00A0\u00A0{gap}%\nGraduation Rate: \u00A0\u00A0{gradrate}%\nTotal FTF Freshmen: \u00A0\u00A0{ftf}\nPercent Pell: \u00A0\u00A0{pell}%\n'
 		},
@@ -132,16 +132,6 @@
 		return tooltip;
 	};
 
-	var select_dots = function () {
-		Object.keys(cs.campuses).forEach(function (el) {
-			if (cs.campuses[el].selected) {
-				d3.selectAll('#' + maketag(el)).style('opacity', 1).style('stroke-width', 1).style('stroke', '#111');
-			} else {
-				d3.selectAll('#' + maketag(el)).style('opacity', 0.1).style('stroke-width', 1).style('stroke', 'transparent');
-			}
-		});
-	};
-
 	// Positions the dots based on data.
 	var position = function (dot) {
 		 dot .attr('cx', function (d) { return cs.scale.x(x(d)); })
@@ -161,6 +151,29 @@
 		d3.selectAll('.dot')
 		.call(position)
 		.sort(order);
+	};
+	
+	var apply_selection = function () {
+		// sync legend
+		d3.selectAll('.legend')
+			.attr('fill', function (d) {
+				if (cs.campuses[d.campus].selected) {
+					return cs.selected_color;
+				} else {
+					return '#111';
+				}
+			})
+			.classed('highlighted', function (d) {return cs.campuses[d.campus].selected;});
+		// sync dots
+		Object.keys(cs.campuses).forEach(function (el) {
+			if (cs.campuses[el].selected) {
+				d3.selectAll('#' + maketag(el)).style('opacity', 1).style('stroke-width', 1).style('stroke', '#111');
+			} else {
+				d3.selectAll('#' + maketag(el)).style('opacity', 0.1).style('stroke', 'none');
+			}
+		});
+		
+		reposition();
 	};
 
 	var plot_data = function (svg, data) {
@@ -232,31 +245,37 @@
 			.on('mouseover', function (d) {
 				tooltip.html('');
 				tooltip.append('h3').attr('class', 'tooltip_title')
-				.style('background-color', cs.scale.color(xcolor(d)))
+					.style('background-color', cs.scale.color(xcolor(d)));
 				tooltip.append('pre').attr('class', 'tooltip_body');
-				tooltip.select('.tooltip_title')
-				.text(d.campus);
+				tooltip.select('.tooltip_title').text(d.campus);
 				
 				tooltip.select('.tooltip_body')
-				.text(cs.templates.tooltip
-					.replace('{gap}', Math.round(d.gap))
-					.replace('{gradrate}', Math.round(d.gradrate))
-					.replace('{ftf}', Math.round(d.total))
-					.replace('{pell}', Math.round(d.pell))
+					.text(cs.templates.tooltip
+						.replace('{gap}', Math.round(d.gap))
+						.replace('{gradrate}', Math.round(d.gradrate))
+						.replace('{ftf}', Math.round(d.total))
+						.replace('{pell}', Math.round(d.pell))
 					);
 
-					return tooltip.style('visibility', 'visible');
-					})
-					
-				.on('mousemove', function () {
-					return tooltip.style('top', (d3.event.pageY - 52) + 'px').style('left', (d3.event.pageX + 25) + 'px');
-				})
-				.on('mouseout', function () {
-					return tooltip.style('visibility', 'hidden');
-				});
+				return tooltip.style('visibility', 'visible');
+			})
+			.on('click', function (d) { // allow clicking on dot to toggle selection
+				cs.campuses[d.campus].selected = !cs.campuses[d.campus].selected; // perform toggle
+				apply_selection(); // apply to legend, dot style and dot order
+			})
+			.on('mousemove', function () {
+				return tooltip.style('top', (d3.event.pageY - 52) + 'px').style('left', (d3.event.pageX + 25) + 'px');
+			})
+			.on('mouseout', function () {
+				return tooltip.style('visibility', 'hidden');
+			});
 
 		var update = function () {  
-			reposition();
+			// inline here for performance rather than calling reposition()
+			// Add a dot per item. Initialize the data and set the colors.
+			d3.selectAll('.dot')
+			.call(position)
+			.sort(order);
 
 			// Add a title.
 			dot.append('title')
@@ -278,7 +297,7 @@
 			svg.transition().duration(0);
 			displayYear($('#slider').val());
 		});
-		select_dots();
+		apply_selection();
 	};
 
 	var create_legend = function (svg, data) {
@@ -308,42 +327,28 @@
 				.style('opacity', 1);
 			d3.selectAll('.dot')
 				.style('opacity', function (d) {
-					if (cs.campuses[d.campus].selected) {
-						return 1
-					} else {
-						return .1
-					}
+					return (cs.campuses[d.campus].selected
+						? 1
+						: .1)
 				});
+			
+			if (cs.campuses[d.campus].selected) { // indicate already selected with thicker stroke on legend campus mouseover
+				d3.selectAll('#' + maketag(d.campus))
+					.style('stroke-width', 2).style('stroke', '#111');
+			}
 			d3.selectAll('#' + maketag(d.campus))
 				.style('opacity', 1);
 		})
 		.on('click', function (d, i) {
-				if (!cs.campuses[d.campus].selected) {
-					cs.campuses[d.campus].selected = true;
-					d3.select(this).attr('fill', cs.selected_color).classed('highlighted', true);
-				} else {
-					cs.campuses[d.campus].selected = false;
-					d3.select(this).attr('fill', '#111').classed('highlighted', true);
-				}
-				reposition();
+			cs.campuses[d.campus].selected = !cs.campuses[d.campus].selected; // perform toggle
+			apply_selection(); // apply to legend, dot style and dot order
 		})
 		.on('mouseout', function(type) {
 				d3.selectAll('.legend')
 					.style('opacity', .9);
 				d3.selectAll('.dot')
 					.style('opacity', .9);
-				select_dots();
-		});
-	};
-
-	var set_selection = function (svg) { // applies selected campuses to legend
-		select_dots();
-		Object.keys(cs.campuses).forEach(function (el) {
-			d3.selectAll('.legend').attr('fill', function (d) {
-				return (cs.campuses[d.campus].selected
-					? cs.selected_color
-					: '#111');
-			});
+				apply_selection();
 		});
 	};
 
@@ -524,8 +529,7 @@
 				}
 			} else { // bubble
 				update_series(1); // set selected
-				set_selection(svg);
-				reposition();
+				apply_selection();
 				$('#panel1').show();
 				$('#panel0').hide();
 			}
