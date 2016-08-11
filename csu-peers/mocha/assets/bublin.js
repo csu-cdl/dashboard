@@ -261,7 +261,8 @@
 						.replace('{pell}', Math.round(d.pell))
 					);
 
-				return tooltip.style('visibility', 'visible');
+				tooltip.style('visibility', 'visible');
+				return;
 			})
 			.on('click', function (d) { // allow clicking on dot to toggle selection
 				cs.campuses[d.campus].selected = !cs.campuses[d.campus].selected; // perform toggle
@@ -282,8 +283,8 @@
 			.sort(order);
 
 			// Add a title.
-			dot.append('title')
-				.text(function (d) { return d.campus; });
+			//dot.append('title')
+			//	.text(function (d) { return d.campus; });
 
 			// Start a transition that interpolates the data based on year.
 			svg.transition()
