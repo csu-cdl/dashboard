@@ -73,6 +73,7 @@
 		return 'tag' + campus.replace(/\s+/g, '');
 	};
 
+	var svg;
 	var build_chart = function () {
 		// Create the SVG container and set the origin.
 		var svg = d3.select('#chart1-plotarea').append('svg')
@@ -158,17 +159,21 @@
 
 	var apply_selection = function () {
 		// sync legend
+		d3.selectAll('.legend').remove();
+		create_legend(svg, cs.retained_data);
+		/*
 		d3.selectAll('.legend')
 			.classed('highlighted', function (d) {return cs.campuses[d.campus].selected});
 		d3.selectAll('.legendrect')
 			.style('stroke', function (d) {return (cs.campuses[d.campus].selected ? '#000' : 'none');});
 			//.classed('highlighted', function (d) {return cs.campuses[d.campus].selected;});
+		*/
 		// sync dots
 		Object.keys(cs.campuses).forEach(function (el) {
 			if (cs.campuses[el].selected) {
 				d3.selectAll('#' + maketag(el)).style('opacity', 1).style('stroke-width', 1).style('stroke', '#111');
 			} else {
-				d3.selectAll('#' + maketag(el)).style('opacity', 0.15).style('stroke', 'none');
+				d3.selectAll('#' + maketag(el)).style('opacity', 0.2).style('stroke', 'none');
 			}
 		});
 
@@ -308,7 +313,7 @@
 			.attr('x', cs.width)
 			.attr('width', 12)
 			.attr('height', 12)
-			.style('stroke', 'none')
+			.style('stroke', function (d) {return (cs.campuses[d.campus].selected ? '#000' : 'none');})
 			.style('stroke-width', 0.7)
 			.style('fill', function(d) { return cs.scale.color(xcolor(d)); });
 
@@ -317,11 +322,12 @@
 			.attr('y', 5)
 			.attr('dy', '.4em')
 			.style('font-size','13px')
+			.style('font-weight', function (d) {return (cs.campuses[d.campus].selected ? '900' : '400');})
 			.text(function (d) { return d.campus; });
 
 		legend.on('mouseover', function (d) {
 			d3.selectAll('.legend')
-				.style('opacity', 0.25);
+				.style('opacity', 0.2);
 			d3.select(this)
 				.style('opacity', 1);
 			d3.selectAll('.dot')
@@ -363,7 +369,6 @@
 		}
 	};
 
-	var svg;
 	var init_bubble = function (callback) {
 		cs.width = Math.max($(window).width() * 0.85 - 200, cs.min_width);
 		cs.scale.x = d3.scale.linear().domain(cs.dimension_map.x.slice(1)).range([0, cs.width]);
