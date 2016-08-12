@@ -78,6 +78,17 @@ body {
 	width:100%;
 }
 
+.floater ::selection { background: transparent; }
+.floater ::-moz-selection { background: transparent; }
+
+.floater {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: -moz-none;
+	-o-user-select: none;
+	user-select: none;
+}
+
 #panel1 button {
 	background-color: rgb(53, 135, 212);
 	padding: 3px 9px;

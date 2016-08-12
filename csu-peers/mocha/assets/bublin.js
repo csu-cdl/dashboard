@@ -24,33 +24,74 @@
 		},
 		data_url: 'data/mocha_campus.json',
 		campuses: {
-			'Bakersfield': {selected: false, ord: 1},
-			'Channel Islands': {selected: false, ord: 2},
-			'Chico': {selected: false, ord: 3},
-			'Dominguez Hills': {selected: false, ord: 4},
-			'East Bay': {selected: false, ord: 5},
-			'Fresno': {selected: false, ord: 6},
-			'Fullerton': {selected: false, ord: 7},
-			'Humboldt': {selected: false, ord: 8},
-			'Long Beach': {selected: false, ord: 9},
-			'Los Angeles': {selected: false, ord: 10},
-			'Maritime Academy': {selected: false, ord: 11},
-			'Monterey Bay': {selected: false, ord: 12},
-			'Northridge': {selected: false, ord: 13},
-			'Pomona': {selected: false, ord: 14},
-			'Sacramento': {selected: false, ord: 15},
-			'San Bernardino': {selected: false, ord: 16},
-			'San Diego': {selected: false, ord: 17},
-			'San Francisco': {selected: false, ord: 18},
-			'San Jose': {selected: false, ord: 19},
-			'San Luis Obispo': {selected: false, ord: 20},
-			'San Marcos': {selected: false, ord: 21},
-			'Sonoma': {selected: false, ord: 22},
-			'Stanislaus': {selected: false, ord: 23}
+			'Bakersfield': {selected: false, ord: 1, labelx: 55, labely: -5},
+			'Channel Islands': {selected: false, ord: 2, labelx: 55, labely: -5},
+			'Chico': {selected: false, ord: 3, labelx: 55, labely: -5},
+			'Dominguez Hills': {selected: false, ord: 4, labelx: 55, labely: -5},
+			'East Bay': {selected: false, ord: 5, labelx: 55, labely: -5},
+			'Fresno': {selected: false, ord: 6, labelx: 55, labely: -5},
+			'Fullerton': {selected: false, ord: 7, labelx: 55, labely: -5},
+			'Humboldt': {selected: false, ord: 8, labelx: 55, labely: -5},
+			'Long Beach': {selected: false, ord: 9, labelx: 55, labely: -5},
+			'Los Angeles': {selected: false, ord: 10, labelx: 55, labely: -5},
+			'Maritime Academy': {selected: false, ord: 11, labelx: 55, labely: -5},
+			'Monterey Bay': {selected: false, ord: 12, labelx: 55, labely: -5},
+			'Northridge': {selected: false, ord: 13, labelx: 55, labely: -5},
+			'Pomona': {selected: false, ord: 14, labelx: 55, labely: -5},
+			'Sacramento': {selected: false, ord: 15, labelx: 55, labely: -5},
+			'San Bernardino': {selected: false, ord: 16, labelx: 55, labely: -5},
+			'San Diego': {selected: false, ord: 17, labelx: 55, labely: -5},
+			'San Francisco': {selected: false, ord: 18, labelx: 55, labely: -5},
+			'San Jose': {selected: false, ord: 19, labelx: 55, labely: -5},
+			'San Luis Obispo': {selected: false, ord: 20, labelx: 55, labely: -5},
+			'San Marcos': {selected: false, ord: 21, labelx: 55, labely: -5},
+			'Sonoma': {selected: false, ord: 22, labelx: 55, labely: -5},
+			'Stanislaus': {selected: false, ord: 23, labelx: 55, labely: -5}
 		},
 		selected_color: '#c00',
 		retained_data: null
 	};
+	
+	// use jquery to make an absolute positioned element draggable (repositionable)
+	// $('#some-selector').draggable(callback) where callback function receives delta-x and delta-y as arguments
+	$.fn.draggable = function(callback){
+		var $this = this,
+		ns = 'draggable_'+(Math.random()+'').replace('.',''),
+		mm = 'mousemove.'+ns,
+		mu = 'mouseup.'+ns,
+		$w = $(window),
+		isFixed = ($this.css('position') === 'fixed'),
+		adjX = 0, adjY = 0;
+
+		$this.mousedown(function(ev){
+			var pos = $this.offset();
+			var xbeg = $this.css('left');
+			var ybeg = $this.css('top');
+			if (isFixed) {
+				adjX = $w.scrollLeft(); adjY = $w.scrollTop();
+			}
+			var ox = (ev.pageX - pos.left + 60), oy = (ev.pageY - pos.top + 130);
+			$this.data(ns,{ x : ox, y: oy });
+			$w.on(mm, function(ev){
+				ev.preventDefault();
+				ev.stopPropagation();
+				if (isFixed) {
+					adjX = $w.scrollLeft(); adjY = $w.scrollTop();
+				}
+				var offset = $this.data(ns);
+				$this.css({left: ev.pageX - adjX - offset.x, top: ev.pageY - adjY - offset.y});
+			});
+			$w.on(mu, function(){
+				$w.off(mm + ' ' + mu).removeData(ns);
+				callback(parseFloat($this.css('left')) - parseFloat(xbeg), parseFloat($this.css('top')) - parseFloat(ybeg));
+				//console.log(parseFloat($this.css('left')) - parseFloat(xbeg));
+				//console.log(parseFloat($this.css('top')) - parseFloat(ybeg));
+			});
+		});
+
+		return this;
+	};
+
 
 	// Various accessors that specify the four dimensions of data to visualize.
 	var x = function (d) {
@@ -74,6 +115,7 @@
 	};
 
 	var svg;
+	var floaters = {};
 	var build_chart = function () {
 		// Create the SVG container and set the origin.
 		var svg = d3.select('#chart1-plotarea').append('svg')
@@ -135,12 +177,45 @@
 		return tooltip;
 	};
 
+	var create_floating_label = function (campus) {
+		//Floating label
+		var floater = d3.select('#chart1-plotarea')
+			.append('div')
+			.attr('class', 'tooltip floater') // similar to tooltip
+			.attr('id', maketag(campus) + '_f')
+			.style('position', 'absolute')
+			.style('z-index', '9')
+			.style('background-color', 'rgba(255,255,255,0.7)')
+			.style('padding', '3px 5px')
+			.style('color', '#111')
+			.style('font-size', '12px')
+			.style('line-height', '1.5em')
+			.style('visibility', 'hidden')
+			.text(campus);
+		return floater;
+	};
+
 	// Positions the dots based on data.
 	var position = function (dot) {
 		var rfit = cs.width < 400 ? 0.75 : 1.0;
-		 dot .attr('cx', function (d) { return cs.scale.x(x(d)); })
-			.attr('cy', function (d) { return cs.scale.y(y(d)); })
-			.attr('r', function (d) { return Math.abs(cs.scale.radius(radius(d))) * rfit; }); // can't have negative radius
+		var csc = cs.campuses;
+		 dot.attr('cx', function (d) {
+				var xpos = cs.scale.x(x(d));
+				if (csc[d.campus].selected) {
+					floaters[d.campus][0][0].style.left = (csc[d.campus].labelx + xpos) + 'px';
+				}
+				return  xpos;
+			 })
+			.attr('cy', function (d) {
+				var ypos = cs.scale.y(y(d));
+				if (csc[d.campus].selected) {
+					floaters[d.campus][0][0].style.top = (csc[d.campus].labely + ypos) + 'px';
+				}
+				return  ypos;
+			})
+			.attr('r', function (d) {
+				return Math.abs(cs.scale.radius(radius(d))) * rfit;
+			}); // can't have negative radius
 	};
 
 	// Defines a sort order so that the smallest dots are drawn on top.
@@ -168,8 +243,10 @@
 			} else {
 				d3.selectAll('#' + maketag(el)).style('opacity', 0.2).style('stroke', 'none');
 			}
+			if (floaters.hasOwnProperty(el)) {
+				floaters[el][0][0].style.visibility = cs.campuses[el].selected ? 'visible' : 'hidden';
+			}
 		});
-
 		reposition();
 	};
 
@@ -196,7 +273,6 @@
 			dot.data(interpolateData(year), key).call(position).sort(order);
 			label.text(Math.round(year));
 			$('#slider').val(Math.round(year));
-			//$('.tooltip_title .tyear').text(Math.round(year)); // avoid having year hide campus name in title
 		};
 
 		// Interpolates the dataset for the given (fractional) year.
@@ -236,7 +312,14 @@
 			.attr('class', 'dot')
 			.attr('id', function (d) {return maketag(d.campus); })
 			.style('fill', function (d) { return cs.scale.color(xcolor(d)); })
-			.style('stroke', function (d) { return cs.scale.color(xcolor(d)); })
+			.style('stroke', function (d) {
+				floaters[d.campus] = create_floating_label(d.campus);
+				$(floaters[d.campus][0][0]).draggable(function (dx, dy) {
+					cs.campuses[d.campus].labelx += dx;
+					cs.campuses[d.campus].labely += dy;
+				});
+				return cs.scale.color(xcolor(d));
+			})
 			.call(position)
 			.sort(order)
 			.on('mouseover', function (d) {
@@ -272,8 +355,8 @@
 			// inline here for performance rather than calling reposition()
 			// Add a dot per item. Initialize the data and set the colors.
 			d3.selectAll('.dot')
-			.call(position)
-			.sort(order);
+				.call(position)
+				.sort(order);
 
 			// Start a transition that interpolates the data based on year.
 			svg.transition()
