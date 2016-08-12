@@ -313,7 +313,7 @@
 			.attr('x', cs.width)
 			.attr('width', 12)
 			.attr('height', 12)
-			.style('stroke', function (d) {return (cs.campuses[d.campus].selected ? '#000' : 'none');})
+			//.style('stroke', function (d) {return (cs.campuses[d.campus].selected ? '#000' : 'none');})
 			.style('stroke-width', 0.7)
 			.style('fill', function(d) { return cs.scale.color(xcolor(d)); });
 
