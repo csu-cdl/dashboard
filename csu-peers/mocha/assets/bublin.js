@@ -160,14 +160,7 @@
 	var apply_selection = function () {
 		// sync legend
 		d3.selectAll('.legend').remove();
-		create_legend(svg, cs.retained_data);
-		/*
-		d3.selectAll('.legend')
-			.classed('highlighted', function (d) {return cs.campuses[d.campus].selected});
-		d3.selectAll('.legendrect')
-			.style('stroke', function (d) {return (cs.campuses[d.campus].selected ? '#000' : 'none');});
-			//.classed('highlighted', function (d) {return cs.campuses[d.campus].selected;});
-		*/
+		create_legend(svg, cs.retained_data); // recreate to apply font-weight to selected campuses
 		// sync dots
 		Object.keys(cs.campuses).forEach(function (el) {
 			if (cs.campuses[el].selected) {
@@ -313,8 +306,6 @@
 			.attr('x', cs.width)
 			.attr('width', 12)
 			.attr('height', 12)
-			//.style('stroke', function (d) {return (cs.campuses[d.campus].selected ? '#000' : 'none');})
-			.style('stroke-width', 0.7)
 			.style('fill', function(d) { return cs.scale.color(xcolor(d)); });
 
 		legend.append('text')
