@@ -2,46 +2,46 @@
 	'use strict';
 
 	var cs = { // chart_state
-		dimension_map: {'x': ['gradrate', 10, 80], 'y': ['gap', -15, 25], 'radius': ['pell', 0, 75], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
-		margin: {top: 20, right: 200, bottom: 40, left: 60},
+		dimension_map: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 20], 'radius': ['pell', 0, 60], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
+		margin: {top: 60, right: 200, bottom: 80, left: 60},
 		min_width: 300,
 		width: 900, // is recalculated 
-		height: 360,
-		radius: 25,
+		height: 420,
+		radius: 30,
 		scale: {'x': 0, 'y': 0, 'radius': 0, 'color': 0},
 		fmt_percent: d3.format('.0%'),
 		label: {'gradrate': 'Graduation Rate', 'gap': 'Achievement Gap', 'year': '2000', 'pell': 'Pell'},
 		year_start: 2000,
 		year_end: 2007,
-		duration: 7200,
+		duration: 12000,
 		templates: {
 			tooltip: 'Achievement Gap: \u00A0\u00A0{gap}%\nGraduation Rate: \u00A0\u00A0{gradrate}%\nTotal FTF Freshmen: \u00A0\u00A0{ftf}\nPercent Pell: \u00A0\u00A0{pell}%\n'
 		},
 		data_url: 'data/mocha_campus.json',
 		campuses: {
-			'Bakersfield': {selected: false, ord: 1, labelx: 55, labely: -5},
-			'Channel Islands': {selected: false, ord: 2, labelx: 55, labely: -5},
-			'Chico': {selected: false, ord: 3, labelx: 55, labely: -5},
-			'Dominguez Hills': {selected: false, ord: 4, labelx: 55, labely: -5},
-			'East Bay': {selected: false, ord: 5, labelx: 55, labely: -5},
-			'Fresno': {selected: false, ord: 6, labelx: 55, labely: -5},
-			'Fullerton': {selected: false, ord: 7, labelx: 55, labely: -5},
-			'Humboldt': {selected: false, ord: 8, labelx: 55, labely: -5},
-			'Long Beach': {selected: false, ord: 9, labelx: 55, labely: -5},
-			'Los Angeles': {selected: false, ord: 10, labelx: 55, labely: -5},
-			'Maritime Academy': {selected: false, ord: 11, labelx: 55, labely: -5},
-			'Monterey Bay': {selected: false, ord: 12, labelx: 55, labely: -5},
-			'Northridge': {selected: false, ord: 13, labelx: 55, labely: -5},
-			'Pomona': {selected: false, ord: 14, labelx: 55, labely: -5},
-			'Sacramento': {selected: false, ord: 15, labelx: 55, labely: -5},
-			'San Bernardino': {selected: false, ord: 16, labelx: 55, labely: -5},
-			'San Diego': {selected: false, ord: 17, labelx: 55, labely: -5},
-			'San Francisco': {selected: false, ord: 18, labelx: 55, labely: -5},
-			'San Jose': {selected: false, ord: 19, labelx: 55, labely: -5},
-			'San Luis Obispo': {selected: false, ord: 20, labelx: 55, labely: -5},
-			'San Marcos': {selected: false, ord: 21, labelx: 55, labely: -5},
-			'Sonoma': {selected: false, ord: 22, labelx: 55, labely: -5},
-			'Stanislaus': {selected: false, ord: 23, labelx: 55, labely: -5}
+			'Bakersfield': {selected: false, ord: 1, labelx: 48, labely: 34},
+			'Channel Islands': {selected: false, ord: 2, labelx: 24, labely: 34},
+			'Chico': {selected: false, ord: 3, labelx: 55, labely: 34},
+			'Dominguez Hills': {selected: false, ord: 4, labelx: 39, labely: 34},
+			'East Bay': {selected: false, ord: 5, labelx: 50, labely: 34},
+			'Fresno': {selected: false, ord: 6, labelx: 60, labely: 34},
+			'Fullerton': {selected: false, ord: 7, labelx: 50, labely: 34},
+			'Humboldt': {selected: false, ord: 8, labelx: 45, labely: 34},
+			'Long Beach': {selected: false, ord: 9, labelx: 45, labely: 34},
+			'Los Angeles': {selected: false, ord: 10, labelx: 49, labely: 34},
+			'Maritime Academy': {selected: false, ord: 11, labelx: 25, labely: 34},
+			'Monterey Bay': {selected: false, ord: 12, labelx: 38, labely: 34},
+			'Northridge': {selected: false, ord: 13, labelx: 49, labely: 34},
+			'Pomona': {selected: false, ord: 14, labelx: 52, labely: 34},
+			'Sacramento': {selected: false, ord: 15, labelx: 40, labely: 34},
+			'San Bernardino': {selected: false, ord: 16, labelx: 35, labely: 34},
+			'San Diego': {selected: false, ord: 17, labelx: 42, labely: 34},
+			'San Francisco': {selected: false, ord: 18, labelx: 35, labely: 34},
+			'San Jose': {selected: false, ord: 19, labelx: 49, labely: 34},
+			'San Luis Obispo': {selected: false, ord: 20, labelx: 25, labely: 34},
+			'San Marcos': {selected: false, ord: 21, labelx: 40, labely: 34},
+			'Sonoma': {selected: false, ord: 22, labelx: 45, labely: 34},
+			'Stanislaus': {selected: false, ord: 23, labelx: 48, labely: 34}
 		},
 		selected_color: '#c00',
 		'yvalue': 'gap',
@@ -184,18 +184,19 @@
 		var csc = cs.campuses;
 		var scale = cs.scale;
 		dot.each(function (d, i) {
+			var r = scale.radius(radius(d))
 			if (csc[d.campus].selected) {
 				var fs, top, left, dc = d.campus;
 				fs = floaters[dc][0][0];
-				top = (csc[dc].labely + scale.y(y(d))) + 'px';
-				left = (csc[dc].labelx + scale.x(x(d))) + 'px';
+				top = (csc[dc].labely + scale.y(y(d)) - r) + 'px';
+				left = (csc[dc].labelx + scale.x(x(d)) - r) + 'px';
 				fs.style.top = top;
 				fs.style.left = left;
 			}
 			d3.select(this)
 				.attr('cx', scale.x(x(d)))
 				.attr('cy', scale.y(y(d)))
-				.attr('r', scale.radius(radius(d)) * rfit);
+				.attr('r', r * rfit);
 		});
 	};
 
@@ -295,12 +296,14 @@
 			.attr('id', function (d) {return maketag(d.campus); })
 			.style('fill', function (d) { return cs.scale.color(xcolor(d)); })
 			.style('stroke', function (d) {
+				return cs.scale.color(xcolor(d));
+			})
+			.each(function (d) {
 				floaters[d.campus] = create_floating_label(d.campus);
 				$(floaters[d.campus][0][0]).draggable(function (dx, dy) {
 					cs.campuses[d.campus].labelx += dx;
 					cs.campuses[d.campus].labely += dy;
 				});
-				return cs.scale.color(xcolor(d));
 			})
 			.call(position)
 			.sort(order)
