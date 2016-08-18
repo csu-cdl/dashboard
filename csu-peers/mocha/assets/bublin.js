@@ -1,11 +1,6 @@
 (function () {
 	'use strict';
 
-	var chart_state ={
-		'yvalue': 'gap',
-		'palette': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"]
-	};
-
 	var cs = { // chart_state
 		dimension_map: {'x': ['gradrate', 10, 80], 'y': ['gap', -15, 25], 'radius': ['pell', 0, 75], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
 		margin: {top: 20, right: 200, bottom: 40, left: 60},
@@ -49,11 +44,13 @@
 			'Stanislaus': {selected: false, ord: 23, labelx: 55, labely: -5}
 		},
 		selected_color: '#c00',
+		'yvalue': 'gap',
+		'palette': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"],
 		retained_data: null
 	};
 	
 	// use jquery to make an absolute positioned element draggable (repositionable)
-	// $('#some-selector').draggable(callback) where callback function receives delta-x and delta-y as arguments
+	// Usage: $('#some-selector').draggable(callback) where callback function receives delta-x and delta-y as arguments
 	$.fn.draggable = function(callback){
 		var $this = this,
 		ns = 'draggable_'+(Math.random()+'').replace('.',''),
@@ -84,14 +81,11 @@
 			$w.on(mu, function(){
 				$w.off(mm + ' ' + mu).removeData(ns);
 				callback(parseFloat($this.css('left')) - parseFloat(xbeg), parseFloat($this.css('top')) - parseFloat(ybeg));
-				//console.log(parseFloat($this.css('left')) - parseFloat(xbeg));
-				//console.log(parseFloat($this.css('top')) - parseFloat(ybeg));
 			});
 		});
 
 		return this;
 	};
-
 
 	// Various accessors that specify the four dimensions of data to visualize.
 	var x = function (d) {
@@ -170,10 +164,7 @@
 		//Tooltip
 		var tooltip = d3.select('body')
 			.append('div')
-			.attr('class', 'tooltip')
-			.style('position', 'absolute')
-			.style('z-index', '10')
-			.style('visibility', 'hidden');
+			.attr('class', 'tooltip');
 		return tooltip;
 	};
 
@@ -183,14 +174,6 @@
 			.append('div')
 			.attr('class', 'tooltip floater') // similar to tooltip
 			.attr('id', maketag(campus) + '_f')
-			.style('position', 'absolute')
-			.style('z-index', '9')
-			.style('background-color', 'rgba(255,255,255,0.7)')
-			.style('padding', '3px 5px')
-			.style('color', '#111')
-			.style('font-size', '12px')
-			.style('line-height', '1.5em')
-			.style('visibility', 'hidden')
 			.text(campus);
 		return floater;
 	};
@@ -199,29 +182,28 @@
 	var position = function (dot) {
 		var rfit = cs.width < 400 ? 0.75 : 1.0;
 		var csc = cs.campuses;
-		 dot.attr('cx', function (d) {
-				var xpos = cs.scale.x(x(d));
-				if (csc[d.campus].selected) {
-					floaters[d.campus][0][0].style.left = (csc[d.campus].labelx + xpos) + 'px';
-				}
-				return  xpos;
-			 })
-			.attr('cy', function (d) {
-				var ypos = cs.scale.y(y(d));
-				if (csc[d.campus].selected) {
-					floaters[d.campus][0][0].style.top = (csc[d.campus].labely + ypos) + 'px';
-				}
-				return  ypos;
-			})
-			.attr('r', function (d) {
-				return Math.abs(cs.scale.radius(radius(d))) * rfit;
-			}); // can't have negative radius
+		var scale = cs.scale;
+		dot.each(function (d, i) {
+			if (csc[d.campus].selected) {
+				var fs, top, left, dc = d.campus;
+				fs = floaters[dc][0][0];
+				top = (csc[dc].labely + scale.y(y(d))) + 'px';
+				left = (csc[dc].labelx + scale.x(x(d))) + 'px';
+				fs.style.top = top;
+				fs.style.left = left;
+			}
+			d3.select(this)
+				.attr('cx', scale.x(x(d)))
+				.attr('cy', scale.y(y(d)))
+				.attr('r', scale.radius(radius(d)) * rfit);
+		});
 	};
 
 	// Defines a sort order so that the smallest dots are drawn on top.
 	var order = function (a, b) {
-		var aa = cs.campuses[a.campus].selected ? 1000 : 2000; // force selected campus dots to rise to top of z-order
-		var bb = cs.campuses[b.campus].selected ? 1000 : 2000;
+		var max = 1000;
+		var aa = cs.campuses[a.campus].selected ? max : max + max; // force selected campus dots to rise to top of z-order
+		var bb = cs.campuses[b.campus].selected ? max : max + max;
 		return radius(b) + bb - radius(a) - aa;
 	};
 
@@ -394,28 +376,29 @@
 		legend.append('text')
 			.attr('x', cs.width + 16)
 			.attr('y', 5)
-			.attr('dy', '.4em')
-			.style('font-size','13px')
-			.style('font-weight', function (d) {return (cs.campuses[d.campus].selected ? '900' : '400');})
+			.attr('dy', 7)
+			.style('font-size','13px').style('opacity', 1)
+			.style('font-weight', function (d) {return (cs.campuses[d.campus].selected ? '800' : '400');})
 			.text(function (d) { return d.campus; });
 
 		legend.on('mouseover', function (d) {
 			d3.selectAll('.legend')
-				.style('opacity', 0.2);
-			d3.select(this)
+				.style('opacity', 0.7);
+			var _this = this;
+			d3.select(_this)
 				.style('opacity', 1);
 			d3.selectAll('.dot')
 				.style('opacity', function (d) {
 					return (cs.campuses[d.campus].selected
 						? 1
-						: .1)
+						: .2)
 				});
 			
 			if (cs.campuses[d.campus].selected) { // indicate already selected with thicker stroke on legend campus mouseover
-				d3.selectAll('#' + maketag(d.campus))
+				d3.select('#' + maketag(d.campus))
 					.style('stroke-width', 2).style('stroke', '#111');
 			}
-			d3.selectAll('#' + maketag(d.campus))
+			d3.select('#' + maketag(d.campus))
 				.style('opacity', 1);
 		})
 		.on('click', function (d, i) {
@@ -424,9 +407,9 @@
 		})
 		.on('mouseout', function(type) {
 				d3.selectAll('.legend')
-					.style('opacity', .9);
+					.style('opacity', 1);
 				d3.selectAll('.dot')
-					.style('opacity', .9);
+					.style('opacity', 1);
 				apply_selection();
 		});
 	};
@@ -448,7 +431,7 @@
 		cs.scale.x = d3.scale.linear().domain(cs.dimension_map.x.slice(1)).range([0, cs.width]);
 		cs.scale.y = d3.scale.linear().domain(cs.dimension_map.y.slice(1)).range([cs.height, 0]);
 		cs.scale.radius = d3.scale.sqrt().domain(cs.dimension_map.radius.slice(1)).range([0, cs.radius]);
-		cs.scale.color = function (d) {return chart_state.palette[cs.campuses[d].ord - 1];};
+		cs.scale.color = function (d) {return cs.palette[cs.campuses[d].ord - 1];};
 		// above function returns color mapped to campus, formerly d3.scale.category20()
 
 		// once the data is completely loaded, plot data points and generate legend
@@ -466,7 +449,7 @@
 	 */
 
 	Highcharts.setOptions({
-		colors: chart_state.palette
+		colors: cs.palette
 	});
 	var series_state = {};
 
@@ -568,7 +551,7 @@
 		load_data(config, function (data, config) {
 			var multiseries = [];
 			var multigray = [];
-			var attribute = chart_state.yvalue;
+			var attribute = cs.yvalue;
 			var null_series = [];
 			var series_state = update_series();
 			data.forEach(function (campus_data) {
@@ -582,7 +565,7 @@
 						null_series.push(null);
 					}
 				});
-				multiseries.push({'name': campus, 'data': series.slice(), 'zIndex': 2, 'color':chart_state.palette[cs.campuses[campus].ord - 1], 'lineWidth': 2, 'visible': series_state[campus] || false});
+				multiseries.push({'name': campus, 'data': series.slice(), 'zIndex': 2, 'color':cs.palette[cs.campuses[campus].ord - 1], 'lineWidth': 2, 'visible': series_state[campus] || false});
 				multigray.push({'name': campus, 'data': series.slice(), 'linkedTo': 'gray', 'color': '#dedede', 'zIndex': 1, 'lineWidth': 1});
 			});
 			multiseries.push({'name': 'all', 'id': 'gray', 'data': null_series, 'color': 'transparent'});
@@ -613,7 +596,7 @@
 		$('#yvalue_selector').on('change', function (e) {
 			update_series(1); // set selected
 			var value = e.target.value;
-			chart_state.yvalue = {'gap':'gap', 'pell':'pell', 'gradrate':'gradrate'}[value];
+			cs.yvalue = {'gap':'gap', 'pell':'pell', 'gradrate':'gradrate'}[value];
 			config.axis_y_title = {'gap': '% Achievement Gap', 'pell': '% Pell Eligible Enrollment', 'gradrate': '% 6-Year Grad Rate'}[value];
 			config.tooltip_label = {'gap': 'Gap', 'pell': 'Pell Enrollment', 'gradrate': 'Grad Rate'}[value];
 			update_chart(config);

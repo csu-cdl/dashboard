@@ -78,10 +78,18 @@ body {
 	width:100%;
 }
 
-.floater ::selection { background: transparent; }
-.floater ::-moz-selection { background: transparent; }
+#chart1-plotarea .floater ::selection { background: transparent; }
+#chart1-plotarea .floater ::-moz-selection { background: transparent; }
 
-.floater {
+#chart1-plotarea .floater {
+	position:absolute;
+	z-index: 9;
+	background-color: rgba(255,255,255,0.7);
+	padding: 3px 5px;
+	color: #111;
+	font-size: 12px;
+	line-height: 1.5em;
+	visibility: hidden;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: -moz-none;
@@ -149,7 +157,6 @@ body {
 
 #chart1 .legend {
 	opacity: .85;
-	transition: opacity 0.2s;
 }
 
 #chart1 .axis path {
@@ -284,6 +291,9 @@ body {
 }
 
 .tooltip {
+	position: absolute;
+	z-index: 10;
+	visibility: hidden;
 	background-color: #fafafa;
 	font-family: sans-serif;
 	border: 1px solid #bbbbbb;
