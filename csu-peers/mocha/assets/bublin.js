@@ -2,8 +2,8 @@
 	'use strict';
 
 	var cs = { // chart_state
-		dimension_map: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 20], 'radius': ['pell', 0, 60], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
-		margin: {top: 60, right: 200, bottom: 80, left: 60},
+		dimension_map: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 25], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
+		margin: {top: 92, right: 200, bottom: 80, left: 60},
 		min_width: 300,
 		width: 900, // is recalculated 
 		height: 420,
@@ -12,43 +12,43 @@
 		fmt_percent: d3.format('.0%'),
 		label: {'gradrate': 'Graduation Rate', 'gap': 'Achievement Gap', 'year': '2000', 'pell': 'Pell'},
 		year_start: 2000,
-		year_end: 2007,
+		year_end: 2009,
 		duration: 12000,
 		templates: {
 			tooltip: 'Achievement Gap: \u00A0\u00A0{gap}%\nGraduation Rate: \u00A0\u00A0{gradrate}%\nTotal FTF Freshmen: \u00A0\u00A0{ftf}\nPercent Pell: \u00A0\u00A0{pell}%\n'
 		},
-		data_url: 'data/mocha_campus.json',
+		data_url: 'data/mocha_campus_6yr.json',
 		campuses: {
-			'Bakersfield': {selected: false, ord: 1, labelx: 48, labely: 34},
-			'Channel Islands': {selected: false, ord: 2, labelx: 24, labely: 34},
-			'Chico': {selected: false, ord: 3, labelx: 55, labely: 34},
-			'Dominguez Hills': {selected: false, ord: 4, labelx: 39, labely: 34},
-			'East Bay': {selected: false, ord: 5, labelx: 50, labely: 34},
-			'Fresno': {selected: false, ord: 6, labelx: 60, labely: 34},
-			'Fullerton': {selected: false, ord: 7, labelx: 50, labely: 34},
-			'Humboldt': {selected: false, ord: 8, labelx: 45, labely: 34},
-			'Long Beach': {selected: false, ord: 9, labelx: 45, labely: 34},
-			'Los Angeles': {selected: false, ord: 10, labelx: 49, labely: 34},
-			'Maritime Academy': {selected: false, ord: 11, labelx: 25, labely: 34},
-			'Monterey Bay': {selected: false, ord: 12, labelx: 38, labely: 34},
-			'Northridge': {selected: false, ord: 13, labelx: 49, labely: 34},
-			'Pomona': {selected: false, ord: 14, labelx: 52, labely: 34},
-			'Sacramento': {selected: false, ord: 15, labelx: 40, labely: 34},
-			'San Bernardino': {selected: false, ord: 16, labelx: 35, labely: 34},
-			'San Diego': {selected: false, ord: 17, labelx: 42, labely: 34},
-			'San Francisco': {selected: false, ord: 18, labelx: 35, labely: 34},
-			'San Jose': {selected: false, ord: 19, labelx: 49, labely: 34},
-			'San Luis Obispo': {selected: false, ord: 20, labelx: 25, labely: 34},
-			'San Marcos': {selected: false, ord: 21, labelx: 40, labely: 34},
-			'Sonoma': {selected: false, ord: 22, labelx: 45, labely: 34},
-			'Stanislaus': {selected: false, ord: 23, labelx: 48, labely: 34}
+			'Bakersfield': {selected: false, ord: 1, labelx: 40, labely: 66},
+			'Channel Islands': {selected: false, ord: 2, labelx: 25, labely: 66},
+			'Chico': {selected: false, ord: 3, labelx: 66, labely: 66},
+			'Dominguez Hills': {selected: false, ord: 4, labelx: 26, labely: 66},
+			'East Bay': {selected: false, ord: 5, labelx: 47, labely: 66},
+			'Fresno': {selected: false, ord: 6, labelx: 60, labely: 66},
+			'Fullerton': {selected: false, ord: 7, labelx: 62, labely: 66},
+			'Humboldt': {selected: false, ord: 8, labelx: 45, labely: 66},
+			'Long Beach': {selected: true, ord: 9, labelx: 55, labely: 66},
+			'Los Angeles': {selected: false, ord: 10, labelx: 43, labely: 66},
+			'Maritime Academy': {selected: false, ord: 11, labelx: 15, labely: 66},
+			'Monterey Bay': {selected: false, ord: 12, labelx: 31, labely: 66},
+			'Northridge': {selected: false, ord: 13, labelx: 56, labely: 66},
+			'Pomona': {selected: false, ord: 14, labelx: 62, labely: 66},
+			'Sacramento': {selected: false, ord: 15, labelx: 49, labely: 66},
+			'San Bernardino': {selected: false, ord: 16, labelx: 37, labely: 66},
+			'San Diego': {selected: false, ord: 17, labelx: 57, labely: 66},
+			'San Francisco': {selected: false, ord: 18, labelx: 43, labely: 66},
+			'San Jose': {selected: false, ord: 19, labelx: 58, labely: 66},
+			'San Luis Obispo': {selected: false, ord: 20, labelx: 45, labely: 66},
+			'San Marcos': {selected: false, ord: 21, labelx: 40, labely: 66},
+			'Sonoma': {selected: false, ord: 22, labelx: 55, labely: 66},
+			'Stanislaus': {selected: false, ord: 23, labelx: 45, labely: 66}
 		},
 		selected_color: '#c00',
 		'yvalue': 'gap',
 		'palette': ["#f00", "#0f3", "#00f", "#0df", "#f0f", "#fe0", "#f90", "#b3a", "#f3a", "#60f", "#0af", "#0dc", "#6da", "#6ad", "#a6d", "#ad6", "#da6", "#d6a", "#6a6", "#a6a", "#a66", "#66a", "#aa6", "#6aa", "#06a", "#6a0"],
 		retained_data: null
 	};
-	
+
 	// use jquery to make an absolute positioned element draggable (repositionable)
 	// Usage: $('#some-selector').draggable(callback) where callback function receives delta-x and delta-y as arguments
 	$.fn.draggable = function(callback){
@@ -272,17 +272,19 @@
 		};
 
 		// A bisector since many item's data is sparsely-defined.
-		var bisect = d3.bisector(function (d) { return d[0]; });
+		var bisect = d3.bisector(function (d) {
+			return d[0];
+		});
 
 		// Finds (and possibly interpolates) the value for the specified year.
 		var interpolateValues = function (values, year) {
-			var i = bisect.left(values, year, 0, values.length - 1),
-				a = values[i];
+			var i = bisect.left(values, year, 0, values.length - 1);
+			var a = values[i];
 			if (i > 0) {
-			var b = values[i - 1],
-				t = (year - a[0]) / (b[0] - a[0]);
-			return a[1] * (1 - t) + b[1] * t;
-				}
+				var b = values[i - 1];
+				var t = (year - a[0]) / (b[0] - a[0]);
+				return a[1] * (1 - t) + b[1] * t;
+			}
 			return a[1];
 		};
 
@@ -356,7 +358,7 @@
 		});
 
 		$('#slider').on('change', function (){
-			svg.transition().duration(0);
+			svg.transition().duration(cs.duration);
 			displayYear($('#slider').val());
 		});
 		apply_selection();
@@ -519,6 +521,7 @@
 						? JSON.parse(result)
 						: result;
 					cs.retained_data = json_object;
+					//console.log(cs.retained_data);
 					callback(cs.retained_data, config);
 				}
 			});
@@ -561,11 +564,13 @@
 				var series = [];
 				var campus = campus_data.campus;
 				campus_data[attribute].forEach(function (item, i) {
-					var key = item[0];
-					var value = item[1];
-					series.push({'name': key, 'y': value});
-					if (null_series.length < i) {
-						null_series.push(null);
+					var key = item[0]; // year
+					if (key <= cs.year_end && key >= cs.year_start) {
+						var value = item[1];
+						series.push({'name': key, 'y': value});
+						if (null_series.length < i) {
+							null_series.push(null);
+						}
 					}
 				});
 				multiseries.push({'name': campus, 'data': series.slice(), 'zIndex': 2, 'color':cs.palette[cs.campuses[campus].ord - 1], 'lineWidth': 2, 'visible': series_state[campus] || false});

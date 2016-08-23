@@ -86,8 +86,9 @@ body {
 	z-index: 9;
 	background-color: rgba(255,255,255,0.7);
 	padding: 3px 5px;
-	color: #111;
+	color: #333;
 	font-size: 12px;
+	font-weight: 600;
 	line-height: 1.5em;
 	visibility: hidden;
 	-webkit-user-select: none;
