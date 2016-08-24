@@ -11,7 +11,7 @@
 <script src="assets/vendor/highcharts.js"></script>
 </head><body>
 
-<section id="main">
+<section id="main" style="display:none;">
 <div class="page-controls"><form><fieldset><legend></legend>
 <select id="dataset_filter1">
 <option value="ftf_6yr" selected>FTF 6yr Grad</option>
@@ -20,8 +20,9 @@
 </fieldset></form></div>
 <div class="tab">
 <ul class="tabtab">
-<li id="bubble"><a href="#">Bubble</a></li>
+<li id="bubble" class="activetab"><a href="#">Bubble</a></li>
 <li id="line"><a href="#">Line</a></li>
+<li id="explain"><a href="#">Chart Explanation</a></li>
 </ul>
 
 <div id="panel0" class="container">
@@ -47,6 +48,13 @@
 </div>
 </div>
 </div> <!-- /panel1 -->
+
+<div id="panel2" class="container">
+<div id="explanations">
+<h2>Chart Explanation</h2>
+<p>Some explanatory text would follow.</p>
+</div>
+</div> <!-- /panel2 -->
 
 </div> <!-- /tab -->
 </section> <!-- /main -->

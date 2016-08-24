@@ -82,18 +82,25 @@ body {
 .tabtab li {
 	position:relative;
 	float:left;
-	width:100px;
+	width:200px;
 	height:40px;
 	line-height:30px;
-	background:#4ab;
+	background:#888;
 	text-align: center;
 	font-weight:600;
 	color:#fff;
 	margin:5px;
 }
 
+.tabtab .activetab {
+	background:#4ab;
+}
+
 .tabtab li a {
 	color:#fff;
+	font-family: sans-serif;
+	line-height:1.5em;
+	text-decoration:none;
 }
 
 .container {
@@ -178,10 +185,10 @@ body {
 #panel1 .controls div {
 	display: inline-block;
 	float: left;
-	margin-left: 10px;
-	width: 75%;
-	padding: 0;
-	height: 25px;
+	margin:0 0 0 10px;
+	width: 78%;
+	padding: 0 0 5px 0;
+	height: 20px;
 }
 
 #chart1 .label{
@@ -245,6 +252,7 @@ body {
 	-webkit-appearance: none;
 	margin: 10px 0;
 	width: 100%;
+	position:relative;
 }
 
 #chart1 input[type=range]:focus {
@@ -306,7 +314,7 @@ body {
 	animate: 0.2s;
 	background: transparent;
 	border-color: transparent;
-	border-width: 39px 0;
+	border-width: 10px 0;
 	color: transparent;
 	float: right;
 }

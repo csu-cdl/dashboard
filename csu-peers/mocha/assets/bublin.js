@@ -601,23 +601,37 @@
 	};
 
 	var init = function () {
+		$('#main').show();
+		$('#panel2').hide();
+		$('#panel0').hide();
+		$('#panel1').show();
 		var config = {axis_y_title: '% Achievement Gap', tooltip_label: 'Gap'};
 		update_chart(config); // get selected
 		$('.tabtab li').on('click', function (e) {
 			var tabid = e.target.nodeName === 'LI' ? e.target.id : e.target.parentNode.id;
+			$('.tabtab li').removeClass('activetab');
 			if (tabid === 'line') {
 				update_chart(config); // get selected
 				update_series(); // get selected
+				$('#line').addClass('activetab');
 				$('#panel0').show();
 				$('#panel1').hide();
+				$('#panel2').hide();
 				if ($('#chart0').highcharts()) {
 					$('#chart0').highcharts().reflow();
 				}
-			} else { // bubble
+			} else if (tabid === 'bubble') { // bubble
 				update_series(1); // set selected
 				apply_selection();
+				$('#bubble').addClass('activetab');
 				$('#panel1').show();
 				$('#panel0').hide();
+				$('#panel2').hide();
+			} else if (tabid === 'explain') {
+				$('#explain').addClass('activetab');
+				$('#panel2').show();
+				$('#panel0').hide();
+				$('#panel1').hide();
 			}
 		});
 		$('#yvalue_selector').on('change', function (e) {
@@ -628,10 +642,9 @@
 			config.tooltip_label = {'gap': 'Gap', 'pell': 'Pell Enrollment', 'gradrate': 'Grad Rate'}[value];
 			update_chart(config);
 		});
-		$('#panel0').hide();
-		$('#panel1').show();
 	};
 	$(document).ready(function () {
+		$('#main').hide();
 		init_bubble(function () {
 			init(); // give bubble a chance to load data first, eliminating duplicate download
 			var isResizing;
