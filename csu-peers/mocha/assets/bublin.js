@@ -213,6 +213,12 @@
 	var done = false;
 	var tooltips = [];
 	var tt = {};
+	var hide_tooltips = function () {
+		Object.keys(tt).forEach(function (key) {
+			//console.log(key);
+			tooltips[tt[key]].style('visibility', 'hidden');
+		});
+	};
 	// Positions the dots based on data.
 	var position = function (dot) {
 		var rfit = cs.width < 400 ? 0.75 : 1.0;
@@ -381,10 +387,7 @@
 
 		$('button').on('click', function () {
 			update();
-			Object.keys(tt).forEach(function (key) {
-				console.log(key);
-				tooltips[tt[key]].style('visibility', 'hidden');
-			});
+			hide_tooltips();
 			var checkdone = function () {
 				if (!done) {
 					done = true;
@@ -643,21 +646,20 @@
 
 	var init = function () {
 		$('#main').show();
-		$('#panel2').hide();
-		$('#panel0').hide();
+		$('.container').hide();
 		$('#panel1').show();
 		var config = {axis_y_title: '% Achievement Gap', tooltip_label: 'Gap'};
 		update_chart(config); // get selected
 		$('.tabtab li').on('click', function (e) {
+			hide_tooltips();
 			var tabid = e.target.nodeName === 'LI' ? e.target.id : e.target.parentNode.id;
 			$('.tabtab li').removeClass('activetab');
+			$('.container').hide();
 			if (tabid === 'line') {
 				update_chart(config); // get selected
 				update_series(); // get selected
 				$('#line').addClass('activetab');
 				$('#panel0').show();
-				$('#panel1').hide();
-				$('#panel2').hide();
 				if ($('#chart0').highcharts()) {
 					$('#chart0').highcharts().reflow();
 				}
@@ -666,15 +668,21 @@
 				apply_selection();
 				$('#bubble').addClass('activetab');
 				$('#panel1').show();
-				$('#panel0').hide();
-				$('#panel2').hide();
 			} else if (tabid === 'explain') {
 				$('#explain').addClass('activetab');
 				$('#panel2').show();
-				$('#panel0').hide();
-				$('#panel1').hide();
+			} else if (tabid === 'tables') {
+				$('#tables').addClass('activetab');
+				$('#panel3').show();
+			} else if (tabid === 'methods') {
+				$('#methods').addClass('activetab');
+				$('#panel4').show();
 			}
 		});
+		
+/*
+
+*/
 		$('#yvalue_selector').on('change', function (e) {
 			update_series(1); // set selected
 			var value = e.target.value;
