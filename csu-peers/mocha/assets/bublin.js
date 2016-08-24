@@ -3,7 +3,7 @@
 
 	var cs = { // chart_state
 		dimension_map: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 25], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
-		margin: {top: 92, right: 200, bottom: 80, left: 60},
+		margin: {top: 92, right: 240, bottom: 80, left: 60},
 		min_width: 300,
 		width: 900, // is recalculated 
 		height: 420,
@@ -432,7 +432,7 @@
 	};
 
 	var init_bubble = function (callback) {
-		cs.width = Math.max($(window).width() * 0.85 - 200, cs.min_width);
+		cs.width = Math.max($(window).width() * 0.83 - cs.margin.right, cs.min_width);
 		cs.scale.x = d3.scale.linear().domain(cs.dimension_map.x.slice(1)).range([0, cs.width]);
 		cs.scale.y = d3.scale.linear().domain(cs.dimension_map.y.slice(1)).range([cs.height, 0]);
 		cs.scale.radius = d3.scale.sqrt().domain(cs.dimension_map.radius.slice(1)).range([0, cs.radius]);
