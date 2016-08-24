@@ -81,7 +81,7 @@
 			if (isFixed) {
 				adjX = $w.scrollLeft(); adjY = $w.scrollTop();
 			}
-			var ox = (ev.pageX - pos.left + 60), oy = (ev.pageY - pos.top + 130);
+			var ox = (ev.pageX - pos.left + 115), oy = (ev.pageY - pos.top + 190);
 			$this.data(ns,{ x : ox, y: oy });
 			$w.on(mm, function(ev){
 				ev.preventDefault();
@@ -181,7 +181,26 @@
 			.attr('class', 'tooltip');
 		return tooltip;
 	};
+	var tooltip = create_tooltip();
 
+	var display_tooltip = function (d, tooltip) {
+		tooltip.html('');
+		tooltip.append('h3').attr('class', 'tooltip_title')
+			.style('background-color', cs.scale.color(xcolor(d)));
+		tooltip.append('pre').attr('class', 'tooltip_body');
+		tooltip.select('.tooltip_title').html('<span class="ttitle"><span class="tcampus">' + d.campus + '</span><span>');
+		
+		tooltip.select('.tooltip_body')
+			.text(cs.templates.tooltip
+				.replace('{gap}', Math.round(d.gap))
+				.replace('{gradrate}', Math.round(d.gradrate))
+				.replace('{ftf}', Math.round(d.total))
+				.replace('{pell}', Math.round(d.pell))
+			);
+
+		tooltip.style('visibility', 'visible');
+	};
+	
 	var create_floating_label = function (campus) {
 		//Floating label
 		var floater = d3.select('#chart1-plotarea')
@@ -191,7 +210,9 @@
 			.text(campus);
 		return floater;
 	};
-
+	var done = false;
+	var tooltips = [];
+	var tt = {};
 	// Positions the dots based on data.
 	var position = function (dot) {
 		var rfit = cs.width < 400 ? 0.75 : 1.0;
@@ -212,6 +233,7 @@
 				.attr('cy', scale.y(y(d)))
 				.attr('r', r * rfit);
 		});
+		done = false;
 	};
 
 	// Defines a sort order so that the smallest dots are drawn on top.
@@ -248,7 +270,6 @@
 	};
 
 	var plot_data = function (svg, data) {
-		var tooltip = create_tooltip();
 		$('.chart-title h1').text(cs.chart_title);
 		$('.chart-title h2').text(cs.chart_subtitle);
 		$('#slider').attr('min', cs.year_start);
@@ -259,14 +280,16 @@
 			.attr('class', 'year label')
 			.attr('text-anchor', 'end')
 			.attr('y', cs.height - 35)
-			.attr('x', cs.width)
+			.attr('x', cs.width - 15)
 			.text(cs.label.year);
 
 		// Tweens the entire chart by first tweening the year, and then the data.
 		// For the interpolated data, the dots and label are redrawn.
 		var tweenYear = function () {
 			var year = d3.interpolateNumber(cs.year_start, cs.year_end);
-			return function(t) {displayYear(year(t)); };
+			return function(t) {
+				displayYear(year(t));
+			};
 		};
 
 		// Updates the display to show the specified year.
@@ -328,22 +351,7 @@
 			.call(position)
 			.sort(order)
 			.on('mouseover', function (d) {
-				tooltip.html('');
-				tooltip.append('h3').attr('class', 'tooltip_title')
-					.style('background-color', cs.scale.color(xcolor(d)));
-				tooltip.append('pre').attr('class', 'tooltip_body');
-				tooltip.select('.tooltip_title').html('<span class="ttitle"><span class="tcampus">' + d.campus + '</span><span>');
-				
-				tooltip.select('.tooltip_body')
-					.text(cs.templates.tooltip
-						.replace('{gap}', Math.round(d.gap))
-						.replace('{gradrate}', Math.round(d.gradrate))
-						.replace('{ftf}', Math.round(d.total))
-						.replace('{pell}', Math.round(d.pell))
-					);
-
-				tooltip.style('visibility', 'visible');
-				return;
+				display_tooltip(d, tooltip);
 			})
 			.on('click', function (d) { // allow clicking on dot to toggle selection
 				cs.campuses[d.campus].selected = !cs.campuses[d.campus].selected; // perform toggle
@@ -367,12 +375,51 @@
 			svg.transition()
 				.duration(cs.duration)
 				.ease('linear')
-				.tween('year', tweenYear)
+				.tween('year', tweenYear);
 
 		}; //update function
 
 		$('button').on('click', function () {
 			update();
+			Object.keys(tt).forEach(function (key) {
+				console.log(key);
+				tooltips[tt[key]].style('visibility', 'hidden');
+			});
+			var checkdone = function () {
+				if (!done) {
+					done = true;
+					//console.log('still checking');
+					window.setTimeout(function () {
+						if (!done) {
+							checkdone();							
+						} else {
+							//console.log('DONE');
+							d3.selectAll('.dot').each(function (d) {
+								if (cs.campuses[d.campus].selected) {
+									if (tt.hasOwnProperty(d.campus)) {
+										tooltips[tt[d.campus]]
+										.style('top', (280 + cs.campuses[d.campus].labely - 120 + cs.scale.y(y(d))) + 'px')
+										.style('left', (100 + cs.campuses[d.campus].labelx - 35 + cs.scale.x(x(d))) + 'px')
+										.style('visibility', 'visible');
+										return;
+									}
+									tooltips.push(create_tooltip());
+									tt[d.campus] = tooltips.length - 1;
+									tooltips[tooltips.length - 1]
+										.on('click', function () {
+											tooltips[tt[d.campus]].style('visibility', 'hidden');
+										})
+										.style('top', (280 + cs.campuses[d.campus].labely - 120 + cs.scale.y(y(d))) + 'px')
+										.style('left', (100 + cs.campuses[d.campus].labelx - 35 + cs.scale.x(x(d))) + 'px')
+										.style('visibility', 'visible');
+									display_tooltip(d, tooltips[tooltips.length - 1]);
+								}
+							});
+						}
+					}, 500);
+				}
+			};
+			checkdone();
 		});
 
 		$('#slider').on('change', function (){
@@ -400,7 +447,7 @@
 			.attr('x', cs.width + 16)
 			.attr('y', 5)
 			.attr('dy', 7)
-			.style('font-size','13px').style('opacity', 1)
+			.style('font-size', '13px').style('opacity', 1)
 			.style('font-weight', function (d) {return (cs.campuses[d.campus].selected ? '800' : '400');})
 			.text(function (d) { return d.campus; });
 
@@ -528,23 +575,17 @@
 	};
 
 	var load_data = function (config, callback) {
-		//if (cs.retained_data !== null) {
-		//	callback(cs.retained_data, config);
-		//} else {
-			$.ajax({
-				url: cs.data_url,
-				datatype: "json",
-				success: function (result) {
-					var json_object = (typeof result === 'string')
-						? JSON.parse(result)
-						: result;
-					cs.retained_data = json_object;
-					//console.log(cs.retained_data);
-					//callback(cs.retained_data, config);
-					callback(json_object, config);
-				}
-			});
-		//}
+		$.ajax({
+			url: cs.data_url,
+			datatype: "json",
+			success: function (result) {
+				var json_object = (typeof result === 'string')
+					? JSON.parse(result)
+					: result;
+				cs.retained_data = json_object;
+				callback(json_object, config);
+			}
+		});
 	};
 
 	var update_series = function (mode) {
