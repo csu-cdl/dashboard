@@ -2,7 +2,9 @@
 	'use strict';
 
 	var cs = { // chart_state
-		dimension_map: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 25], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
+		dimension_map_ftf_6yr: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 25], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
+		dimension_map_tr_4yr: {'x': ['gradrate', 45, 85], 'y': ['gap', -10, 20], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']},
+		dimension_map: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 25], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']},
 		margin: {top: 85, right: 240, bottom: 80, left: 60},
 		min_width: 300,
 		width: 900, // is recalculated 
@@ -13,11 +15,23 @@
 		label: {'gradrate': 'Graduation Rate', 'gap': 'Achievement Gap', 'year': '2000', 'pell': 'Pell'},
 		year_start: 2000,
 		year_end: 2009,
+		year_start_ftf_6yr: 2000,
+		year_end_ftf_6yr: 2009,
+		year_start_tr_4yr: 2000,
+		year_end_tr_4yr: 2011,
+		chart_title: 'First Time Freshman',
+		chart_subtitle: '6yr Grad Rate',
+		chart_title_ftf_6yr: 'First Time Freshman',
+		chart_subtitle_ftf_6yr: '6yr Grad Rate',
+		chart_title_tr_4yr: 'Transfer',
+		chart_subtitle_tr_4yr: '4yr Grad Rate',
 		duration: 12000,
 		templates: {
 			tooltip: 'Achievement Gap: \u00A0\u00A0{gap}%\nGraduation Rate: \u00A0\u00A0{gradrate}%\nTotal FTF Freshmen: \u00A0\u00A0{ftf}\nPercent Pell: \u00A0\u00A0{pell}%\n'
 		},
-		data_url: 'data/mocha_campus_6yr.json',
+		data_url: 'data/mocha_campus_ftf_6yr.json',
+		data_url_ftf_6yr: 'data/mocha_campus_ftf_6yr.json',
+		data_url_tr_4yr: 'data/mocha_campus_tr_4yr.json',
 		campuses: {
 			'Bakersfield': {selected: false, ord: 1, labelx: 40, labely: 58},
 			'Channel Islands': {selected: false, ord: 2, labelx: 25, labely: 58},
@@ -235,6 +249,10 @@
 
 	var plot_data = function (svg, data) {
 		var tooltip = create_tooltip();
+		$('.chart-title h1').text(cs.chart_title);
+		$('.chart-title h2').text(cs.chart_subtitle);
+		$('#slider').attr('min', cs.year_start);
+		$('#slider').attr('max', cs.year_end);
 
 		// Add the year label; the value is set on transition.
 		var label = svg.append('text')
@@ -469,10 +487,10 @@
 				type: 'line'
 			},
 			title: {
-				text: 'Title'
+				text: cs.chart_title
 			},
 			subtitle: {
-				text: 'Subtitle'
+				text: cs.chart_subtitle
 			},
 			xAxis: {
 				type: 'category',
@@ -510,9 +528,9 @@
 	};
 
 	var load_data = function (config, callback) {
-		if (cs.retained_data !== null) {
-			callback(cs.retained_data, config);
-		} else {
+		//if (cs.retained_data !== null) {
+		//	callback(cs.retained_data, config);
+		//} else {
 			$.ajax({
 				url: cs.data_url,
 				datatype: "json",
@@ -522,10 +540,11 @@
 						: result;
 					cs.retained_data = json_object;
 					//console.log(cs.retained_data);
-					callback(cs.retained_data, config);
+					//callback(cs.retained_data, config);
+					callback(json_object, config);
 				}
 			});
-		}
+		//}
 	};
 
 	var update_series = function (mode) {
@@ -626,6 +645,40 @@
 					}, 600);
 				}
 			}, false);
+		});
+		$('#dataset_filter1').on('change', function (e) {
+			//console.log(e.target.value);
+			switch (e.target.value) {
+				case 'tr_4yr':
+					cs.data_url = cs.data_url_tr_4yr;
+					cs.dimension_map = cs.dimension_map_tr_4yr;
+					cs.year_start = cs.year_start_tr_4yr;
+					cs.year_end = cs.year_end_tr_4yr;
+					cs.chart_title = cs.chart_title_tr_4yr;
+					cs.chart_subtitle = cs.chart_subtitle_tr_4yr;
+				break;
+				case 'ftf_6yr':
+					cs.data_url = cs.data_url_ftf_6yr;
+					cs.dimension_map = cs.dimension_map_ftf_6yr;
+					cs.year_start = cs.year_start_ftf_6yr;
+					cs.year_end = cs.year_end_ftf_6yr;
+					cs.chart_title = cs.chart_title_ftf_6yr;
+					cs.chart_subtitle = cs.chart_subtitle_ftf_6yr;
+				break;
+				default: // 'ftf_6yr'
+					cs.data_url = cs.data_url_ftf_6yr;
+					cs.dimension_map = cs.dimension_map_ftf_6yr;
+					cs.year_start = cs.year_start_ftf_6yr;
+					cs.year_end = cs.year_end_ftf_6yr;
+					cs.chart_title = cs.chart_title_ftf_6yr;
+					cs.chart_subtitle = cs.chart_subtitle_ftf_6yr;
+				break;
+			}
+			//console.log(JSON.stringify([cs.data_url, cs.year_start, cs.year_end, cs.dimension_map]));
+			$('#chart1-plotarea').empty(); // remove old svg before recreating at different size
+			init_bubble(function () {
+				init(); // give bubble a chance to load data first, eliminating duplicate download
+			});
 		});
 	});
 

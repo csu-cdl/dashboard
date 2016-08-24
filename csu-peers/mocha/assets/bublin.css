@@ -39,7 +39,8 @@ body {
 	position:relative;
 	top:-610px;
 	width:90%;
-	text-align:center; 
+	text-align:center;
+	z-index: -1;
 }
 
 .chart-title h1 {
