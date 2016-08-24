@@ -35,23 +35,24 @@ body {
 
 .chart-title {
 	font-family: sans-serif;
-	color: #555;
+	color: #777;
 	position:relative;
-	top:-570px;
+	top:-610px;
 	width:90%;
 	text-align:center; 
 }
 
 .chart-title h1 {
 	font-weight: 600;
-	font-size: 18px;
-	line-height: 1.8em;
+	font-size: 20px;
+	line-height: 2em;
+	margin-bottom:5px;
 }
 
 .chart-title h2 {
 	font-weight: 600;
 	font-size: 16px;
-	line-height: 1.8em;
+	line-height: 2em;
 }
 
 #main {
