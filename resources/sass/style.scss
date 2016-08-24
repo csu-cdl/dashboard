@@ -111,4 +111,10 @@ select {
 .nowrap {
 	white-space: nowrap
 }
-	
+
+.offscreen {
+    position: absolute;
+    left: -9999px;
+    max-height: 1px;
+    max-width: 1px;
+}
