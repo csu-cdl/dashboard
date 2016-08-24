@@ -8,6 +8,31 @@ body {
 	font-size:16px;
 }
 
+#main {
+	width:90%;
+	position: relative;
+	margin: 40px auto;
+}
+.page-controls {
+	height:60px;
+	background:#ddd;
+	width:90%;
+	margin: 20px auto;
+}
+.page-controls fieldset {
+	border: none;
+}
+
+.page-controls fieldset select {
+	height:40px;
+	width:180px;
+	line-height:1.2em;
+	margin:10px auto;
+	position:relative;
+	display:block;
+	padding:5px;
+}
+
 .chart-title {
 	font-family: sans-serif;
 	color: #555;
@@ -36,7 +61,7 @@ body {
 }
 
 .tab {
-	margin:80px 20px 0;
+	margin:20px 20px 0;
 	position:relative;
 	min-height:600px;
 }
