@@ -8,6 +8,27 @@ body {
 	font-size:16px;
 }
 
+.chart-title {
+	font-family: sans-serif;
+	color: #555;
+	position:relative;
+	top:-570px;
+	width:90%;
+	text-align:center; 
+}
+
+.chart-title h1 {
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 1.8em;
+}
+
+.chart-title h2 {
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 1.8em;
+}
+
 #main {
 	position:relative;
 	display:block;
@@ -289,6 +310,13 @@ body {
 
 #chart1 input[type=range]:focus::-ms-fill-upper {
 	background: #ddd;
+}
+#chart1-plotarea {
+	position: relative;
+}
+#chart1 .controls {
+	position:relative;
+	top:-50px;
 }
 
 .tooltip {

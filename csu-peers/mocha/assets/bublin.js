@@ -469,10 +469,10 @@
 				type: 'line'
 			},
 			title: {
-				text: ''
+				text: 'Title'
 			},
 			subtitle: {
-				text: ''
+				text: 'Subtitle'
 			},
 			xAxis: {
 				type: 'category',
