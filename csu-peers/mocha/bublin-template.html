@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Bubble/Line Chart</title>
+<title>CSU Comparisons</title>
 
 <link rel="stylesheet" type="text/css" href="../../global/css/style.css">
-<link rel="stylesheet" type="text/css" href="assets/bublin.css" />
+<link rel="stylesheet" type="text/css" href="assets/bublin5.css" />
+<link rel="stylesheet" type="text/css" href="assets/bublin5b.css" />
 
 <script src="assets/vendor/d3.v3.min.js"></script>
 <script src="assets/vendor/html5slider.js"></script>
@@ -20,95 +21,71 @@
 	<img src="../../global/img/branding.png" width="803" height="108" alt=""/> 
  </header>
  
-<div id="maincontent" class="container" role="main">
+<section id="maincontent" class="container" role="main">
 
-<div class="title-bar">      
-	<h1>CSU Peers</h1>
-</div>
- 
-<!--section id="main" style="display:none;"-->
+<div class="title-bar"><h1>CSU Comparisons</h1></div>
 
-<!--div class="page-controls"--><form><fieldset class="controls">
-<select id="dataset_filter1">
-<option value="ftf_6yr" selected>FTF 6yr Grad</option>
-<option value="tr_4yr">TR 4yr Grad</option>
-</select>
-</fieldset></form><!--/divpage controls-->
+<form class="page-controls"><fieldset class="controls"><legend class="offscreen">For accessibility devices</legend>
+	<select id="dataset_filter1">
+	<option value="ftf_6yr" selected>FTF 6yr Grad</option>
+	<option value="tr_4yr">TR 4yr Grad</option>
+	</select>
+</fieldset></form>
 
-
-<!--div class="tab">
-<ul class="tabtab">
-<li id="bubble" class="activetab"><a href="#">Bubble</a></li>
-<li id="line"><a href="#">Line</a></li>
-<li id="explain"><a href="#">Chart Explanation</a></li>
-</ul-->
-
-<ul class="nav nav-tabs" role="tablist">
-	<li class="active"><a href="#chart" role="tab" tabindex="0">Bubble</a></li>
-	<li><a href="#trends" role="tab" tabindex="0">Line</a></li>
+<ul class="nav nav-tabs tabtab" role="tablist">
+	<li class="active"><a href="#chart" role="tab" tabindex="0">CSU Comparisons</a></li>
+	<li><a href="#trends" role="tab" tabindex="0">Historical Trends</a></li>
 	<li><a href="#explanations" role="tab" tabindex="0">Chart Explanations</a></li>
 	<li><a href="#table" role="tab" tabindex="0">Data Tables</a></li>
 	<li><a href="#method" role="tab" tabindex="0">Methodology</a></li>
 </ul>
 
-<!--div id="panel0" class="container"-->
+<div class="tab-content"> <!-- wraps major tabbed area -->
 
-
-<div class="tab-content">
+<div id="chart" class="tab-pane fade in active">
+<div id="chart1">
+	<div id="chart1-plotarea"></div>
+	<div class="chart-title"><h1>Title</h1><h2>Subtitle</h2></div>
+	<div class="controls">
+		<button name="play" id="play">Play</button>  
+		<div><input autocomplete="off" id="slider" type="range" min="2000" max="2009" value="2000" step="1"></div>
+	</div>
+</div>
+</div><!--./chart-->
 
 
 <div id="trends" class="tab-pane fade">
-
-<div class="chart-controls"><form><fieldset style=""><legend></legend>
-<select id="yvalue_selector">
-<option value="gradrate">6-Year Grad Rate</option>
-<option value="gap" selected>Acheivement Gap</option>
-<option value="pell">Pell Eligible Enrollment</option>
-</select>
+<div class="chart-controls"><form><fieldset style=""><legend class="offscreen">For accessibility devices</legend>
+	<select id="yvalue_selector">
+	<option value="gradrate">6-Year Grad Rate</option>
+	<option value="gap" selected>Acheivement Gap</option>
+	<option value="pell">Pell Eligible Enrollment</option>
+	</select>
 </fieldset></form></div>
 
 <div id="chart0"></div>
-
 </div><!--./trends-->
-<!--/div> <!-- /panel0 -->
 
-<!--div id="panel1" class="container"-->
-
-<div id="chart" class="tab-pane fade in active">
-
-<div id="chart1">
-<div id="chart1-plotarea"></div>
-<div class="chart-title"><h1>Title</h1><h2>Subtitle</h2></div>
-<div class="controls">
-  <button name="play" id="play">Play</button>  
-  <div><input autocomplete="off" id="slider" type="range" min="2000" max="2009" value="2000" step="1"></div>
-</div>
-</div>
-
-</div><!--./chart-->
-<!--/div> <!-- /panel1 -->
-
-<!--div id="panel2" class="container"-->
 
 <div id="explanations" class="tab-pane fade">
-
-<h2>Chart Explanation</h2>
-<p>Some explanatory text would follow.</p>
+	<h2>Chart Explanation</h2>
+	<p>Some explanatory text would follow.</p>
 </div><!--./explanations-->
-<!--/div> <!-- /panel2 -->
 
-<!--/div> <!-- /tab -->
-<!--/section> <!-- /main -->
+
+<div id="table" class="tab-pane fade">
+	<h2>Data Tables</h2>
+	<p>Some data tables would follow.</p>
+</div><!--./table> -->
+
+
+<div id="method" class="tab-pane fade">
+	<h2>Methodology</h2>
+	<p>Some methodology text would follow.</p>
+</div><!--./method> -->
 
 </div><!--./tab-content-->
-</div><!--./container-->
+</section><!-- ./container #maincontent -->
 
-<script type="text/javascript" src="assets/bublin.js"></script>
-
-<script>
-$('.nav-tabs a').click(function (e) {
-  e.preventDefault()
-  $(this).tab('show')
-})
-</script>
+<script type="text/javascript" src="assets/bublin5.js"></script>
 </body></html>
