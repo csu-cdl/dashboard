@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Bubble/Line Chart</title>
+<link rel="stylesheet" type="text/css" href="assets/bublin4.css" />
+
+<script src="assets/vendor/d3.v3.min.js"></script>
+<script src="assets/vendor/html5slider.js"></script>
+<script src="assets/vendor/jquery.min.js"></script>
+<script src="assets/vendor/highcharts.js"></script>
+</head><body>
+
+<section id="main" style="display:none;">
+<div class="page-controls"><form><fieldset><legend></legend>
+<select id="dataset_filter1">
+<option value="ftf_6yr" selected>FTF 6yr Grad</option>
+<option value="tr_4yr">TR 4yr Grad</option>
+</select>
+</fieldset></form></div>
+<div class="tab">
+<ul class="tabtab">
+<li id="bubble" class="activetab"><a href="#">CSU Comparisons</a></li>
+<li id="line"><a href="#">Historical Trends</a></li>
+<li id="explain"><a href="#">Chart Explanation</a></li>
+<li id="tables"><a href="#">Data Tables</a></li>
+<li id="methods"><a href="#">Methodology</a></li>
+</ul>
+
+<div id="panel0" class="container">
+
+<div class="chart-controls"><form><fieldset style=""><legend></legend>
+<select id="yvalue_selector">
+<option value="gradrate">6-Year Grad Rate</option>
+<option value="gap" selected>Acheivement Gap</option>
+<option value="pell">Pell Eligible Enrollment</option>
+</select>
+</fieldset></form></div>
+
+<div id="chart0"></div>
+</div> <!-- /panel0 -->
+
+<div id="panel1" class="container">
+<div id="chart1">
+<div id="chart1-plotarea"></div>
+<div class="chart-title"><h1>Title</h1><h2>Subtitle</h2></div>
+<div class="controls">
+  <button name="play" id="play">Play</button>  
+  <div><input autocomplete="off" id="slider" type="range" min="2000" max="2009" value="2000" step="1"></div>
+</div>
+</div>
+</div> <!-- /panel1 -->
+
+<div id="panel2" class="container">
+<div id="explanations">
+<h2>Chart Explanation</h2>
+<p>Some explanatory text would follow.</p>
+</div>
+</div> <!-- /panel2 -->
+
+<div id="panel3" class="container">
+<div id="datatables">
+<h2>Data Tables</h2>
+<p>Some data tables would follow.</p>
+</div>
+</div> <!-- /panel3 -->
+
+<div id="panel4" class="container">
+<div id="methodology">
+<h2>Methodology</h2>
+<p>Some methodology text would follow.</p>
+</div>
+</div> <!-- /panel4 -->
+
+</div> <!-- /tab -->
+</section> <!-- /main -->
+
+<script type="text/javascript" src="assets/bublin4.js"></script>
+</body></html>
