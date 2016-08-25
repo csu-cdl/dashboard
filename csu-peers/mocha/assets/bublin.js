@@ -596,14 +596,14 @@
 	var update_series = function (mode) {
 		var pchart = $('#chart0').highcharts();
 		if (pchart) {
-			if (mode) {
+			if (mode) { // save selected
 				pchart.series.forEach(function (e) {
 					var attributes = e.userOptions;
 					if (attributes.zIndex === 2) {
 						cs.campuses[attributes.name].selected = attributes.visible; // set selected
 					}
 				});
-			} else {
+			} else { // load selected
 				pchart.series.forEach(function (e) {
 					var attributes = e.userOptions;
 					var tf;
@@ -646,6 +646,46 @@
 		});
 	};
 
+	var display_tab = function (tabid) {
+		hide_tooltips();
+		$('.container').hide();
+		$('.tabtab li').removeClass('activetab');
+
+		// display tab chosen
+		switch (tabid) {
+			case 'explain':
+				$('#explain').addClass('activetab');
+				$('#panel2').show();
+			break;
+			case 'methods':
+				$('#methods').addClass('activetab');
+				$('#panel4').show();
+			break;
+			case 'tables':
+				$('#tables').addClass('activetab');
+				$('#panel3').show();
+			break;
+			case 'line':
+				$('#line').addClass('activetab');
+				update_chart(config); // get selected
+				update_series(); // get selected
+				if ($('#chart0').highcharts()) {
+					$('#chart0').highcharts().reflow();
+				}
+				$('#panel0').show();
+			break;
+			case 'bubble':
+				$('#bubble').addClass('activetab');
+				init_bubble(function () {});
+				$('#panel1').show();
+			break;
+			default:
+				$('#bubble').addClass('activetab');
+				init_bubble(function () {});
+				$('#panel1').show();
+			break;
+		}
+	};
 	var init = function () {
 		$('#main').show();
 		$('.container').hide();
@@ -653,39 +693,25 @@
 		config = {axis_y_title: '% Achievement Gap', tooltip_label: 'Gap'};
 		update_chart(config); // get selected
 
-		$('.tabtab li').on('click', function (e) {
-			hide_tooltips();
-			tabid = e.target.nodeName === 'LI' ? e.target.id : e.target.parentNode.id;
-			$('.container').hide();
-			$('.tabtab li').removeClass('activetab');
-			// display tab chosen
-			if (tabid === 'line') {
-				$('#line').addClass('activetab');
-				update_chart(config); // get selected
-				update_series(); // get selected
-				$('#panel0').show();
-				if ($('#chart0').highcharts()) {
-					$('#chart0').highcharts().reflow();
-				}
-			} else if (tabid === 'bubble') { // bubble
-				$('#bubble').addClass('activetab');
-				init_bubble(function () {});
-				$('#panel1').show();
-			} else if (tabid === 'explain') {
-				$('#explain').addClass('activetab');
-				$('#panel2').show();
-			} else if (tabid === 'tables') {
-				$('#tables').addClass('activetab');
-				$('#panel3').show();
-			} else if (tabid === 'methods') {
-				$('#methods').addClass('activetab');
-				$('#panel4').show();
-			}
+		// respond to tab selection
+		$('.tabtab li a').on('click', function (e) { // either 
+			e.stopPropagation();
+			e.preventDefault();
 		});
-		
-/*
-
-*/
+		$('.tabtab li').on('click', function (e) { // either 
+			//console.log('click');
+			e.stopPropagation();
+			e.preventDefault();
+			tabid = e.target.nodeName === 'LI' ? e.target.id : e.target.parentNode.id;
+			$('#' + tabid + ' a').focus();
+		});
+		$('.tabtab li a').on('focus', function (e) { // either by tabbing or clicking
+			//console.log('focus');
+			e.stopPropagation();
+			e.preventDefault();
+			tabid = e.target.nodeName === 'LI' ? e.target.id : e.target.parentNode.id;
+			display_tab(tabid);
+		});
 	};
 
 
@@ -744,10 +770,9 @@
 			if (tabid === 'bubble') {
 				init_bubble(function () {});
 			} else if (tabid === 'line') {
+				update_series(true);
 				update_chart(config); // get selected
 				update_series(); // get selected
-				$('#line').addClass('activetab');
-				$('#panel0').show();
 				if ($('#chart0').highcharts()) {
 					$('#chart0').highcharts().reflow();
 				}
