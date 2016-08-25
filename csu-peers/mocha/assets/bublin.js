@@ -121,7 +121,8 @@
 	var maketag = function (campus) {
 		return 'tag' + campus.replace(/\s+/g, '');
 	};
-
+	var tabid = 'bubble';
+	var config;
 	var svg;
 	var floaters = {};
 	var build_chart = function () {
@@ -509,6 +510,7 @@
 
 		// once the data is completely loaded, plot data points and generate legend
 		load_data(cs.data_url, function (data) {
+			$('#chart1-plotarea').empty(); // remove old svg before recreating at different size
 			svg = build_chart();
 			plot_data(svg, data);
 			create_legend(svg, data);
@@ -647,26 +649,27 @@
 	var init = function () {
 		$('#main').show();
 		$('.container').hide();
-		$('#panel1').show();
-		var config = {axis_y_title: '% Achievement Gap', tooltip_label: 'Gap'};
+		$('#panel1').show(); // default
+		config = {axis_y_title: '% Achievement Gap', tooltip_label: 'Gap'};
 		update_chart(config); // get selected
+
 		$('.tabtab li').on('click', function (e) {
 			hide_tooltips();
-			var tabid = e.target.nodeName === 'LI' ? e.target.id : e.target.parentNode.id;
-			$('.tabtab li').removeClass('activetab');
+			tabid = e.target.nodeName === 'LI' ? e.target.id : e.target.parentNode.id;
 			$('.container').hide();
+			$('.tabtab li').removeClass('activetab');
+			// display tab chosen
 			if (tabid === 'line') {
+				$('#line').addClass('activetab');
 				update_chart(config); // get selected
 				update_series(); // get selected
-				$('#line').addClass('activetab');
 				$('#panel0').show();
 				if ($('#chart0').highcharts()) {
 					$('#chart0').highcharts().reflow();
 				}
 			} else if (tabid === 'bubble') { // bubble
-				update_series(1); // set selected
-				apply_selection();
 				$('#bubble').addClass('activetab');
+				init_bubble(function () {});
 				$('#panel1').show();
 			} else if (tabid === 'explain') {
 				$('#explain').addClass('activetab');
@@ -683,15 +686,9 @@
 /*
 
 */
-		$('#yvalue_selector').on('change', function (e) {
-			update_series(1); // set selected
-			var value = e.target.value;
-			cs.yvalue = {'gap':'gap', 'pell':'pell', 'gradrate':'gradrate'}[value];
-			config.axis_y_title = {'gap': '% Achievement Gap', 'pell': '% Pell Eligible Enrollment', 'gradrate': '% 6-Year Grad Rate'}[value];
-			config.tooltip_label = {'gap': 'Gap', 'pell': 'Pell Enrollment', 'gradrate': 'Grad Rate'}[value];
-			update_chart(config);
-		});
 	};
+
+
 	$(document).ready(function () {
 		$('#main').hide();
 		init_bubble(function () {
@@ -701,15 +698,23 @@
 				if (!isResizing) {
 					isResizing = true;
 					window.setTimeout(function () { // reduce number of intermediate resizes
-						$('#chart1-plotarea').empty(); // remove old svg before recreating at different size
 						init_bubble(function () {}); // make at new size
 						isResizing = false;
 					}, 600);
 				}
 			}, false);
 		});
+
+		$('#yvalue_selector').on('change', function (e) {
+			update_series(1); // set selected
+			var value = e.target.value;
+			cs.yvalue = {'gap':'gap', 'pell':'pell', 'gradrate':'gradrate'}[value];
+			config.axis_y_title = {'gap': '% Achievement Gap', 'pell': '% Pell Eligible Enrollment', 'gradrate': '% 6-Year Grad Rate'}[value];
+			config.tooltip_label = {'gap': 'Gap', 'pell': 'Pell Enrollment', 'gradrate': 'Grad Rate'}[value];
+			update_chart(config);
+		});
+
 		$('#dataset_filter1').on('change', function (e) {
-			//console.log(e.target.value);
 			switch (e.target.value) {
 				case 'tr_4yr':
 					cs.data_url = cs.data_url_tr_4yr;
@@ -734,13 +739,19 @@
 					cs.year_end = cs.year_end_ftf_6yr;
 					cs.chart_title = cs.chart_title_ftf_6yr;
 					cs.chart_subtitle = cs.chart_subtitle_ftf_6yr;
-				break;
 			}
-			//console.log(JSON.stringify([cs.data_url, cs.year_start, cs.year_end, cs.dimension_map]));
 			$('#chart1-plotarea').empty(); // remove old svg before recreating at different size
-			init_bubble(function () {
-				init(); // give bubble a chance to load data first, eliminating duplicate download
-			});
+			if (tabid === 'bubble') {
+				init_bubble(function () {});
+			} else if (tabid === 'line') {
+				update_chart(config); // get selected
+				update_series(); // get selected
+				$('#line').addClass('activetab');
+				$('#panel0').show();
+				if ($('#chart0').highcharts()) {
+					$('#chart0').highcharts().reflow();
+				}
+			}
 		});
 	});
 
