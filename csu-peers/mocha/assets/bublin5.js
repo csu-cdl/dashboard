@@ -225,6 +225,7 @@
 	};
 	// Positions the dots based on data.
 	var position = function (dot) {
+		console.log('position');
 		var csc = cs.campuses;
 		var scale = cs.scale;
 		dot.each(function (d) {
@@ -236,6 +237,8 @@
 				left = (csc[dc].labelx + scale.x(x(d)) - r) + 'px';
 				fs.style.top = top;
 				fs.style.left = left;
+				console.log(left);
+				fs.style.visibility = parseInt(left, 10) > -30 ? 'visible' : 'hidden';
 			}
 			d3.select(this)
 				.attr('cx', scale.x(x(d)))
