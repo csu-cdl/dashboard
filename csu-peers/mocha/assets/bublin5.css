@@ -216,36 +216,44 @@ p.footnote {
 	z-index: 10;
 }
 
-#explanation, #methodology {
+#explanations, #method {
 	font-family:"Trebuchet MS", Helvetica, sans-serif;
 	font-size:16px;
 	font-weight: 400;
 	line-height:1.4em;
 	color: #111;
-	margin:10px auto;
-	width:750px;
+	padding:0 120px 40px;
 }
 
-#explanation h1, #methodology h1 {
+#explanations h1, #method h1 {
 	font-size:1.5em;
 	font-weight: 600;
 }
 
-#explanation h2, #methodology h2 {
+#explanations h2, #method h2 {
 	font-size:1.1em;
 	font-weight: 600;
 }
 
-#explanation h3, #methodology h3 {
+#explanations h3, #method h3 {
 	font-size:1em;
 	font-weight: 600;
 }
+#explanations ul {
+    display: block;
+    list-style-type: disc;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 40px;
+}
 
-#explanation li {
+#explanations li {
 	margin:0.5em;
 }
 
-#methodology p img {
+#method p img {
 	float: right;
 	margin: 5px 10px 8px 22px;
 }
