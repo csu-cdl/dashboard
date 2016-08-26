@@ -247,13 +247,14 @@
 
 	// Defines a sort order so that the smallest dots are drawn on top.
 	var order = function (a, b) {
-		var max = 1000;
+		var max = 4100000000;
 		var aa = cs.campuses[a.campus].selected ? max : max + max; // force selected campus dots to rise to top of z-order
 		var bb = cs.campuses[b.campus].selected ? max : max + max;
 		return radius(b) + bb - radius(a) - aa;
 	};
 
 	var reposition = function () {
+		console.log('repositioning');
 		// Add a dot per item. Initialize the data and set the colors.
 		d3.selectAll('.dot')
 		.call(position)
