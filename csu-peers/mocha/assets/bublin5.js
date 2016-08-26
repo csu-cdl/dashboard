@@ -5,7 +5,7 @@
 		dimension_map_ftf_6yr: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 25], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
 		dimension_map_ftf_4yr: {'x': ['gradrate', 5, 45], 'y': ['gap', -10, 20], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
 		dimension_map_tr_4yr: {'x': ['gradrate', 45, 85], 'y': ['gap', -10, 20], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']},
-		dimension_map_tr_2yr: {'x': ['gradrate', 5, 50], 'y': ['gap', -10, 20], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']},
+		dimension_map_tr_2yr: {'x': ['gradrate', 5, 55], 'y': ['gap', -10, 20], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']},
 		dimension_map: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 25], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']},
 		margin: {top: 85, right: 240, bottom: 80, left: 60},
 		min_width: 300,
@@ -29,9 +29,9 @@
 		year_start_tr_4yr: 2000,
 		year_end_tr_4yr: 2011,
 		year_start_ftf_4yr: 2000,
-		year_end_ftf_4yr: 2009,
+		year_end_ftf_4yr: 2011,
 		year_start_tr_2yr: 2000,
-		year_end_tr_2yr: 2011,
+		year_end_tr_2yr: 2013,
 		chart_title_ftf_6yr: 'First Time Freshman',
 		chart_subtitle_ftf_6yr: '6yr Grad Rate',
 		chart_title_tr_4yr: 'Transfer',
