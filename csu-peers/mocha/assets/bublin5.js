@@ -3,7 +3,9 @@
 
 	var cs = { // chart_state
 		dimension_map_ftf_6yr: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 25], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
+		dimension_map_ftf_4yr: {'x': ['gradrate', 5, 45], 'y': ['gap', -10, 20], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']}, // alter mapping to switch data-plot dimensions
 		dimension_map_tr_4yr: {'x': ['gradrate', 45, 85], 'y': ['gap', -10, 20], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']},
+		dimension_map_tr_2yr: {'x': ['gradrate', 5, 50], 'y': ['gap', -10, 20], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']},
 		dimension_map: {'x': ['gradrate', 25, 80], 'y': ['gap', -10, 25], 'radius': ['total', -120, 2400], 'color': ['campus'], 'key': ['campus']},
 		margin: {top: 85, right: 240, bottom: 80, left: 60},
 		min_width: 300,
@@ -15,23 +17,33 @@
 		label: {'gradrate': 'Graduation Rate', 'gap': 'Achievement Gap', 'year': '2000', 'pell': 'Pell'},
 		year_start: 2000,
 		year_end: 2009,
+		chart_title: 'First Time Freshman',
+		chart_subtitle: '6yr Grad Rate',
+		data_url: 'data/bublin_campus_6yr_ftf.json',
+		data_url_ftf_6yr: 'data/bublin_campus_6yr_ftf.json',
+		data_url_ftf_4yr: 'data/bublin_campus_4yr_ftf.json',
+		data_url_tr_4yr: 'data/bublin_campus_4yr_tr.json',
+		data_url_tr_2yr: 'data/bublin_campus_2yr_tr.json',
 		year_start_ftf_6yr: 2000,
 		year_end_ftf_6yr: 2009,
 		year_start_tr_4yr: 2000,
 		year_end_tr_4yr: 2011,
-		chart_title: 'First Time Freshman',
-		chart_subtitle: '6yr Grad Rate',
+		year_start_ftf_4yr: 2000,
+		year_end_ftf_4yr: 2009,
+		year_start_tr_2yr: 2000,
+		year_end_tr_2yr: 2011,
 		chart_title_ftf_6yr: 'First Time Freshman',
 		chart_subtitle_ftf_6yr: '6yr Grad Rate',
 		chart_title_tr_4yr: 'Transfer',
 		chart_subtitle_tr_4yr: '4yr Grad Rate',
+		chart_title_ftf_4yr: 'First Time Freshman',
+		chart_subtitle_ftf_4yr: '4yr Grad Rate',
+		chart_title_tr_2yr: 'Transfer',
+		chart_subtitle_tr_2yr: '2yr Grad Rate',
 		duration: 12000,
 		templates: {
 			tooltip: 'Achievement Gap:\u00A0\u00A0{gap}%\nGraduation Rate:\u00A0\u00A0{gradrate}%\nTotal FTF Freshmen:\u00A0\u00A0{ftf}\nPercent Pell:\u00A0\u00A0{pell}%\n'
 		},
-		data_url: 'data/mocha_campus_ftf_6yr.json',
-		data_url_ftf_6yr: 'data/mocha_campus_ftf_6yr.json',
-		data_url_tr_4yr: 'data/mocha_campus_tr_4yr.json',
 		campuses: {
 			'Bakersfield': {selected: false, ord: 1, labelx: 40, labely: 54.9},
 			'Channel Islands': {selected: false, ord: 2, labelx: 25, labely: 54.9},
@@ -719,6 +731,14 @@
 
 		$('#dataset_filter1').on('change', function (e) {
 			switch (e.target.value) {
+				case 'tr_2yr':
+					cs.data_url = cs.data_url_tr_2yr;
+					cs.dimension_map = cs.dimension_map_tr_2yr;
+					cs.year_start = cs.year_start_tr_2yr;
+					cs.year_end = cs.year_end_tr_2yr;
+					cs.chart_title = cs.chart_title_tr_2yr;
+					cs.chart_subtitle = cs.chart_subtitle_tr_2yr;
+				break;
 				case 'tr_4yr':
 					cs.data_url = cs.data_url_tr_4yr;
 					cs.dimension_map = cs.dimension_map_tr_4yr;
@@ -726,6 +746,14 @@
 					cs.year_end = cs.year_end_tr_4yr;
 					cs.chart_title = cs.chart_title_tr_4yr;
 					cs.chart_subtitle = cs.chart_subtitle_tr_4yr;
+				break;
+				case 'ftf_4yr':
+					cs.data_url = cs.data_url_ftf_4yr;
+					cs.dimension_map = cs.dimension_map_ftf_4yr;
+					cs.year_start = cs.year_start_ftf_4yr;
+					cs.year_end = cs.year_end_ftf_4yr;
+					cs.chart_title = cs.chart_title_ftf_4yr;
+					cs.chart_subtitle = cs.chart_subtitle_ftf_4yr;
 				break;
 				case 'ftf_6yr':
 					cs.data_url = cs.data_url_ftf_6yr;
