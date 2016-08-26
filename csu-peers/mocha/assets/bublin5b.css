@@ -67,6 +67,7 @@ body {
 	background: #337ab7;
 	border: 1px solid #2e6da4;
 	border-radius: 4px;
+	visibility:hidden;
 }
 
 #chart1 .controls {
@@ -87,6 +88,7 @@ body {
 	width: 78%;
 	padding: 0 0 5px 0;
 	height: 20px;
+	visibility:hidden;
 }
 
 #chart1 .label{

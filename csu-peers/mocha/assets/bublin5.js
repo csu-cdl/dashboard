@@ -676,10 +676,14 @@
 				}
 			break;
 			case 'chart':
+				$('#chart1').hide();
 				init_bubble(function () {});
+				$('#chart1').show();
 			break;
 			default:
+				$('#chart1').hide();
 				init_bubble(function () {});
+				$('#chart1').show();
 			break;
 		}
 	};
@@ -692,8 +696,14 @@
 	$(document).ready(function () {
 		cs.campuses['Long Beach'].selected = true; // set default campus
 		init_trends_chart(function () {
+			$('#chart1 .controls div').css('visibility', 'hidden');
+			$('#chart1 button').css('visibility', 'hidden');
+			$('#chart1').hide();
 			init_bubble(function () {
-				update_series();
+				//update_series();
+				$('#chart1').show();
+				$('#chart1 button').css('visibility', 'visible');
+				$('#chart1 .controls div').css('visibility', 'visible');
 			}); // give bubble a chance to load data first, eliminating duplicate download
 		});
 
@@ -731,9 +741,10 @@
 					cs.chart_title = cs.chart_title_ftf_6yr;
 					cs.chart_subtitle = cs.chart_subtitle_ftf_6yr;
 			}
-			$('#chart1-plotarea').empty(); // remove old svg before recreating at different size
 			if (tabid === 'chart') {
+				$('#chart1').hide();
 				init_bubble(function () {});
+				$('#chart1').show();
 			} else if (tabid === 'trends') {
 				update_chart(config); // get selected
 				if ($('#chart0').highcharts()) {
