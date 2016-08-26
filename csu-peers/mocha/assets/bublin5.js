@@ -33,29 +33,29 @@
 		data_url_ftf_6yr: 'data/mocha_campus_ftf_6yr.json',
 		data_url_tr_4yr: 'data/mocha_campus_tr_4yr.json',
 		campuses: {
-			'Bakersfield': {selected: false, ord: 1, labelx: 40, labely: 58},
-			'Channel Islands': {selected: false, ord: 2, labelx: 25, labely: 58},
-			'Chico': {selected: false, ord: 3, labelx: 66, labely: 58},
-			'Dominguez Hills': {selected: false, ord: 4, labelx: 26, labely: 58},
-			'East Bay': {selected: false, ord: 5, labelx: 47, labely: 58},
-			'Fresno': {selected: false, ord: 6, labelx: 60, labely: 58},
-			'Fullerton': {selected: false, ord: 7, labelx: 62, labely: 58},
-			'Humboldt': {selected: false, ord: 8, labelx: 45, labely: 58},
-			'Long Beach': {selected: false, ord: 9, labelx: 55, labely: 58},
-			'Los Angeles': {selected: false, ord: 10, labelx: 43, labely: 58},
-			'Maritime Academy': {selected: false, ord: 11, labelx: 15, labely: 58},
-			'Monterey Bay': {selected: false, ord: 12, labelx: 31, labely: 58},
-			'Northridge': {selected: false, ord: 13, labelx: 56, labely: 58},
-			'Pomona': {selected: false, ord: 14, labelx: 62, labely: 58},
-			'Sacramento': {selected: false, ord: 15, labelx: 49, labely: 58},
-			'San Bernardino': {selected: false, ord: 16, labelx: 37, labely: 58},
-			'San Diego': {selected: false, ord: 17, labelx: 57, labely: 58},
-			'San Francisco': {selected: false, ord: 18, labelx: 43, labely: 58},
-			'San Jose': {selected: false, ord: 19, labelx: 58, labely: 58},
-			'San Luis Obispo': {selected: false, ord: 20, labelx: 45, labely: 58},
-			'San Marcos': {selected: false, ord: 21, labelx: 40, labely: 58},
-			'Sonoma': {selected: false, ord: 22, labelx: 55, labely: 58},
-			'Stanislaus': {selected: false, ord: 23, labelx: 45, labely: 58}
+			'Bakersfield': {selected: false, ord: 1, labelx: 40, labely: 54.9},
+			'Channel Islands': {selected: false, ord: 2, labelx: 25, labely: 54.9},
+			'Chico': {selected: false, ord: 3, labelx: 66, labely: 54.9},
+			'Dominguez Hills': {selected: false, ord: 4, labelx: 26, labely: 54.9},
+			'East Bay': {selected: false, ord: 5, labelx: 47, labely: 54.9},
+			'Fresno': {selected: false, ord: 6, labelx: 60, labely: 54.9},
+			'Fullerton': {selected: false, ord: 7, labelx: 62, labely: 54.9},
+			'Humboldt': {selected: false, ord: 8, labelx: 45, labely: 54.9},
+			'Long Beach': {selected: false, ord: 9, labelx: 55, labely: 54.9},
+			'Los Angeles': {selected: false, ord: 10, labelx: 43, labely: 54.9},
+			'Maritime Academy': {selected: false, ord: 11, labelx: 15, labely: 54.9},
+			'Monterey Bay': {selected: false, ord: 12, labelx: 31, labely: 54.9},
+			'Northridge': {selected: false, ord: 13, labelx: 56, labely: 54.9},
+			'Pomona': {selected: false, ord: 14, labelx: 62, labely: 54.9},
+			'Sacramento': {selected: false, ord: 15, labelx: 49, labely: 54.9},
+			'San Bernardino': {selected: false, ord: 16, labelx: 37, labely: 54.9},
+			'San Diego': {selected: false, ord: 17, labelx: 57, labely: 54.9},
+			'San Francisco': {selected: false, ord: 18, labelx: 43, labely: 54.9},
+			'San Jose': {selected: false, ord: 19, labelx: 58, labely: 54.9},
+			'San Luis Obispo': {selected: false, ord: 20, labelx: 45, labely: 54.9},
+			'San Marcos': {selected: false, ord: 21, labelx: 40, labely: 54.9},
+			'Sonoma': {selected: false, ord: 22, labelx: 55, labely: 54.9},
+			'Stanislaus': {selected: false, ord: 23, labelx: 45, labely: 54.9}
 		},
 		selected_color: '#c00',
 		'yvalue': 'gap',
@@ -87,7 +87,7 @@
 			if (isFixed) {
 				adjX = $w.scrollLeft(); adjY = $w.scrollTop();
 			}
-			var ox = (ev.pageX - pos.left + 115), oy = (ev.pageY - pos.top + 190);
+			var ox = (ev.pageX - pos.left + 83), oy = (ev.pageY - pos.top + 363);
 			$this.data(ns,{ x : ox, y: oy });
 			$w.on(mm, function(ev){
 				ev.preventDefault();
@@ -125,7 +125,9 @@
 	};
 
 	var maketag = function (campus) {
-		return 'tag' + campus.replace(/\s+/g, '');
+		var tag = 'tag' + campus.replace(/\s+/g, '');
+		//console.log('making tab for ' + campus + ' ' + tag);
+		return tag;
 	};
 
 	var build_chart = function () {
@@ -209,7 +211,7 @@
 		//Floating label
 		var floater = d3.select('#chart1-plotarea')
 			.append('div')
-			.attr('class', 'tooltip floater') // similar to tooltip
+			.attr('class', 'floater') // similar to tooltip
 			.attr('id', maketag(campus) + '_f')
 			.text(campus);
 		return floater;
@@ -223,11 +225,10 @@
 	};
 	// Positions the dots based on data.
 	var position = function (dot) {
-		var rfit = cs.width < 400 ? 0.75 : 1.0;
 		var csc = cs.campuses;
 		var scale = cs.scale;
-		dot.each(function (d, i) {
-			var r = scale.radius(radius(d))
+		dot.each(function (d) {
+			var r = scale.radius(radius(d));
 			if (csc[d.campus].selected) {
 				var fs, top, left, dc = d.campus;
 				fs = floaters[dc][0][0];
@@ -239,7 +240,7 @@
 			d3.select(this)
 				.attr('cx', scale.x(x(d)))
 				.attr('cy', scale.y(y(d)))
-				.attr('r', r * rfit);
+				.attr('r', r);
 		});
 	};
 
@@ -274,9 +275,7 @@
 			}
 		});
 		reposition();
-		console.log('apply selection');
 		update_series();
-		console.log(JSON.stringify(cs.campuses));
 	};
 
 	var plot_data = function (svg, data) {
@@ -284,6 +283,7 @@
 		$('.chart-title h2').text(cs.chart_subtitle);
 		$('#slider').attr('min', cs.year_start);
 		$('#slider').attr('max', cs.year_end);
+		$('#slider').val(parseInt(cs.year_start, 10));
 
 		// Add the year label; the value is set on transition.
 		var label = svg.append('text')
@@ -397,10 +397,9 @@
 			label.text(cs.year_start);
 			var checkdone = function () {
 				if (!cs.done) {
-					//console.log(cs.year_end + '|' + label.text());
 					if (parseInt(cs.year_end, 10) === parseInt(label.text(), 10)) {
 						cs.done = true;
-						//console.log('DONE');
+						console.log('Bubble Animation DONE');
 						window.setTimeout(function () {
 							d3.selectAll('.dot').each(function (d) {
 								if (cs.campuses[d.campus].selected) {
@@ -426,7 +425,6 @@
 						}, 500);
 						window.clearTimeout(timer1);
 					}
-					//console.log('still checking');
 					timer1 = window.setTimeout(function () {
 						if (!cs.done) {
 							checkdone();							
@@ -436,7 +434,7 @@
 			};
 			checkdone();
 		});
-
+		$('#slider').off();
 		$('#slider').on('change', function (){
 			svg.transition().duration(cs.duration);
 			displayYear($('#slider').val());
@@ -512,7 +510,6 @@
 	};
 
 	var init_bubble = function (callback) {
-		//cs.width =  880;
 		cs.scale.x = d3.scale.linear().domain(cs.dimension_map.x.slice(1)).range([0, cs.width]);
 		cs.scale.y = d3.scale.linear().domain(cs.dimension_map.y.slice(1)).range([cs.height, 0]);
 		cs.scale.radius = d3.scale.sqrt().domain(cs.dimension_map.radius.slice(1)).range([0, cs.radius]);
@@ -523,9 +520,8 @@
 		load_data(cs.data_url, function (data) {
 			$('#chart1-plotarea').empty(); // remove old svg before recreating at different size
 			svg = build_chart();
-			plot_data(svg, data);
 			create_legend(svg, data);
-			apply_selection();
+			plot_data(svg, data);
 			callback();
 		});
 	};
@@ -607,7 +603,6 @@
 
 	var update_series = function (mode) {
 		var pchart = $('#chart0').highcharts();
-		console.log('update_series mode ' + mode + ' pchart ' + pchart);
 		if (pchart) {
 			if (mode) { // save selected
 				pchart.series.forEach(function (e) {
@@ -632,15 +627,16 @@
 	};
 	
 	var update_chart = function (config, callback) {
-		//console.log('update_chart calls load_data');
 		load_data(config, function (data, config) {
-			console.log('callback from load_data');
+			$('#chart0').off('click');
+			$('#chart0').on('click', function () { // listens for click on trends legend
+				update_series(1); // save legend selections to cs
+			});
 			var multiseries = [];
 			var multigray = [];
 			var attribute = cs.yvalue;
 			var null_series = [];
 			series_state = update_series(); // load from cs
-			console.log(JSON.stringify(series_state));
 			data.forEach(function (campus_data) {
 				var series = [];
 				var campus = campus_data.campus;
@@ -666,37 +662,28 @@
 	};
 
 	var display_tab = function (tabid, mode) {
-		//hide_tooltips(); // else they'll linger in wrong place
-		console.log('display_tab ' + tabid);
 		switch (tabid) {
-			case 'explain':
-				update_series(1);
+			case 'explanations':
 			break;
-			case 'methods':
-				update_series(1);
+			case 'method':
 			break;
-			case 'tables':
-				update_series(1);
+			case 'table':
 			break;
 			case 'trends':
-				if (mode) {
-					update_series(1);
-				}
 				update_chart(config); // get selected
 				if ($('#chart0').highcharts()) {
 					$('#chart0').highcharts().reflow();
 				}
 			break;
 			case 'chart':
-				update_series(1);
 				init_bubble(function () {});
 			break;
 			default:
 				init_bubble(function () {});
 			break;
 		}
-		$(tabid).show();
 	};
+
 	var init_trends_chart = function (callback) {
 		config = {axis_y_title: '% Achievement Gap', tooltip_label: 'Gap'};
 		update_chart(config, callback); // get selected
@@ -704,8 +691,8 @@
 
 	$(document).ready(function () {
 		cs.campuses['Long Beach'].selected = true; // set default campus
-		init_bubble(function () {
-			init_trends_chart(function () {
+		init_trends_chart(function () {
+			init_bubble(function () {
 				update_series();
 			}); // give bubble a chance to load data first, eliminating duplicate download
 		});
@@ -719,9 +706,6 @@
 		});
 
 		$('#dataset_filter1').on('change', function (e) {
-			if (tabid === 'trends') {
-				update_series(1); // save selected from trends visible
-			}
 			switch (e.target.value) {
 				case 'tr_4yr':
 					cs.data_url = cs.data_url_tr_4yr;
@@ -762,8 +746,8 @@
 		e.preventDefault();
 		e.stopPropagation();
 		tabid = e.target.href.replace(/[^#]*#/, '');
-		display_tab(tabid);
 		$(this).tab('show');
+		display_tab(tabid);
 	});
 
 }());

@@ -12,8 +12,7 @@ body {
 	font-family: sans-serif;
 	color: #777;
 	position:relative;
-	top:-610px;
-	width:90%;
+	top:-600px;
 	text-align:center;
 	z-index: -1;
 }
@@ -21,14 +20,15 @@ body {
 .chart-title h1 {
 	font-weight: 600;
 	font-size: 20px;
-	line-height: 2em;
-	margin-bottom:5px;
+	line-height: 1.5em;
+	margin:5px;
 }
 
 .chart-title h2 {
 	font-weight: 600;
 	font-size: 16px;
-	line-height: 2em;
+	line-height: 1.5em;
+	margin:5px;
 }
 
 #chart1-plotarea .floater ::selection { background: transparent; }
@@ -37,13 +37,15 @@ body {
 #chart1-plotarea .floater {
 	position:absolute;
 	z-index: 9;
-	background-color: rgba(255,255,255,0.7);
+	background-color: rgba(255,255,255,0.4);
 	padding: 3px 5px;
 	color: #333;
 	font-size: 12px;
 	font-weight: 600;
 	line-height: 1.5em;
 	visibility: hidden;
+	border: 2px solid rgba(128,128,128,0.4);
+	border-radius: 6px;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: -moz-none;
@@ -71,9 +73,11 @@ body {
 	width: 90%;
 	min-width: 360px;
 	display: block;
-	margin:0 auto;
+	margin:-60px auto 0;
 	height: 25px;
 	clear:both;
+	background:transparent;
+	position:relative;
 }
 
 #chart1 .controls div {
