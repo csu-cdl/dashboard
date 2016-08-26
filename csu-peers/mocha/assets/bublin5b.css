@@ -260,8 +260,9 @@ body {
 
 .tooltipx {
 	position: absolute;
+	top:400px;
+	left:100px;
 	z-index: 10;
-	visibility: visible;
 	font-family: sans-serif;
 	padding:0 5px;
 	margin:0;
@@ -271,6 +272,7 @@ body {
 	border: 1px solid #bbbbbb;
 	border-radius: 5px;
 	box-shadow: 1px 1px 4px #bbbbbb;
+	visibility:hidden;
 }
 
 .tcampusx {
