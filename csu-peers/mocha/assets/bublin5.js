@@ -544,7 +544,8 @@
 			},
 			chart: {
 				type: 'line',
-				width: 1050
+				width: 1050,
+				height: 550
 			},
 			title: {
 				text: cs.chart_title
