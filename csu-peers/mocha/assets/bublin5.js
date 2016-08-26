@@ -93,13 +93,15 @@
 		adjX = 0, adjY = 0;
 
 		$this.mousedown(function(ev){
+			var leftoffset = 40.0 + ($(window).width() - 1180)/2.0;
+			console.log($(window).width());
 			var pos = $this.offset();
 			var xbeg = $this.css('left');
 			var ybeg = $this.css('top');
 			if (isFixed) {
 				adjX = $w.scrollLeft(); adjY = $w.scrollTop();
 			}
-			var ox = (ev.pageX - pos.left + 83), oy = (ev.pageY - pos.top + 363);
+			var ox = (ev.pageX - pos.left + leftoffset), oy = (ev.pageY - pos.top + 363);
 			$this.data(ns,{ x : ox, y: oy });
 			$w.on(mm, function(ev){
 				ev.preventDefault();
