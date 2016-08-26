@@ -408,44 +408,6 @@
 			hide_tooltips();
 			var timer1;
 			label.text(cs.year_start);
-			var checkdone = function () {
-				if (!cs.done) {
-					if (parseInt(cs.year_end, 10) === parseInt(label.text(), 10)) {
-						cs.done = true;
-						console.log('Bubble Animation DONE');
-						window.setTimeout(function () {
-							d3.selectAll('.dot').each(function (d) {
-								if (cs.campuses[d.campus].selected) {
-									if (tt.hasOwnProperty(d.campus)) {
-										tooltips[tt[d.campus]]
-										.style('top', (280 + cs.campuses[d.campus].labely - 120 + cs.scale.y(y(d))) + 'px')
-										.style('left', (100 + cs.campuses[d.campus].labelx - 35 + cs.scale.x(x(d))) + 'px')
-										.style('visibility', 'visible');
-										return;
-									}
-									tooltips.push(create_tooltip());
-									tt[d.campus] = tooltips.length - 1;
-									tooltips[tooltips.length - 1]
-										.on('click', function () {
-											tooltips[tt[d.campus]].style('visibility', 'hidden');
-										})
-										.style('top', (280 + cs.campuses[d.campus].labely - 120 + cs.scale.y(y(d))) + 'px')
-										.style('left', (100 + cs.campuses[d.campus].labelx - 35 + cs.scale.x(x(d))) + 'px')
-										.style('visibility', 'visible');
-									display_tooltip(d, tooltips[tooltips.length - 1]);
-								}
-							});
-						}, 500);
-						window.clearTimeout(timer1);
-					}
-					timer1 = window.setTimeout(function () {
-						if (!cs.done) {
-							checkdone();							
-						}
-					}, 500);
-				}
-			};
-			//checkdone();
 		});
 		$('#slider').off();
 		$('#slider').on('change', function (){
@@ -609,6 +571,10 @@
 				var json_object = (typeof result === 'string')
 					? JSON.parse(result)
 					: result;
+				// Ensure dataset is sorted by campus name
+				json_object.sort(function (a, b) {
+					return a.campus < b.campus ? -1 : a.campus > b.campus ? 1 : 0;
+				});
 				cs.retained_data = json_object;
 				callback(json_object, config);
 			}
