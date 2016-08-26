@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Content Editor</title>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+</head>
+<body>
+<header id="top" class="banner" role="banner">
+	<a class="offscreen" href="#maincontent">skip to content</a>
+	<img src="assets/branding.png" width="803" height="108" alt=""/> 
+ </header>
+ 
+<section id="maincontent" class="container" role="main">
+
+<div class="title-bar"><h1>Content Editor</h1></div>
+
+<form class="page-controls"><fieldset class="controls"><legend class="offscreen">For accessibility devices</legend>
+	<select id="dataset_filter1">
+	<option value="ftf_6yr" selected>FTF 6yr Grad</option>
+	<option value="ftf_4yr">FTF 4yr Grad</option>
+	<option value="tr_4yr">TR 4yr Grad</option>
+	<option value="tr_2yr">TR 2yr Grad</option>
+	</select>
+</fieldset></form>
+
+<ul class="nav nav-tabs tabtab" role="tablist">
+	<li class="active"><a href="#explanations" role="tab" tabindex="0">Chart Explanations</a></li>
+</ul>
+
+<div class="tab-content"> <!-- wraps major tabbed area -->
+
+<section id="explanations" class="tab-pane fade in active editable">
+	<h2>Chart Explanation</h2>
+	<p>Some explanatory text would follow.</p>
+</section>
+
+
+
+</div>
+</section>
+
+<script>
+
+tinymce.init({
+  selector: 'section.editable',
+  content_css: 'assets/editorstyle.css',
+  inline: true,
+  plugins: [
+    'advlist autolink lists link image charmap print preview anchor',
+    'searchreplace visualblocks code fullscreen',
+    'insertdatetime media table contextmenu paste'
+  ],
+  toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'
+});
+</script>
+</body>
+</html>
