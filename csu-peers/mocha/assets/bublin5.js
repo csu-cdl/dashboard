@@ -254,7 +254,6 @@
 	};
 
 	var reposition = function () {
-		console.log('repositioning');
 		// Add a dot per item. Initialize the data and set the colors.
 		d3.selectAll('.dot')
 		.call(position)
