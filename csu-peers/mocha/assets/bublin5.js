@@ -27,7 +27,7 @@
 		chart_subtitle_tr_4yr: '4yr Grad Rate',
 		duration: 12000,
 		templates: {
-			tooltip: 'Achievement Gap: \u00A0\u00A0{gap}%\nGraduation Rate: \u00A0\u00A0{gradrate}%\nTotal FTF Freshmen: \u00A0\u00A0{ftf}\nPercent Pell: \u00A0\u00A0{pell}%\n'
+			tooltip: 'Achievement Gap:\u00A0\u00A0{gap}%\nGraduation Rate:\u00A0\u00A0{gradrate}%\nTotal FTF Freshmen:\u00A0\u00A0{ftf}\nPercent Pell:\u00A0\u00A0{pell}%\n'
 		},
 		data_url: 'data/mocha_campus_ftf_6yr.json',
 		data_url_ftf_6yr: 'data/mocha_campus_ftf_6yr.json',
@@ -182,21 +182,21 @@
 
 	var create_tooltip = function () {
 		//Tooltip
-		var tooltip = d3.select('body')
+		var tooltip = d3.select('#chart1')
 			.append('div')
-			.attr('class', 'tooltip');
+			.attr('class', 'tooltipx');
 		return tooltip;
 	};
 	var tooltip = create_tooltip();
 
 	var display_tooltip = function (d, tooltip) {
 		tooltip.html('');
-		tooltip.append('h3').attr('class', 'tooltip_title')
+		tooltip.append('span').attr('class', 'tooltip_titlex')
 			.style('background-color', cs.scale.color(xcolor(d)));
-		tooltip.append('pre').attr('class', 'tooltip_body');
-		tooltip.select('.tooltip_title').html('<span class="ttitle"><span class="tcampus">' + d.campus + '</span><span>');
+		tooltip.append('span').attr('class', 'tooltip_bodyx');
+		tooltip.select('.tooltip_titlex').html('<span class="ttitle"><span class="tcampusx">' + d.campus + '</span><span>');
 		
-		tooltip.select('.tooltip_body')
+		tooltip.select('.tooltip_bodyx')
 			.text(cs.templates.tooltip
 				.replace('{gap}', Math.round(d.gap))
 				.replace('{gradrate}', Math.round(d.gradrate))
@@ -433,7 +433,7 @@
 					}, 500);
 				}
 			};
-			checkdone();
+			//checkdone();
 		});
 		$('#slider').off();
 		$('#slider').on('change', function (){

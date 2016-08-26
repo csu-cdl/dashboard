@@ -258,25 +258,44 @@ body {
 	top:-50px;
 }
 
-.tooltip {
+.tooltipx {
 	position: absolute;
 	z-index: 10;
-	visibility: hidden;
-	background-color: #fafafa;
+	visibility: visible;
 	font-family: sans-serif;
+	padding:0 5px;
+	margin:0;
+	height:120px;
+	width:175px;
+	background-color: rgba(255,255,255,0.7);
 	border: 1px solid #bbbbbb;
+	border-radius: 5px;
 	box-shadow: 1px 1px 4px #bbbbbb;
 }
 
-.tcampus {
-	padding:0 5px;
+.tcampusx {
+	color:#fff;
+	font-weight:600;
+	font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 16px;
+}
+
+.tooltip_bodyx {
+	position: relative; 
+	font-weight: normal;
+	text-align: left;
+	font-size:13px;
+}
+.tooltip_titlex {
+	text-align:center;
+	line-height:20px;
 }
 
 .ttitle {
-	background-color: rgba(0,0,0,0.1);
+	background-color: rgba(0,0,0,0.1); /*darker for higher contrast to white lettering*/
 	display:inline-block;
 	width:100%;
-	line-height:1.5em;
+	height:20px;
 }
 
 .highlighted {
@@ -287,24 +306,4 @@ body {
 .legendrectx {
 	stroke: #fff;
 	stroke-width:1;
-}
-
-.tooltip_title {
-	font-weight: bold;
-	font-size: 14px;
-	max-width: 300px;
-	color:#fff;
-	word-wrap: normal;
-}
-
-.tooltip_body {
-	font-weight: normal;
-	text-align: left;
-	padding:5px;
-	background-color: rgba(255,255,255,0.5);
-}
-
-pre {
-	font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 12px;
 }
